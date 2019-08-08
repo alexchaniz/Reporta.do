@@ -94,7 +94,6 @@ app.get('/webhook', (req, res) => {
       
     }  
     
-    cons
     // Sends the response message
     callSendAPI(sender_psid, response);    
   }
