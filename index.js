@@ -33,10 +33,8 @@ app.post('/webhook', (req, res) => {
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
-          console.log("loco aca ta mal")
           handleMessage(sender_psid, webhook_event.message);        
         } else if (webhook_event.postback) {
-          console.log("loco alla ta mal")
           handlePostback(sender_psid, webhook_event.postback);
         }
       });
@@ -84,16 +82,21 @@ app.get('/webhook', (req, res) => {
   function handleMessage(sender_psid, received_message) {
 
     let response;
-  
+    console.log("Fallo 1");
+    
     // Check if the message contains text
     if (received_message.text) {    
-  
+      console.log("fallo 2");
+      
       // Create the payload for a basic text message
       response = {
         "text": `You sent the message: "${received_message.text}". Now send me an image!`
       }
+      console.log("fallo 3");
+      
     }  
     
+    console.log("fallo 4")
     // Sends the response message
     callSendAPI(sender_psid, response);    
   }
@@ -106,12 +109,18 @@ function handlePostback(sender_psid, received_postback) {
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
   // Construct the message body
+
+  console.log(sender_psid);
+  
   let request_body = {
     "recipient": {
       "id": sender_psid
     },
     "message": response
   }
+
+  console.log(request_body);
+  
 
   // Send the HTTP request to the Messenger Platform
   request({
