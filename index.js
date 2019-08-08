@@ -82,21 +82,18 @@ app.get('/webhook', (req, res) => {
   function handleMessage(sender_psid, received_message) {
 
     let response;
-    console.log("Fallo 1");
     
     // Check if the message contains text
     if (received_message.text) {    
-      console.log("fallo 2");
       
       // Create the payload for a basic text message
       response = {
         "text": `You sent the message: "${received_message.text}". Now send me an image!`
       }
-      console.log("fallo 3");
       
     }  
     
-    console.log("fallo 4")
+    cons
     // Sends the response message
     callSendAPI(sender_psid, response);    
   }
@@ -109,9 +106,6 @@ function handlePostback(sender_psid, received_postback) {
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
   // Construct the message body
-
-  console.log(sender_psid);
-  
   let request_body = {
     "recipient": {
       "id": sender_psid
@@ -119,9 +113,7 @@ function callSendAPI(sender_psid, response) {
     "message": response
   }
 
-  console.log(request_body);
-  
-
+  console.log(process.env.PAGE_ACCESS_TOKEN)
   // Send the HTTP request to the Messenger Platform
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
