@@ -82,6 +82,7 @@ app.get('/webhook', (req, res) => {
   function handleMessage(sender_psid, received_message) {
 
     let response;
+    console.log("Fallo 1");
     
     // Check if the message contains text
     if (received_message.text) {    
@@ -113,7 +114,6 @@ function callSendAPI(sender_psid, response) {
     "message": response
   }
 
-  console.log(process.env.PAGE_ACCESS_TOKEN)
   // Send the HTTP request to the Messenger Platform
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
