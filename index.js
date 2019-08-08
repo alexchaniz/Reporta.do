@@ -123,7 +123,7 @@ app.get('/webhook', (req, res) => {
       }
     }
   } 
-    
+     console.log(attachment_url)
     // Sends the response message
     callSendAPI(sender_psid, response);    
   }
