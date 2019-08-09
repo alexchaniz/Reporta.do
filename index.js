@@ -14,7 +14,6 @@ app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
 // Creates the endpoint for our webhook 
 app.post('/webhook', (req, res) => {  
- console.log("---------------------------------------------");
  
     let body = req.body;
   
@@ -36,8 +35,11 @@ app.post('/webhook', (req, res) => {
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
+           console.log("---------------------------------------------");
+
           handleMessage(sender_psid, webhook_event.message);        
         } else if (webhook_event.postback) {
+          console.log("---------------------------------------------");
           handlePostback(sender_psid, webhook_event.postback);
         }
       });
