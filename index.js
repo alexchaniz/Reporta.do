@@ -35,8 +35,7 @@ app.post('/webhook', (req, res) => {
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
-           console.log("---------------------------------------------");
-
+          console.log("---------------------------------------------");
           handleMessage(sender_psid, webhook_event.message);        
         } else if (webhook_event.postback) {
           console.log("---------------------------------------------");
@@ -91,7 +90,7 @@ app.get('/webhook', (req, res) => {
     
     // Check if the message contains text
     if (received_message.text) {    
-      
+      console.log(received_message.text)
       // Create the payload for a basic text message
       response = {
         "text": `You sent the message: "${received_message.text}". Now send me an image!`
@@ -101,6 +100,7 @@ app.get('/webhook', (req, res) => {
   
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
+    window.open(attachment_url;
     console.log("the picture is in the link: " + attachment_url)
     response = {
       "attachment": {
@@ -128,6 +128,7 @@ app.get('/webhook', (req, res) => {
       }
     }
   } 
+  console.log(response.)
     // Sends the response message
     callSendAPI(sender_psid, response);    
   }
