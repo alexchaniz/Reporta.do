@@ -14,6 +14,7 @@ app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
 // Creates the endpoint for our webhook 
 app.post('/webhook', (req, res) => {  
+ console.log("---------------------------------------------");
  
     let body = req.body;
   
@@ -97,7 +98,7 @@ app.get('/webhook', (req, res) => {
   
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
-    console.log("the picture is in the link: " + attachment_url)
+    console.log("the picture is in the link: " + JSON.stringify(attachment_url)
     response = {
       "attachment": {
         "type": "template",
