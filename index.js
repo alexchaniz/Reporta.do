@@ -127,7 +127,6 @@ app.get('/webhook', (req, res) => {
       }
     }
   } 
-  console.log(response.)
     // Sends the response message
     callSendAPI(sender_psid, response);    
   }
