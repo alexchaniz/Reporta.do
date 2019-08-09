@@ -97,6 +97,7 @@ app.get('/webhook', (req, res) => {
   
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
+    console.log("the picture is in the link: " + attachment_url)
     response = {
       "attachment": {
         "type": "template",
@@ -122,8 +123,6 @@ app.get('/webhook', (req, res) => {
         }
       }
     }
-
-    console.log("the picture is in the link: " + attachment_url)
   } 
     // Sends the response message
     callSendAPI(sender_psid, response);    
