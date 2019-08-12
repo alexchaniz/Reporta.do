@@ -169,7 +169,7 @@ function handlePostback(sender_psid, received_postback) {
 
     });
   }
-
+  console.log(response);
   console.log("Llega hasta aqui");
   
   // Send the message to acknowledge the postback
