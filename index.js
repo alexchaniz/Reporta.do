@@ -35,10 +35,10 @@ app.post('/webhook', (req, res) => {
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
-          console.log("---------------------------------------------");
+          console.log("1---------------------------------------------");
           handleMessage(sender_psid, webhook_event.message);        
         } else if (webhook_event.postback) {
-          console.log("---------------------------------------------");
+          console.log("2---------------------------------------------");
           handlePostback(sender_psid, webhook_event.postback);
         }
       });
@@ -88,6 +88,8 @@ app.get('/webhook', (req, res) => {
     
     let response;
     let kind=0;
+
+    console.log("//////////" + received_message)
     
     // Check if the message contains text
     if (received_message.text) {    
