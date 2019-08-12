@@ -159,6 +159,7 @@ function handlePostback(sender_psid, received_postback) {
         console.log("Error getting user's name: " +  error);
       } else {
         var bodyObj = JSON.parse(body);
+        console.log(bodyObj)
         name = bodyObj.first_name;
         greeting = "Hola " + name + ". ";
       }
