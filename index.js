@@ -160,8 +160,8 @@ function handlePostback(sender_psid, received_postback) {
       } else {
         var bodyObj = JSON.parse(body);
         console.log(bodyObj)
-        name = bodyObj.first_name;
-        greeting = "Hola " + name + ". ";
+        surname = bodyObj.first_name;
+        greeting = "Hola " + surname + ". ";
       }
       response = greeting + "Bienvenido a DominiBot.";
     });
