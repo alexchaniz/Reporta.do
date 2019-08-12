@@ -166,7 +166,24 @@ function handlePostback(sender_psid, received_postback) {
       }
       response = greeting + "Bienvenido a DominiBot.";   
     });*/
-    response = { "text": "klk" }  }
+    response = {"message":{
+      "text": "Pick a color:",
+      "quick_replies":[
+        {
+          "content_type":"text",
+          "title":"Red",
+          "payload":"<POSTBACK_PAYLOAD>",
+          "image_url":""
+        },{
+          "content_type":"text",
+          "title":"Green",
+          "payload":"<POSTBACK_PAYLOAD>",
+          "image_url":""
+        }
+      ]
+    }
+    }
+  }
   
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
