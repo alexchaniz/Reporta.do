@@ -1,6 +1,6 @@
 'use strict';
 
-var request = require('request-promise');
+const request = require('request');
 
 // page acces token> EAAHxOF5ZBsSoBAMCneBZBRZBhac2ZCsYNVRLMS5aLuyjwGe0ayZB6ZCptcPmLs6AQ0qOeV4ZAJjHDOi2fOCMBJU2kR7wItickH6hJn4Y7Ki1iIFEC2dWTXdigF54QOLZBiflYy773P1JRH6t8HCEPvEer9q8TG46Csi2ZCdKTnUM3kAZDZD 
 //Imports dependencies and set up http server
@@ -166,9 +166,10 @@ function handlePostback(sender_psid, received_postback) {
       }
       response = greeting + "Bienvenido a DominiBot.";
       console.log(response);
-    }).then(console.log(response));
+      callSendAPI(sender_psid, response);
+    });
   }
-  
+  console.log(response);
   console.log("Llega hasta aqui");
   
   // Send the message to acknowledge the postback
