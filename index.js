@@ -31,6 +31,9 @@ app.post('/webhook', (req, res) => {
         // Get the sender PSID
         let sender_psid = webhook_event.sender.id;
         console.log('Sender PSID: ' + sender_psid);
+
+        console.log("//////////" + JSON.stringify(webhook_event))
+
       
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
@@ -88,8 +91,6 @@ app.get('/webhook', (req, res) => {
     
     let response;
     let kind=0;
-
-    console.log("//////////" + JSON.stringify(received_message))
     
     // Check if the message contains text
     if (received_message.text) {    
@@ -101,10 +102,8 @@ app.get('/webhook', (req, res) => {
       
     } else if (received_message.attachments) {
 
-      if(received_message.attachments.coordinates){
-
       console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+JSON.stringify(received_message.attachments.coordinates))
-      }else{
+      
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
     console.log("the picture is in the link: " + attachment_url)
@@ -133,7 +132,7 @@ app.get('/webhook', (req, res) => {
         }
       }
     }
-  } }
+  } 
     // Sends the response message
     callSendAPI(sender_psid, response, kind);    
   }
