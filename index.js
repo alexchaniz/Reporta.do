@@ -31,10 +31,7 @@ app.post('/webhook', (req, res) => {
         // Get the sender PSID
         let sender_psid = webhook_event.sender.id;
         console.log('Sender PSID: ' + sender_psid);
-
-        console.log("//////////" + JSON.stringify(webhook_event.message))
-
-      
+   
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
@@ -102,7 +99,7 @@ app.get('/webhook', (req, res) => {
       
     } else if (received_message.attachments) {
 
-      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+JSON.stringify(received_message.attachments.coordinates))
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+JSON.stringify(received_message.attachments.coordinates) + received_message.attachments.coordinates)
       
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
