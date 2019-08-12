@@ -155,13 +155,14 @@ function handlePostback(sender_psid, received_postback) {
       method: "GET"
     }, function(error, response, body) {
       var greeting = "";
+      var name = "";
       if (error) {
         console.log("Error getting user's name: " +  error);
       } else {
         var bodyObj = JSON.parse(body);
         console.log(bodyObj)
-        let surname = bodyObj.first_name;
-        greeting = "Hola " + surname + ". ";
+        name = bodyObj.first_name;
+        greeting = "Hola " + name + ". ";
       }
       response = greeting + "Bienvenido a DominiBot.";
     });
