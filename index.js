@@ -153,7 +153,7 @@ function handlePostback(sender_psid, received_postback) {
         fields: "first_name"
       },
       method: "GET"
-    }, function(error, body) {
+    }, function(error, response2, body) {
       var greeting = "";
       var name = "";
       if (error) {
