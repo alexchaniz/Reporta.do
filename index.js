@@ -26,7 +26,7 @@ app.post('/webhook', (req, res) => {
         // Gets the message. entry.messaging is an array, but 
         // will only ever contain one message, so we get index 0
         let webhook_event = entry.messaging[0];
-        console.log("webhook event: " + webhook_event);
+        console.log("webhook event: " + webhook_event.type);
 
         // Get the sender PSID
         let sender_psid = webhook_event.sender.id;
@@ -143,6 +143,27 @@ function handlePostback(sender_psid, received_postback) {
     response = { "text": "Thanks!" }
   } else if (payload === 'no') {
     response = { "text": "Oops, try sending another image." }
+  } else if (payload === "Greeting") {
+    // Get user's first name from the User Profile API
+    // and include it in the greeting
+    request({
+      url: "https://graph.facebook.com/v2.6/" + senderId,
+      qs: {
+        access_token: process.env.PAGE_ACCESS_TOKEN,
+        fields: "first_name"
+      },
+      method: "GET"
+    }, function(error, response, body) {
+      var greeting = "";
+      if (error) {
+        console.log("Error getting user's name: " +  error);
+      } else {
+        var bodyObj = JSON.parse(body);
+        name = bodyObj.first_name;
+        greeting = "Hola " + name + ". ";
+      }
+      response = greeting + "Bienvenido a DominiBot.";
+    });
   }
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
