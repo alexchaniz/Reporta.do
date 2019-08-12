@@ -87,6 +87,7 @@ app.get('/webhook', (req, res) => {
     console.log("Handling message: ");
     
     let response;
+    let kind=0;
     
     // Check if the message contains text
     if (received_message.text) {    
@@ -128,13 +129,13 @@ app.get('/webhook', (req, res) => {
     }
   } 
     // Sends the response message
-    callSendAPI(sender_psid, response);    
+    callSendAPI(sender_psid, response, kind);    
   }
 
 // Handles messaging_postbacks events
 function handlePostback(sender_psid, received_postback) {
   let response;
-  
+  let kind=0;
   // Get the payload for the postback
   let payload = received_postback.payload;
 
@@ -182,22 +183,32 @@ function handlePostback(sender_psid, received_postback) {
         }
       ]
     }
+    kind=1;
   }
   
   // Send the message to acknowledge the postback
-  callSendAPI(sender_psid, response);
+  callSendAPI(sender_psid, response, kind);
 }
 
 // Sends response messages via the Send API
-function callSendAPI(sender_psid, response) {
+function callSendAPI(sender_psid, response, kind) {
   // Construct the message body
-  let request_body = {
-    "recipient": {
-      "id": sender_psid
+  let request_body
+  if(kind=1){
+    request_body = {
+      "recipient": {
+        "id": sender_psid
     },
     "messaging_type": "RESPONSE",
     "message": response
-  }
+  }}else {
+   request_body = {
+      "recipient": {
+        "id": sender_psid
+      },
+      "messaging_type": "RESPONSE",
+      "message": response
+    }  }
 
   console.log(process.env.PAGE_ACCESS_TOKEN)
   // Send the HTTP request to the Messenger Platform
