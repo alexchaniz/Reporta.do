@@ -165,8 +165,13 @@ function handlePostback(sender_psid, received_postback) {
         greeting = "Hola " + name + ". ";
       }
       response = greeting + "Bienvenido a DominiBot.";
+      console.log(response);
+
     });
   }
+
+  console.log("Llega hasta aqui");
+  
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
 }
