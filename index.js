@@ -89,7 +89,7 @@ app.get('/webhook', (req, res) => {
     let response;
     let kind=0;
 
-    console.log("//////////" + received_message)
+    console.log("//////////" + JSON.stringify(received_message))
     
     // Check if the message contains text
     if (received_message.text) {    
