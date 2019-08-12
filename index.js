@@ -146,7 +146,7 @@ function handlePostback(sender_psid, received_postback) {
   } else if (payload === "Greeting") {
     // Get user's first name from the User Profile API
     // and include it in the greeting
-    request({
+    /*request({
       url: "https://graph.facebook.com/v2.6/" + sender_psid,
       qs: {
         access_token: process.env.PAGE_ACCESS_TOKEN,
@@ -164,13 +164,9 @@ function handlePostback(sender_psid, received_postback) {
         name = bodyObj.first_name;
         greeting = "Hola " + name + ". ";
       }
-      response = greeting + "Bienvenido a DominiBot.";
-      console.log(response);
-      callSendAPI(sender_psid, response);
-    });
-  }
-  console.log(response);
-  console.log("Llega hasta aqui");
+      response = greeting + "Bienvenido a DominiBot.";   
+    });*/
+    response = { "text": "klk" }  }
   
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
