@@ -101,8 +101,10 @@ app.get('/webhook', (req, res) => {
       
     } else if (received_message.attachments) {
 
-      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+received_message.attachments.type)
-  
+      if(received_message.attachments.coordinates){
+
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+JSON.stringify(received_message.attachments.coordinates))
+      }else{
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
     console.log("the picture is in the link: " + attachment_url)
@@ -131,7 +133,7 @@ app.get('/webhook', (req, res) => {
         }
       }
     }
-  } 
+  } }
     // Sends the response message
     callSendAPI(sender_psid, response, kind);    
   }
