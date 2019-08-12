@@ -166,22 +166,30 @@ function handlePostback(sender_psid, received_postback) {
       }
       response = greeting + "Bienvenido a DominiBot.";   
     });*/
-    response = {"message":{
-      "text": "Pick a color:",
-      "quick_replies":[
-        {
-          "content_type":"text",
-          "title":"Red",
-          "payload":"<POSTBACK_PAYLOAD>",
-          "image_url":""
-        },{
-          "content_type":"text",
-          "title":"Green",
-          "payload":"<POSTBACK_PAYLOAD>",
-          "image_url":""
+    response = {
+      "attachment": {
+        "type": "template",
+        "payload": {
+          "template_type": "generic",
+          "elements": [{
+            "title": "Is this the right picture?",
+            "subtitle": "Tap a button to answer.",
+            "image_url": "",
+            "buttons": [
+              {
+                "type": "postback",
+                "title": "Yes!",
+                "payload": "yes",
+              },
+              {
+                "type": "postback",
+                "title": "No!",
+                "payload": "no",
+              }
+            ],
+          }]
         }
-      ]
-    }
+      }
     }
   }
   
