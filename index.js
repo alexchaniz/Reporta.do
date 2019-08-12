@@ -99,7 +99,8 @@ app.get('/webhook', (req, res) => {
       
     } else if (received_message.attachments) {
 
-      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+JSON.stringify(received_message.attachments.coordinates) + received_message.attachments.coordinates)
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+JSON.stringify(received_message.attachments.coordinates.lat) + "   " + received_message.attachments.coordinates.lat)
+      console.log("kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"+ received_message.attachments.payload.coordinates.lat)
       
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
