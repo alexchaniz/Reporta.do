@@ -144,6 +144,7 @@ app.get('/webhook', (req, res) => {
       "text": `Not a supported messag type`
   }
   } 
+}
     // Sends the response message
     callSendAPI(sender_psid, response, kind);    
   }
