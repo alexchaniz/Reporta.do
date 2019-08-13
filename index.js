@@ -211,7 +211,11 @@ function handlePostback(sender_psid, received_postback) {
 function callSendAPI(sender_psid, response, kind) {
   // Construct the message body
   let request_body
-  if(kind=1){
+
+  //ya que el formato de las quik replys respecto al resto de mensajes 
+  //es diferente se hace necesaria esa vaariable kind que permite
+  //generar diferetes tipos de estruturas de respuesta
+  /*if(kind=1){
     request_body = {
       "recipient": {
         "id": sender_psid
@@ -219,13 +223,15 @@ function callSendAPI(sender_psid, response, kind) {
     "messaging_type": "RESPONSE",
     "message": response
   }}else {
+    */
    request_body = {
       "recipient": {
         "id": sender_psid
       },
       "messaging_type": "RESPONSE",
       "message": response
-    }  }
+    }  
+  //}
 
   //console.log(process.env.PAGE_ACCESS_TOKEN)
   // Send the HTTP request to the Messenger Platform
