@@ -98,11 +98,13 @@ app.get('/webhook', (req, res) => {
       }
       
     } else if (received_message.attachments) {
+      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+      
       console.log(received_message.attachments);
       
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
-    console.log("the picture is in the link: " + attachment_url)
+    //console.log("the picture is in the link: " + attachment_url)
     response = {
       "attachment": {
         "type": "template",
@@ -211,7 +213,7 @@ function callSendAPI(sender_psid, response, kind) {
       "message": response
     }  }
 
-  console.log(process.env.PAGE_ACCESS_TOKEN)
+  //console.log(process.env.PAGE_ACCESS_TOKEN)
   // Send the HTTP request to the Messenger Platform
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
