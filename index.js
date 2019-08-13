@@ -98,12 +98,14 @@ app.get('/webhook', (req, res) => {
       }
       
     } else if (received_message.attachments) {
+
       console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
       
       console.log(received_message.attachments);
       console.log(received_message.attachments[0].type);
       console.log(received_message.attachments[0].payload.coordinates);
-      
+
+        if (received_message.attachments[0].type=="image"){
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
     //console.log("the picture is in the link: " + attachment_url)
@@ -132,6 +134,15 @@ app.get('/webhook', (req, res) => {
         }
       }
     }
+  } else if (received_message.attachments[0].type=="location"){
+    let coordinates = received_message.attachments[0].payload.coordinates;
+    response = {
+      "text": `Your location is: lat= "${coordinates.lat}", long = "${coordinates.long}"`
+    }
+  } else{
+    response = {
+      "text": `Not a supported messag type`
+  }
   } 
     // Sends the response message
     callSendAPI(sender_psid, response, kind);    
