@@ -87,7 +87,6 @@ app.get('/webhook', (req, res) => {
     console.log("Handling message: ");
     
     let response;
-    let kind=0;
     
     // Check if the message contains text
     if (received_message.text) {    
@@ -146,13 +145,12 @@ app.get('/webhook', (req, res) => {
   } 
 }
     // Sends the response message
-    callSendAPI(sender_psid, response, kind);    
+    callSendAPI(sender_psid, response);    
   }
 
 // Handles messaging_postbacks events
 function handlePostback(sender_psid, received_postback) {
   let response;
-  let kind=0;
   // Get the payload for the postback
   let payload = received_postback.payload;
 
@@ -200,30 +198,17 @@ function handlePostback(sender_psid, received_postback) {
         }
       ]
     }
-    kind=1;
-  }
+ }
   
   // Send the message to acknowledge the postback
-  callSendAPI(sender_psid, response, kind);
+  callSendAPI(sender_psid, response);
 }
 
 // Sends response messages via the Send API
-function callSendAPI(sender_psid, response, kind) {
+function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
 
-  //ya que el formato de las quik replys respecto al resto de mensajes 
-  //es diferente se hace necesaria esa vaariable kind que permite
-  //generar diferetes tipos de estruturas de respuesta
-  /*if(kind=1){
-    request_body = {
-      "recipient": {
-        "id": sender_psid
-    },
-    "messaging_type": "RESPONSE",
-    "message": response
-  }}else {
-    */
    request_body = {
       "recipient": {
         "id": sender_psid
@@ -231,9 +216,6 @@ function callSendAPI(sender_psid, response, kind) {
       "messaging_type": "RESPONSE",
       "message": response
     }  
-  //}
-
-  //console.log(process.env.PAGE_ACCESS_TOKEN)
   // Send the HTTP request to the Messenger Platform
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
