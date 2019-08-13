@@ -101,6 +101,8 @@ app.get('/webhook', (req, res) => {
       console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
       
       console.log(received_message.attachments);
+      console.log(received_message.attachments.type);
+      console.log(received_message.attachments.payload.coordinates);
       
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
