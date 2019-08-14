@@ -46,11 +46,9 @@ app.post('/webhook', (req, res) => {
         // Gets the message. entry.messaging is an array, but 
         // will only ever contain one message, so we get index 0
         let webhook_event = entry.messaging[0];
-        console.log("webhook event: " + webhook_event.type);
 
         // Get the sender PSID
         let sender_psid = webhook_event.sender.id;
-        console.log('Sender PSID: ' + sender_psid);
    
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
@@ -242,7 +240,7 @@ var update = new Update({
 });
 
 update.save(function(){
-  console.log("recibido");
+  console.log("creado");
 });
 
 Update.find(function(err,doc){
@@ -259,10 +257,7 @@ function nextStep(sender_psid){
   Update.findOneAndUpdate({sender_psid : sender_psid}, update);
   
   console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
-  console.log(update);
-}
-
-
+  console.log(JSON.stringify(update);
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
   // Construct the message body
