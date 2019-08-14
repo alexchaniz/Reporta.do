@@ -11,7 +11,7 @@ const
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-mongoose.connect(proces.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI);
 
 var updateSchema = {
   sender_psid: {type: Number},
