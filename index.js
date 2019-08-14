@@ -6,20 +6,12 @@ const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
-  MongoClient = require("mongodb").MongoClient;
-  ObjectId = require("mongodb").ObjectID;
 
-  
-MongoClient.connect(process.env.MONGODB_URI, function(err, client) {
-    if(err) {
-         console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-    }
-    console.log('Connected...');
-    const collection = client.db("test").collection("update");
-    // perform actions on the collection object
-    client.close();
- });
 
+var mongoose = require("mongoose");
+
+var db = mongoose.connect(process.env.MONGODB_URI);
+var Movie = require("./models/update");
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
 
