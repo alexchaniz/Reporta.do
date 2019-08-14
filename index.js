@@ -251,13 +251,14 @@ Update.find(function(err,doc){
 function nextStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_psid : sender_psid}, function(err, user){
-    //console.log(update);
+    console.log(update[0]);
   });
-  update[0].step = update.step + 1;
+  /*update[0].step = update.step + 1;
   Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
   
   console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
   console.log(JSON.stringify(update[0]));
+  */
 }
 
   // Sends response messages via the Send API
