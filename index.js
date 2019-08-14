@@ -8,19 +8,6 @@ const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
- /* MongoClient = require("mongodb").MongoClient;
-  ObjectId = require("mongodb").ObjectID;
-
-MongoClient.connect(process.env.MONGODB_URI, function(err, client) {
-    if(err) {
-         console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
-    }
-    console.log('Connected...');
-    const collection = client.db("test").collection("devices");
-    // perform actions on the collection object
-    client.close();
- });
- */
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
@@ -98,7 +85,7 @@ app.get('/webhook', (req, res) => {
   // Handles messages events
   function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
-
+    if (!event.message.is_echo) {
     let response;
     
     // Check if the message contains text
@@ -110,7 +97,14 @@ app.get('/webhook', (req, res) => {
       }
       
     } else if (received_message.attachments) {
-       if (received_message.attachments[0].type=="image"){
+
+      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+      
+      console.log(received_message.attachments);
+      console.log(received_message.attachments[0].type);
+      console.log(received_message.attachments[0].payload.coordinates);
+
+        if (received_message.attachments[0].type=="image"){
      // Get the URL of the message attachment
     let attachment_url = received_message.attachments[0].payload.url;
     //console.log("the picture is in the link: " + attachment_url)
@@ -147,6 +141,7 @@ app.get('/webhook', (req, res) => {
   } else{
     response = {
       "text": `Not a supported messag type`
+  }
   } 
 }
     // Sends the response message
@@ -166,6 +161,28 @@ function handlePostback(sender_psid, received_postback) {
   } else if (payload === 'no') {
     response = { "text": "Oops, try sending another image." }
   } else if (payload === "Greeting") {
+    // Get user's first name from the User Profile API
+    // and include it in the greeting
+    /*request({
+      url: "https://graph.facebook.com/v2.6/" + sender_psid,
+      qs: {
+        access_token: process.env.PAGE_ACCESS_TOKEN,
+        fields: "first_name"
+      },
+      method: "GET"
+    }, function(error, response2, body) {
+      var greeting = "";
+      var name = "";
+      if (error) {
+        console.log("Error getting user's name: " +  error);
+      } else {
+        var bodyObj = JSON.parse(body);
+        console.log(bodyObj)
+        name = bodyObj.first_name;
+        greeting = "Hola " + name + ". ";
+      }
+      response = greeting + "Bienvenido a DominiBot.";   
+    });*/
     response = {
       "text": "Pick a color:",
       "quick_replies":[
@@ -186,50 +203,6 @@ function handlePostback(sender_psid, received_postback) {
   
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
-}
-
-function createUpdate(sender_psid){
-  var updateAux = new Schema({
-    sender_psid: sender_psid,
-    step: 1,
-    cause: "earthquake",
-  //  damages: {type: String},
-  //  date: {type: String},
-    date: "14/08/2019",
-  //  lat: {type: String},
-  //  long: {type: String},
-  //  img: { data: Buffer, contentType: String },
-  });
-
-}
-
-function getUpdate(sender_psid) {
-  Update.findOne({sender_psid: sender_psid}, function(err, update) {
-    if(err) {
-      update = 0;
-    } else {
-      updateAux= update;
-    }
-  });
-}
-
-function actualizar(sender_psid, field, value) {
-  getUpdate(sender_psid)
-  if(update=0){
-    updte = {
-      sender_psid: sender_psid,
-      step: "",
-      cause: "",
-      damages: "",
-      date: "",
-      runtime: "",
-      lat: "",
-      long: "",
-      img: { data: Buffer, contentType: String },
-      poster_url: {type: String}
-  }
-   
-}
 }
 
 // Sends response messages via the Send API
