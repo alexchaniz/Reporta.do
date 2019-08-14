@@ -8,6 +8,26 @@ const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
+var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
+
+mongoose.connect(proces.env.MONGODB_URI);
+
+var updateSchema = {
+  sender_psid: {type: Number},
+  step: {type: Number},
+  cause: {type: String},
+//  damages: {type: String},
+//  date: {type: String},
+  date: {type: String},
+//  lat: {type: String},
+//  long: {type: String},
+//  img: { data: Buffer, contentType: String },
+};
+
+var update_schema = new Schema(updateSchema);
+
+var Update = mongoose.model("Update", update_schema);
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
@@ -154,6 +174,7 @@ function handlePostback(sender_psid, received_postback) {
   // Get the payload for the postback
   let payload = received_postback.payload;
 
+  create(sender_psid);
   // Set the response based on the postback payload
   if (payload === 'yes') {
     response = { "text": "Thanks!" }
@@ -203,6 +224,26 @@ function handlePostback(sender_psid, received_postback) {
   // Send the message to acknowledge the postback
   callSendAPI(sender_psid, response);
 }
+
+function create(sender_psid){
+var update = new Update({
+  sender_psid: sender_psid,
+  step: 1,
+  cause: "terremoto",
+//  damages: {type: String},
+//  date: {type: String},
+  date: "Mayo"
+});
+
+update.save(function(){
+  console.log("reciido");
+});
+
+Update.find(function(err,doc){
+  console.log(doc);
+  });
+}
+
 
 // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
