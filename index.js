@@ -10,6 +10,7 @@ const
   app = express().use(bodyParser.json()); // creates express http server
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
+var d = new Date();
 
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
 
@@ -230,7 +231,7 @@ var update = new Update({
   step: 1,
   cause: undefined,
   damages: undefined,
-  date: getTime(),
+  date: d.getTime(),
   lat: undefined,
   long: undefined,
   img: undefined
