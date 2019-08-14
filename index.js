@@ -244,7 +244,7 @@ update.save(function(){
 });
 
 Update.find(function(err,doc){
-  console.log(doc);
+ // console.log(doc);
   });
 }
 
@@ -253,8 +253,8 @@ function nextStep(sender_psid){
   update = Update.find({sender_psid : sender_psid}, function(err, user){
     console.log(update);
   });
-  update.step = update.step + 1;
-  Update.findOneAndUpdate({sender_psid : sender_psid}, update);
+  update[0].step = update.step + 1;
+  Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
   
   console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
   console.log(JSON.stringify(update));
