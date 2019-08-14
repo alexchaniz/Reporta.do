@@ -17,12 +17,11 @@ var updateSchema = {
   sender_psid: {type: Number},
   step: {type: Number},
   cause: {type: String},
-//  damages: {type: String},
-//  date: {type: String},
-  date: {type: String},
-//  lat: {type: String},
-//  long: {type: String},
-//  img: { data: Buffer, contentType: String },
+  damages: {type: String},
+  date: {type: Number},
+  lat: {type: String},
+  long: {type: String},
+  img: { data: Buffer, contentType: String },
 };
 
 var update_schema = new Schema(updateSchema);
@@ -229,14 +228,16 @@ function create(sender_psid){
 var update = new Update({
   sender_psid: sender_psid,
   step: 1,
-  cause: "terremoto",
-//  damages: {type: String},
-//  date: {type: String},
-  date: "Mayo"
+  cause: undefined,
+  damages: undefined,
+  date: getTime(),
+  lat: undefined,
+  long: undefined,
+  img: undefined
 });
 
 update.save(function(){
-  console.log("reciido");
+  console.log("recibido");
 });
 
 Update.find(function(err,doc){
