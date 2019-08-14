@@ -111,10 +111,41 @@ app.get('/webhook', (req, res) => {
     if (received_message.text) {    
       console.log(received_message.text)
       // Create the payload for a basic text message
+
+      var msgText=received_message.text;
+      if(msgText == "No"){
       response = {
-        "text": `You sent the message: "${received_message.text}". Now send me an image!`
+        "text": `Pefecto, estamos a su disposición en caso de que ocurra algo`
       }
-      
+      } else if(msgText== "¡Si!"){
+        nextStep(sender_psid);
+        response = {
+          "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
+          "quick_replies":[
+            {
+              "content_type":"text",
+              "title":"Terremoto",
+              "payload":"<POSTBACK_PAYLOAD>",
+              "image_url":""
+            },{
+              "content_type":"text",
+              "title":"Huracán",
+              "payload":"<POSTBACK_PAYLOAD>",
+              "image_url":""
+            },{
+              "content_type":"text",
+              "title":"Vaguada",
+              "payload":"<POSTBACK_PAYLOAD>",
+              "image_url":""
+            },{
+              "content_type":"text",
+              "title":"Otro",
+              "payload":"<POSTBACK_PAYLOAD>",
+              "image_url":""
+            }
+          ]
+        }
+      }     
     } else if (received_message.attachments) {
 
       console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
@@ -181,39 +212,18 @@ function handlePostback(sender_psid, received_postback) {
   } else if (payload === 'no') {
     response = { "text": "Oops, try sending another image." }
   } else if (payload === "Greeting") {
-    // Get user's first name from the User Profile API
-    // and include it in the greeting
-    /*request({
-      url: "https://graph.facebook.com/v2.6/" + sender_psid,
-      qs: {
-        access_token: process.env.PAGE_ACCESS_TOKEN,
-        fields: "first_name"
-      },
-      method: "GET"
-    }, function(error, response2, body) {
-      var greeting = "";
-      var name = "";
-      if (error) {
-        console.log("Error getting user's name: " +  error);
-      } else {
-        var bodyObj = JSON.parse(body);
-        console.log(bodyObj)
-        name = bodyObj.first_name;
-        greeting = "Hola " + name + ". ";
-      }
-      response = greeting + "Bienvenido a DominiBot.";   
-    });*/
+    create(sender_psid);
     response = {
-      "text": "Pick a color:",
+      "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
       "quick_replies":[
         {
           "content_type":"text",
-          "title":"Red",
+          "title":"¡Si!",
           "payload":"<POSTBACK_PAYLOAD>",
           "image_url":""
         },{
           "content_type":"text",
-          "title":"Green",
+          "title":"No",
           "payload":"<POSTBACK_PAYLOAD>",
           "image_url":""
         }
@@ -244,6 +254,16 @@ update.save(function(){
 Update.find(function(err,doc){
   console.log(doc);
   });
+}
+
+function nextStep(sender_psid){
+  var update = new Update;
+  update = Update.find({sender_psid : sender_psid}, function(err, user){
+    console.log(update);
+  });
+  update.step = update.step + 1;
+  Update.findOneAndUpdate({sender_psid : sender_psid}, update);
+  console.log(update);
 }
 
 
