@@ -258,7 +258,9 @@ function nextStep(sender_psid){
   
   console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
   console.log(JSON.stringify(update));
-// Sends response messages via the Send API
+}
+
+  // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
