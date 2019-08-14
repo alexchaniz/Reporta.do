@@ -98,7 +98,7 @@ app.get('/webhook', (req, res) => {
   // Handles messages events
   function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
-    if (!event.message.is_echo) {
+
     let response;
     
     // Check if the message contains text
@@ -147,7 +147,6 @@ app.get('/webhook', (req, res) => {
   } else{
     response = {
       "text": `Not a supported messag type`
-  }
   } 
 }
     // Sends the response message
