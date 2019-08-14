@@ -120,7 +120,7 @@ app.get('/webhook', (req, res) => {
       } else if(msgText== "¡Si!"){
         nextStep(sender_psid);
         response = {
-          "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
+          "text": "Me podría decir la causa de este",
           "quick_replies":[
             {
               "content_type":"text",
@@ -147,12 +147,6 @@ app.get('/webhook', (req, res) => {
         }
       }     
     } else if (received_message.attachments) {
-
-      console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
-      
-      console.log(received_message.attachments);
-      console.log(received_message.attachments[0].type);
-      console.log(received_message.attachments[0].payload.coordinates);
 
         if (received_message.attachments[0].type=="image"){
      // Get the URL of the message attachment
@@ -263,6 +257,8 @@ function nextStep(sender_psid){
   });
   update.step = update.step + 1;
   Update.findOneAndUpdate({sender_psid : sender_psid}, update);
+  
+  console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
   console.log(update);
 }
 
