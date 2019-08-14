@@ -1,18 +1,26 @@
 'use strict';
 
+const request = require('request');
+
 // page acces token> EAAHxOF5ZBsSoBAMCneBZBRZBhac2ZCsYNVRLMS5aLuyjwGe0ayZB6ZCptcPmLs6AQ0qOeV4ZAJjHDOi2fOCMBJU2kR7wItickH6hJn4Y7Ki1iIFEC2dWTXdigF54QOLZBiflYy773P1JRH6t8HCEPvEer9q8TG46Csi2ZCdKTnUM3kAZDZD 
 //Imports dependencies and set up http server
 const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
+ /* MongoClient = require("mongodb").MongoClient;
+  ObjectId = require("mongodb").ObjectID;
 
-/*
-var mongoose = require("mongoose");
-
-var db = mongoose.connect(process.env.MONGODB_URI);
-var Movie = require("./models/update");
-*/
+MongoClient.connect(process.env.MONGODB_URI, function(err, client) {
+    if(err) {
+         console.log('Error occurred while connecting to MongoDB Atlas...\n',err);
+    }
+    console.log('Connected...');
+    const collection = client.db("test").collection("devices");
+    // perform actions on the collection object
+    client.close();
+ });
+ */
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
