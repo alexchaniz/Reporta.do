@@ -257,7 +257,7 @@ function nextStep(sender_psid){
   Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
   
   console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
-  console.log(JSON.stringify(update));
+  //console.log(JSON.stringify(update));
 }
 
   // Sends response messages via the Send API
