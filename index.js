@@ -11,7 +11,6 @@ const
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
-var promise = require('promise');
 mongoose.set('useFindAndModify', false);
 
 //setting option and responses
