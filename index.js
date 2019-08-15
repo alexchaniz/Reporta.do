@@ -257,9 +257,9 @@ update.save(function(){
 
 function nextStep(sender_psid){
   var update = new Update;
-  update = Update.find({sender_id : sender_psid}, function(err, user){
+  update = Update.find({sender_id : sender_psid}, function(err, doc){
   console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
-  console.log(update[0]);
+  console.log(doc);
   });
   /*update[0].step = update[0].step + 1;
   Update.findOneAndUpdate({sender_id : sender_psid}, update[0]);
