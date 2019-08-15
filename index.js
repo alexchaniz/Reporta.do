@@ -245,12 +245,10 @@ var update = new Update({
 
 update.save(function(){
   console.log("creado");
-});
-
-Update.find(function(err,doc){
+}).then(Update.find(function(err,doc){
   console.log("llllllllllllllllllllllllllllllll")
   console.log(doc);
-  });
+  }));
 }
 
 function nextStep(sender_psid){
