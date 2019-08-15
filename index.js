@@ -269,6 +269,7 @@ function nextStep(sender_psid){
     console.log("nexesteeeeeeeped");
     Update.find(function(err,docx){
       console.log(docx);
+    });
   });
   });
   
