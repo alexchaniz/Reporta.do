@@ -11,6 +11,7 @@ const
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
+mongoose.set('useFindAndModify', false);
 
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
 
