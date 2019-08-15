@@ -15,7 +15,7 @@ var d = new Date();
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
 
 var updateSchema = {
-  sender_psid: {type: Number},
+  sender_id: {type: Number},
   step: {type: Number},
   cause: {type: String},
   damages: {type: String},
@@ -236,7 +236,7 @@ function create(sender_psid){
     console.log("removeeeeeeeeeeeeeeeeeeeeeed");
     });
 var update = new Update({
-  sender_psid: sender_psid,
+  sender_id: sender_psid,
   step: 1,
   cause: undefined,
   damages: undefined,
@@ -257,12 +257,12 @@ update.save(function(){
 
 function nextStep(sender_psid){
   var update = new Update;
-  update = Update.find({sender_psid : sender_psid}, function(err, user){
+  update = Update.find({sender_id : sender_psid}, function(err, user){
   console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
-  console.log(update[0].stringify);
+  console.log(update[0]);
   });
   /*update[0].step = update[0].step + 1;
-  Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
+  Update.findOneAndUpdate({sender_id : sender_psid}, update[0]);
   
   console.log(JSON.stringify(update[0]));
   */
