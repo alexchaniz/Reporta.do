@@ -303,7 +303,9 @@ function nextStep(sender_psid){
 function getStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_id : sender_psid})
-  return update.step
+  console.log(update[0].step);
+  
+  return update[0].step
 }
 
   // Sends response messages via the Send API
