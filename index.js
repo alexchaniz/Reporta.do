@@ -228,6 +228,8 @@ function handlePostback(sender_psid, received_postback) {
 }
 
 function create(sender_psid){
+
+  Update.remove({});
 var update = new Update({
   sender_psid: sender_psid,
   step: 1,
@@ -244,15 +246,15 @@ update.save(function(){
 });
 
 Update.find(function(err,doc){
- // console.log(doc);
+  console.log(doc);
   });
 }
 
 function nextStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_psid : sender_psid}, function(err, user){
-    console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
-    console.log(update[0]);
+  console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
+  console.log(update[0]);
   });
   /*update[0].step = update[0].step + 1;
   Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
