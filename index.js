@@ -261,11 +261,11 @@ function nextStep(sender_psid){
   console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
   console.log(doc);
   });
-  /*update[0].step = update[0].step + 1;
-  Update.findOneAndUpdate({sender_id : sender_psid}, update[0]);
-  
-  console.log(JSON.stringify(update[0]));
-  */
+  update[0].step = update[0].step + 1;
+  Update.findOneAndUpdate({sender_id : sender_psid}, update[0],function(err, doc){
+    console.log(doc);
+  }
+  );
 }
 
   // Sends response messages via the Send API
