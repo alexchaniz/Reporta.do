@@ -50,6 +50,7 @@ app.post('/webhook', (req, res) => {
         // Get the sender PSID
         let sender_psid = webhook_event.sender.id;
         console.log(JSON.stringify(webhook_event))
+        
         // Check if the event is a message or postback and
         // pass the event to the appropriate handler function
         if (webhook_event.message) {
@@ -102,6 +103,8 @@ app.get('/webhook', (req, res) => {
 
   // Handles messages events
   function handleMessage(sender_psid, received_message) {
+   
+    if(!received_message.is_echo){
     console.log("Handling message: ");
     let response;
     
@@ -189,6 +192,7 @@ app.get('/webhook', (req, res) => {
     // Sends the response message
     callSendAPI(sender_psid, response);    
   
+}
 }
 
 // Handles messaging_postbacks events
