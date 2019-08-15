@@ -260,12 +260,14 @@ function nextStep(sender_psid){
   update = Update.find({sender_id : sender_psid}, function(err, doc){
   console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
   console.log(doc);
-  });
-  update[0].step = update[0].step + 1;
-  Update.findOneAndUpdate({sender_id : sender_psid}, update[0],function(err, doc){
-    console.log(doc);
+
+  doc[0].step = doc[0].step + 1;
+  Update.findOneAndUpdate({sender_id : sender_psid}, doc[0],function(err, upt){
+    console.log(upt);
   }
   );
+  });
+  
 }
 
   // Sends response messages via the Send API
