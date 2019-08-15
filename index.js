@@ -267,6 +267,8 @@ function nextStep(sender_psid){
 
   Update.findByIdAndUpdate(doc[0]._id, { '$inc': { 'step': 1 }},function(err, upt){
     console.log("nexesteeeeeeeped");
+    console.log(upt);
+    
     Update.find(function(err,docx){
       console.log(docx);
     });
