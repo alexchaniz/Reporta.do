@@ -263,7 +263,7 @@ function nextStep(sender_psid){
   console.log(doc);
 
   doc[0].step = 10;
-  console.log(doc);
+  console.log(doc[0]);
 
   Update.findByIdAndUpdate(doc[0]._id, doc[0],function(err, upt){
     console.log("nexesteeeeeeeped");
