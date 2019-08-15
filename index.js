@@ -250,6 +250,7 @@ update.save(function(){
   console.log(doc);
   });
 });
+}
 
 function nextStep(sender_psid){
   var update = new Update;
