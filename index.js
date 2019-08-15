@@ -205,6 +205,7 @@ function handlePostback(sender_psid, received_postback) {
     response = { "text": "Oops, try sending another image." }
   } else if (payload === "Greeting") {
     create(sender_psid);
+    nextStep();
     response = {
       "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
       "quick_replies":[
@@ -251,12 +252,12 @@ Update.find(function(err,doc){
 function nextStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_psid : sender_psid}, function(err, user){
+    console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
     console.log(update[0]);
   });
-  /*update[0].step = update.step + 1;
+  /*update[0].step = update[0].step + 1;
   Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
   
-  console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
   console.log(JSON.stringify(update[0]));
   */
 }
