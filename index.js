@@ -229,7 +229,9 @@ function handlePostback(sender_psid, received_postback) {
 
 function create(sender_psid){
 
-  Update.remove({});
+  Update.remove(function(err,doc){
+    console.log(doc);
+    });
 var update = new Update({
   sender_psid: sender_psid,
   step: 1,
