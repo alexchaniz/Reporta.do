@@ -234,7 +234,7 @@ function handlePostback(sender_psid, received_postback) {
 function create(sender_psid){
 
   Update.deleteMany({},function(err,doc){
-    console.log(doc);
+    console.log("removeeeeeeeeeeeeeeeeeeeeeed");
     });
 var update = new Update({
   sender_psid: sender_psid,
@@ -250,7 +250,7 @@ var update = new Update({
 update.save(function(){
   console.log("creado");
   Update.find(function(err,doc){
-  console.log("llllllllllllllllllllllllllllllll")
+  console.log("guardadoooooooooooooooo")
   console.log(doc);
   });
 });
@@ -259,7 +259,7 @@ update.save(function(){
 function nextStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_psid : sender_psid}, function(err, user){
-  console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzz")
+  console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
   console.log(update[0]);
   });
   /*update[0].step = update[0].step + 1;
