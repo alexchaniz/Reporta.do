@@ -259,7 +259,7 @@ function nextStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_psid : sender_psid}, function(err, user){
   console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
-  console.log(update[0]);
+  console.log(update[0].stringify);
   });
   /*update[0].step = update[0].step + 1;
   Update.findOneAndUpdate({sender_psid : sender_psid}, update[0]);
