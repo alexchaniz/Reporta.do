@@ -262,7 +262,7 @@ function nextStep(sender_psid){
   console.log(doc);
 
   doc[0].step = doc[0].step + 1;
-  Update.findOneAndUpdate({sender_id : sender_psid}, doc[0],function(err, upt){
+  Update.findByIdAndUpdate(doc[0]._id, doc[0],function(err, upt){
     console.log(upt);
   }
   );
