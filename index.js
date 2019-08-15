@@ -205,7 +205,6 @@ function handlePostback(sender_psid, received_postback) {
     response = { "text": "Oops, try sending another image." }
   } else if (payload === "Greeting") {
     create(sender_psid);
-    nextStep();
     response = {
       "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
       "quick_replies":[
