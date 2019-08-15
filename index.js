@@ -11,7 +11,60 @@ const
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
+var promise = require('promise');
 mongoose.set('useFindAndModify', false);
+
+//setting option and responses
+var cause = ["Terremoto","Huracán","Vaguada","Otro"]
+var causeReply= {
+  "text": "Me podría decir la causa de este",
+  "quick_replies":[
+    {
+      "content_type":"text",
+      "title":"Terremoto",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    },{
+      "content_type":"text",
+      "title":"Huracán",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    },{
+      "content_type":"text",
+      "title":"Vaguada",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    },{
+      "content_type":"text",
+      "title":"Otro",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    }
+  ]
+}
+
+var damages = ["No hubo daños" , "Si, hay gente herida", "Si, gente ha fallecido"]
+var damagesReply = {
+  "text": "¿Hay persons heridas?",
+  "quick_replies":[
+    {
+      "content_type":"text",
+      "title":"No hubo daños",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    },{
+      "content_type":"text",
+      "title":"Si, hay gente herida",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    },{
+      "content_type":"text",
+      "title":"Si, gente ha fallecido",
+      "payload":"<POSTBACK_PAYLOAD>",
+      "image_url":""
+    }
+  ]
+}
 
 mongoose.connect(process.env.MONGODB_URI, {useNewUrlParser: true});
 
@@ -104,7 +157,6 @@ app.get('/webhook', (req, res) => {
 
   // Handles messages events
   function handleMessage(sender_psid, received_message) {
-   
     if(!received_message.is_echo){
     console.log("Handling message: ");
     let response;
@@ -115,39 +167,19 @@ app.get('/webhook', (req, res) => {
       // Create the payload for a basic text message
 
       var msgText=received_message.text;
-      if(msgText == "No"){
+      if((msgText == "No")&&(getStep()==1)){
       response = {
         "text": `Pefecto, estamos a su disposición en caso de que ocurra algo`
       }
-      } else if(msgText== "¡Si!"){
+      } else if((msgText== "¡Si!")){
+        console.log(getStep(sender_psid))
         nextStep(sender_psid);
-        response = {
-          "text": "Me podría decir la causa de este",
-          "quick_replies":[
-            {
-              "content_type":"text",
-              "title":"Terremoto",
-              "payload":"<POSTBACK_PAYLOAD>",
-              "image_url":""
-            },{
-              "content_type":"text",
-              "title":"Huracán",
-              "payload":"<POSTBACK_PAYLOAD>",
-              "image_url":""
-            },{
-              "content_type":"text",
-              "title":"Vaguada",
-              "payload":"<POSTBACK_PAYLOAD>",
-              "image_url":""
-            },{
-              "content_type":"text",
-              "title":"Otro",
-              "payload":"<POSTBACK_PAYLOAD>",
-              "image_url":""
-            }
-          ]
-        }
-      }     
+        response = causeReply;
+
+      }else if(cause.indexOf(msgText > -1)) {
+        nextStep(sender_psid);
+        response = damagesReply;
+      }
     } else if (received_message.attachments) {
 
         if (received_message.attachments[0].type=="image"){
@@ -259,22 +291,20 @@ update.save(function(){
 function nextStep(sender_psid){
   var update = new Update;
   update = Update.find({sender_id : sender_psid}, function(err, doc){
-  console.log("nextsteeeeeeeeeeeeeeeeeeeeeeeep")
-  console.log(doc);
-
-  doc[0].step = 10;
-  console.log(doc[0]);
-
+ 
   Update.findByIdAndUpdate(doc[0]._id, { '$inc': { 'step': 1 }},function(err, upt){
-    console.log("nexesteeeeeeeped");
-    console.log(upt);
-    
+    console.log("nexesteeeeeeeped");   
     Update.find(function(err,docx){
       console.log(docx);
     });
   });
   });
-  
+}
+
+function getStep(sender_psid){
+  var update = new Update;
+  update = Update.find({sender_id : sender_psid})
+  return update.step
 }
 
   // Sends response messages via the Send API
