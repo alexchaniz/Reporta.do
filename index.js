@@ -229,7 +229,7 @@ function handlePostback(sender_psid, received_postback) {
 
 function create(sender_psid){
 
-  Update.deleteMany(function(err,doc){
+  Update.deleteMany({},function(err,doc){
     console.log(doc);
     });
 var update = new Update({
@@ -248,6 +248,7 @@ update.save(function(){
 });
 
 Update.find(function(err,doc){
+  console.log("llllllllllllllllllllllllllllllll")
   console.log(doc);
   });
 }
