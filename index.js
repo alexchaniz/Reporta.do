@@ -307,7 +307,7 @@ function getUpdate(sender_psid){
   return new Promise((resolve, reject) => {
     Update.find({sender_id : sender_psid}).then(
       data => resolve(data),
-      error = reject(error)
+      error => reject(error)
     );
     });
   }
