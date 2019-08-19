@@ -173,7 +173,6 @@ app.get('/webhook', (req, res) => {
 });
 
 
-
 // Handles messages events
 async function handleMessage(sender_psid, received_message) {
   if (!received_message.is_echo) {
@@ -245,6 +244,7 @@ async function handleMessage(sender_psid, received_message) {
 
     }
   }
+}
 
   function step1(sender_psid, msgText) {
     if (msgText == "No") {
@@ -301,8 +301,7 @@ async function handleMessage(sender_psid, received_message) {
       console.log("guardadoooooooooooooooo")
       console.log(doc);
     });
-  }
-
+ }
 
   // Handles messaging_postbacks events
   function handlePostback(sender_psid, received_postback) {
@@ -428,4 +427,3 @@ async function handleMessage(sender_psid, received_message) {
       }
     });
   }
-}
