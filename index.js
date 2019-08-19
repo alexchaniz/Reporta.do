@@ -272,7 +272,7 @@ function create(sender_psid){
     });
 var update = new Update({
   sender_id: sender_psid,
-  step: 1,
+  step: 3,
   cause: undefined,
   damages: undefined,
   date: d.getTime(),
