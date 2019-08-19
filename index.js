@@ -303,16 +303,22 @@ function nextStep(sender_psid){
   });
 }
 
+function getUpdate(sender_psid){
+  return new Promise((resolve, reject=) => {
+    Update.find({sender_id : sender_psid}).then(
+      data => resolve(data),
+      error = reject(error)
+    );
+    });
+  }
+
 function getStep(sender_psid){
-  return new Promise((resolve, reject) => {
-  var update = new Update;
-  Update.find({sender_id : sender_psid}).then(function(err,doc){
-    console.log(doc[0].step);
-    resolve(doc[0].step);
-    reject(err)
-  });
-});
+  var updates = await getUpdate(sender_psid);
+  var step = updates[0].step;
+  console.log(step);
+  return step;
 }
+
   // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
   // Construct the message body
