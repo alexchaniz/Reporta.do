@@ -165,8 +165,11 @@ app.get('/webhook', (req, res) => {
       console.log(received_message.text)
       // Create the payload for a basic text message
 
+      var step = await getStep(sender_psid);
+      console.log(step);
+      
       var msgText=received_message.text;
-      if((msgText == "No")&&(getStep()==1)){
+      if(msgText == "No"){
       response = {
         "text": `Pefecto, estamos a su disposición en caso de que ocurra algo`
       }
@@ -301,13 +304,15 @@ function nextStep(sender_psid){
 }
 
 function getStep(sender_psid){
+  return new Promise((resolve, reject) => {
   var update = new Update;
-  update = Update.find({sender_id : sender_psid})
-  console.log(update[0].step);
-  
-  return update[0].step
+  Update.find({sender_id : sender_psid}).then(function(err,doc){
+    console.log(doc[0].step);
+    resolve(doc[0].step);
+    reject(err)
+  });
+});
 }
-
   // Sends response messages via the Send API
 function callSendAPI(sender_psid, response) {
   // Construct the message body
