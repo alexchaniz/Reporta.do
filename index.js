@@ -236,9 +236,6 @@ async function handleMessage(sender_psid, received_message) {
           "text": `Your location is: lat= "${coordinates.lat}", long = "${coordinates.long}"`
         }
       } else {
-
-      }
-      } else {
         response = {
           "text": `Not a supported messag type`
         }
@@ -265,6 +262,10 @@ function step1(sender_psid, msgText) {
     callSendAPI(sender_psid, aux)
     response = grettingsReply;
   }
+  Update.find(function (err, doc) {
+    console.log("guardadoooooooooooooooo")
+    console.log(doc);
+  });
 }
 
 function step2(sender_psid, msgText) {
@@ -278,6 +279,11 @@ function step2(sender_psid, msgText) {
     callSendAPI(sender_psid, aux)
     response = causeReply;
   }
+
+  Update.find(function (err, doc) {
+    console.log("guardadoooooooooooooooo")
+    console.log(doc);
+  });
 }
 
 function step3(sender_psid, msgText) {
@@ -291,6 +297,11 @@ function step3(sender_psid, msgText) {
     callSendAPI(sender_psid, aux)
     response = damagesReply;
   }
+
+  Update.find(function (err, doc) {
+    console.log("guardadoooooooooooooooo")
+    console.log(doc);
+  });
 }
 
 
