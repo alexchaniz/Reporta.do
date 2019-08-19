@@ -304,7 +304,7 @@ function nextStep(sender_psid){
 }
 
 function getUpdate(sender_psid){
-  return new Promise((resolve, reject=) => {
+  return new Promise((resolve, reject) => {
     Update.find({sender_id : sender_psid}).then(
       data => resolve(data),
       error = reject(error)
@@ -312,7 +312,6 @@ function getUpdate(sender_psid){
     });
   }
 
-  
 async function getStep(sender_psid){
   var updates = await getUpdate(sender_psid);
   var step = updates[0].step;
