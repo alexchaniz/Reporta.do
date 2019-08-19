@@ -237,9 +237,7 @@ async function handleMessage(sender_psid, received_message) {
           var location = [coordinates.lat, coordinates.long];
 
           fillUpdate(sender_psid, "location", location);
-          response = {
-            "text": observationReply
-          }
+          response = observationReply;
         } else {
           response = {
             "text": `Not a supported messag type`
