@@ -185,10 +185,10 @@ async function handleMessage(sender_psid, received_message) {
       console.log(received_message.text)
       // Create the payload for a basic text message
 
-
       var msgText = received_message.text;
       if (step == 1) {
         step1(sender_psid, msgText);
+        console.log("llegaagagagagaggagagagagag");
       } else if (step == 2) {
         step2(sender_psid, msgText)
       } else if (step == 3) {
@@ -239,10 +239,9 @@ async function handleMessage(sender_psid, received_message) {
           }
         }
       }
-      // Sends the response message
-      callSendAPI(sender_psid, response);
-
     }
+          // Sends the response message
+          callSendAPI(sender_psid, response);
   }
 }
 
