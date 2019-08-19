@@ -9,6 +9,7 @@ const
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
 
+var fs = require('fs');
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
