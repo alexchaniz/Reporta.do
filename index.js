@@ -98,6 +98,23 @@ var observationReply = {
   ]
 }
 
+var anotherUpdate = {
+  "text": "Quiere subir la imagen de algún otro daño",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "Si",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "No.",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
+
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
 var updateSchema = {
@@ -109,6 +126,7 @@ var updateSchema = {
   lat: { type: String },
   long: { type: String },
   img: { data: Buffer, contentType: String },
+  observation: { type: String }
 };
 
 var update_schema = new Schema(updateSchema);
@@ -192,13 +210,14 @@ async function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
 
     var step = await getStep(sender_psid);
-
     // Check if the message contains text
     if (received_message.text) {
+
       console.log(received_message.text)
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
+
       if (step == 1) {
         step1(sender_psid, msgText);
         console.log("llegaagagagagaggagagagagag");
@@ -206,6 +225,12 @@ async function handleMessage(sender_psid, received_message) {
         step2(sender_psid, msgText)
       } else if (step == 3) {
         step3(sender_psid, msgText)
+      } else if (step==6){
+        step6(sender_psid,msgText)
+      } else if(step == 7){
+        step7(sender_psid,msgText)
+      } else if(msgText=="borrartodo"){
+        reset();
       }
     } else if (received_message.attachments) {
 
@@ -226,18 +251,19 @@ async function handleMessage(sender_psid, received_message) {
           response = {
             "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
           }
+          nextStep(sender_psid);
         } else{
           console.log("wrong step");
           
         }
       } else if (received_message.attachments[0].type == "location") {
-
         if (step == 5) {
           let coordinates = received_message.attachments[0].payload.coordinates;
           var location = [coordinates.lat, coordinates.long];
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
+          nextStep(sender_psid);
         } else {
           response = {
             "text": `Not a supported messag type`
@@ -295,6 +321,34 @@ async function handleMessage(sender_psid, received_message) {
     }
  }
 
+ function step6(sender_psid,msgText) {
+   fillUpdate(sender_psid, "observation", msgText);
+   response = anotherUpdate;
+ }
+
+ function step7(sender_psid, msgText) {
+   if(msgText=="No.") {
+     response =  {
+      "text": 'Muchas graias por colaborar con el servicio de monitore. Su información nos es muy util'
+    } 
+  }else if (msgText == "Si"){
+
+    var updates = await getUpdate(sender_psid);
+    updates[0].step = 4;
+    updates[0].img = undefined;
+    updates[0].lat = undefined;
+    updates[0].long = undefined;
+    update[0].save(function () {
+      console.log("creado");
+      Update.find(function (err, doc) {
+        console.log("guardadoooooooooooooooo")
+        console.log(doc);
+      });
+    });
+
+    }
+}
+
   // Handles messaging_postbacks events
   function handlePostback(sender_psid, received_postback) {
 
@@ -315,8 +369,13 @@ async function handleMessage(sender_psid, received_message) {
     callSendAPI(sender_psid, response);
   }
 
-  function create(sender_psid) {
+  function reset(){
+    Update.deleteMany({}, function (err, doc) {
+      console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+    });
+  }
 
+  function create(sender_psid) {
     Update.deleteMany({}, function (err, doc) {
       console.log("removeeeeeeeeeeeeeeeeeeeeeed");
     });
@@ -360,6 +419,8 @@ async function handleMessage(sender_psid, received_message) {
         updates[0].lat = value[0];
         updates[0].long = value[1];
         break;
+      case "observation":
+        updates[0].observation = value;
       default:
         updates[0].step = updates[0].step - 1;
         return err;
