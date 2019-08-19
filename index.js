@@ -199,7 +199,6 @@ async function handleMessage(sender_psid, received_message) {
 
       if (received_message.attachments[0].type == "image") {
 
-        if (step == 4)
         // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
         //console.log("the picture is in the link: " + attachment_url)
