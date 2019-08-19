@@ -8,8 +8,8 @@ const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
-  fs = require('fs');
-  var mongoose = require("mongoose");
+
+var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
 mongoose.set('useFindAndModify', false);
