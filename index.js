@@ -86,6 +86,17 @@ var damagesReply = {
   ]
 }
 
+var observationReply = {
+  "text": "Si quiere hacer alguna observación añadalá en el siguiente mensaje",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "No quiero dejar ninguna observación",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
@@ -223,8 +234,11 @@ async function handleMessage(sender_psid, received_message) {
 
         if (step == 5) {
           let coordinates = received_message.attachments[0].payload.coordinates;
+          var location = [coordinates.lat, coordinates.long];
+
+          fillUpdate(sender_psid, "location", location);
           response = {
-            "text": `Your location is: lat= "${coordinates.lat}", long = "${coordinates.long}"`
+            "text": observationReply
           }
         } else {
           response = {
@@ -357,9 +371,10 @@ async function handleMessage(sender_psid, received_message) {
       case "img":
         updates[0].img.data=value;
         updates[0].img.contentType = 'image/png';
+        break;
       case "location":
         updates[0].lat = value[0];
-        updates[0].lat = value[1];
+        updates[0].long = value[1];
         break;
       default:
         updates[0].step = updates[0].step - 1;
