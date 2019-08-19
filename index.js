@@ -9,7 +9,7 @@ const
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
 
-var fs = require('fs');
+var https = require('https');
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
@@ -205,8 +205,13 @@ async function handleMessage(sender_psid, received_message) {
         //console.log("the picture is in the link: " + attachment_url)
         
         if(step==4){
-          var buff = fs.readFileSync(attachment_url);
-          fillUpdate(sender_psid, "img", buff);
+          getImage(attachment_url, function (err, data) {
+            if (err) {
+              throw new Error(err);
+          } else{
+            fillUpdate(sender_psid, "img", data);
+          }
+          });
           response = {
             "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
           }
@@ -392,6 +397,29 @@ async function handleMessage(sender_psid, received_message) {
     console.log("steeeeeeeeeeep " + step);
     return step;
   }
+
+  function getImage(url, callback) {
+    https.get(url, res => {
+        // Initialise an array
+        const bufs = [];
+
+        // Add the data to the buffer collection
+        res.on('data', function (chunk) {
+            bufs.push(chunk)
+        });
+
+        // This signifies the end of a request
+        res.on('end', function () {
+            // We can join all of the 'chunks' of the image together
+            const data = Buffer.concat(bufs);
+
+            // Then we can call our callback.
+            callback(null, data);
+        });
+    })
+    // Inform the callback of the error.
+    .on('error', callback);
+}
 
   // Sends response messages via the Send API
   function callSendAPI(sender_psid, response) {
