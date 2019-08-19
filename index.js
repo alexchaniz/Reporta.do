@@ -265,10 +265,6 @@ async function handleMessage(sender_psid, received_message) {
       callSendAPI(sender_psid, aux)
       response = grettingsReply;
     }
-    Update.find(function (err, doc) {
-      console.log("guardadoooooooooooooooo")
-      console.log(doc);
-    });
   }
 
   function step2(sender_psid, msgText) {
@@ -282,11 +278,6 @@ async function handleMessage(sender_psid, received_message) {
       callSendAPI(sender_psid, aux)
       response = causeReply;
     }
-
-    Update.find(function (err, doc) {
-      console.log("guardadoooooooooooooooo")
-      console.log(doc);
-    });
   }
 
   function step3(sender_psid, msgText) {
@@ -302,11 +293,6 @@ async function handleMessage(sender_psid, received_message) {
       callSendAPI(sender_psid, aux)
       response = damagesReply;
     }
-
-    Update.find(function (err, doc) {
-      console.log("guardadoooooooooooooooo")
-      console.log(doc);
-    });
  }
 
   // Handles messaging_postbacks events
@@ -381,7 +367,13 @@ async function handleMessage(sender_psid, received_message) {
 
     Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
       console.log("field : " + field + "-------saved")
+      Update.find(function (err, doc) {
+        console.log("guardadoooooooooooooooo")
+        console.log(doc);
+      });
     })
+
+
   }
 
   async function nextStep(sender_psid) {
