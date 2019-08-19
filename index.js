@@ -263,7 +263,6 @@ async function handleMessage(sender_psid, received_message) {
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
-          nextStep(sender_psid);
         } else {
           response = {
             "text": `Not a supported messag type`
