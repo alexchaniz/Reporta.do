@@ -194,7 +194,7 @@ async function handleMessage(sender_psid, received_message) {
         step2(sender_psid, msgText)
       } else if (step == 3) {
         step3(sender_psid, msgText)
-    }
+      }
     } else if (received_message.attachments) {
 
       if (received_message.attachments[0].type == "image") {
@@ -229,202 +229,203 @@ async function handleMessage(sender_psid, received_message) {
         }
       } else if (received_message.attachments[0].type == "location") {
 
-        if (step==5){
-        let coordinates = received_message.attachments[0].payload.coordinates;
-        response = {
-          "text": `Your location is: lat= "${coordinates.lat}", long = "${coordinates.long}"`
-        }
-      } else {
-        response = {
-          "text": `Not a supported messag type`
+        if (step == 5) {
+          let coordinates = received_message.attachments[0].payload.coordinates;
+          response = {
+            "text": `Your location is: lat= "${coordinates.lat}", long = "${coordinates.long}"`
+          }
+        } else {
+          response = {
+            "text": `Not a supported messag type`
+          }
         }
       }
-    }
-    // Sends the response message
-    callSendAPI(sender_psid, response);
+      // Sends the response message
+      callSendAPI(sender_psid, response);
 
-  }
-}
-
-function step1(sender_psid, msgText) {
-  if (msgText == "No") {
-    response = {
-      "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
     }
-  } else if (msgText == "¡Si!") {
-    nextStep(sender_psid);
-    response = causeReply;
-  } else {
-    var aux = {
-      "text": 'Utilice los botones para responder'
-    }
-    callSendAPI(sender_psid, aux)
-    response = grettingsReply;
-  }
-  Update.find(function (err, doc) {
-    console.log("guardadoooooooooooooooo")
-    console.log(doc);
-  });
-}
-
-function step2(sender_psid, msgText) {
-  if (cause.indexOf(msgText > -1)) {
-    fillUpdate(sender_psid, "cause", msgText);
-    response = damagesReply;
-  } else {
-    var aux = {
-      "text": 'Utilice los botones para responder'
-    }
-    callSendAPI(sender_psid, aux)
-    response = causeReply;
   }
 
-  Update.find(function (err, doc) {
-    console.log("guardadoooooooooooooooo")
-    console.log(doc);
-  });
-}
-
-function step3(sender_psid, msgText) {
-  if (damages.indexOf(msgText > -1)) {
-    fillUpdate(sender_psid, "damages", msgText);
-    response = damagesReply;
-  } else {
-    var aux = {
-      "text": 'Utilice los botones para responder'
+  function step1(sender_psid, msgText) {
+    if (msgText == "No") {
+      response = {
+        "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
+      }
+    } else if (msgText == "¡Si!") {
+      nextStep(sender_psid);
+      response = causeReply;
+    } else {
+      var aux = {
+        "text": 'Utilice los botones para responder'
+      }
+      callSendAPI(sender_psid, aux)
+      response = grettingsReply;
     }
-    callSendAPI(sender_psid, aux)
-    response = damagesReply;
-  }
-
-  Update.find(function (err, doc) {
-    console.log("guardadoooooooooooooooo")
-    console.log(doc);
-  });
-}
-
-
-// Handles messaging_postbacks events
-function handlePostback(sender_psid, received_postback) {
-
-  // Get the payload for the postback
-  let payload = received_postback.payload;
-
-  // Set the response based on the postback payload
-  if (payload === 'yes') {
-    response = { "text": "Thanks!" }
-  } else if (payload === 'no') {
-    response = { "text": "Oops, try sending another image." }
-  } else if (payload === "Greeting") {
-    create(sender_psid);
-    response = grettingsReply;
-  }
-
-  // Send the message to acknowledge the postback
-  callSendAPI(sender_psid, response);
-}
-
-function create(sender_psid) {
-
-  Update.deleteMany({}, function (err, doc) {
-    console.log("removeeeeeeeeeeeeeeeeeeeeeed");
-  });
-  var update = new Update({
-    sender_id: sender_psid,
-    step: 1,
-    cause: undefined,
-    damages: undefined,
-    date: d.getTime(),
-    lat: undefined,
-    long: undefined,
-    img: undefined
-  });
-
-  update.save(function () {
-    console.log("creado");
     Update.find(function (err, doc) {
       console.log("guardadoooooooooooooooo")
       console.log(doc);
     });
-  });
-}
-
-async function fillUpdate(sender_psid, field, value) {
-  var updates = await getUpdate(sender_psid);
-
-  updates[0].step = updates[0].step + 1;
-
-  switch (field) {
-    case "cause":
-      updates[0].cause = value;
-      break;
-    case "damages":
-      updates[0].damages = value;
-      break;
-    case "location":
-      updates[0].lat = value[0];
-      updates[0].lat = value[1];
-      break;
-      default:
-          updates[0].step = updates[0].step - 1;
-          return err;
   }
 
-  Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) { 
-    console.log("field : " + field + "-------saved")
-  })
-}
-
-async function nextStep(sender_psid) {
-  var updates = await getUpdate(sender_psid);
-
-  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
-    console.log("nexesteeeeeeeped");
-    Update.find(function (err, docx) {
-      console.log(docx);
-    });
-  });
-}
-
-function getUpdate(sender_psid) {
-  return new Promise((resolve, reject) => {
-    Update.find({ sender_id: sender_psid }).then(
-      data => resolve(data),
-      error => reject(error)
-    );
-  });
-}
-
-async function getStep(sender_psid) {
-  var updates = await getUpdate(sender_psid);
-  var step = updates[0].step;
-  console.log("steeeeeeeeeeep " + step);
-  return step;
-}
-
-// Sends response messages via the Send API
-function callSendAPI(sender_psid, response) {
-  // Construct the message body
-  let request_body
-
-  request_body = {
-    "recipient": {
-      "id": sender_psid
-    },
-    "messaging_type": "RESPONSE",
-    "message": response
-  }
-  // Send the HTTP request to the Messenger Platform
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (!err) {
-      console.log('message sent!')
+  function step2(sender_psid, msgText) {
+    if (cause.indexOf(msgText > -1)) {
+      fillUpdate(sender_psid, "cause", msgText);
+      response = damagesReply;
     } else {
-      console.error("Unable to send message:" + err);
+      var aux = {
+        "text": 'Utilice los botones para responder'
+      }
+      callSendAPI(sender_psid, aux)
+      response = causeReply;
     }
-  });
+
+    Update.find(function (err, doc) {
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
+    });
+  }
+
+  function step3(sender_psid, msgText) {
+    if (damages.indexOf(msgText > -1)) {
+      fillUpdate(sender_psid, "damages", msgText);
+      response = damagesReply;
+    } else {
+      var aux = {
+        "text": 'Utilice los botones para responder'
+      }
+      callSendAPI(sender_psid, aux)
+      response = damagesReply;
+    }
+
+    Update.find(function (err, doc) {
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
+    });
+  }
+
+
+  // Handles messaging_postbacks events
+  function handlePostback(sender_psid, received_postback) {
+
+    // Get the payload for the postback
+    let payload = received_postback.payload;
+
+    // Set the response based on the postback payload
+    if (payload === 'yes') {
+      response = { "text": "Thanks!" }
+    } else if (payload === 'no') {
+      response = { "text": "Oops, try sending another image." }
+    } else if (payload === "Greeting") {
+      create(sender_psid);
+      response = grettingsReply;
+    }
+
+    // Send the message to acknowledge the postback
+    callSendAPI(sender_psid, response);
+  }
+
+  function create(sender_psid) {
+
+    Update.deleteMany({}, function (err, doc) {
+      console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+    });
+    var update = new Update({
+      sender_id: sender_psid,
+      step: 1,
+      cause: undefined,
+      damages: undefined,
+      date: d.getTime(),
+      lat: undefined,
+      long: undefined,
+      img: undefined
+    });
+
+    update.save(function () {
+      console.log("creado");
+      Update.find(function (err, doc) {
+        console.log("guardadoooooooooooooooo")
+        console.log(doc);
+      });
+    });
+  }
+
+  async function fillUpdate(sender_psid, field, value) {
+    var updates = await getUpdate(sender_psid);
+
+    updates[0].step = updates[0].step + 1;
+
+    switch (field) {
+      case "cause":
+        updates[0].cause = value;
+        break;
+      case "damages":
+        updates[0].damages = value;
+        break;
+      case "location":
+        updates[0].lat = value[0];
+        updates[0].lat = value[1];
+        break;
+      default:
+        updates[0].step = updates[0].step - 1;
+        return err;
+    }
+
+    Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
+      console.log("field : " + field + "-------saved")
+    })
+  }
+
+  async function nextStep(sender_psid) {
+    var updates = await getUpdate(sender_psid);
+
+    Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+      console.log("nexesteeeeeeeped");
+      Update.find(function (err, docx) {
+        console.log(docx);
+      });
+    });
+  }
+
+  function getUpdate(sender_psid) {
+    return new Promise((resolve, reject) => {
+      Update.find({ sender_id: sender_psid }).then(
+        data => resolve(data),
+        error => reject(error)
+      );
+    });
+  }
+
+  async function getStep(sender_psid) {
+    var updates = await getUpdate(sender_psid);
+    var step = updates[0].step;
+    console.log("steeeeeeeeeeep " + step);
+    return step;
+  }
+
+  // Sends response messages via the Send API
+  function callSendAPI(sender_psid, response) {
+    // Construct the message body
+    let request_body
+
+    request_body = {
+      "recipient": {
+        "id": sender_psid
+      },
+      "messaging_type": "RESPONSE",
+      "message": response
+    }
+    // Send the HTTP request to the Messenger Platform
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (!err) {
+        console.log('message sent!')
+      } else {
+        console.error("Unable to send message:" + err);
+      }
+    });
+  }
 }
