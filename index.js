@@ -326,7 +326,7 @@ async function handleMessage(sender_psid, received_message) {
    response = anotherUpdate;
  }
 
- function step7(sender_psid, msgText) {
+ async function step7(sender_psid, msgText) {
    if(msgText=="No.") {
      response =  {
       "text": 'Muchas graias por colaborar con el servicio de monitore. Su información nos es muy util'
