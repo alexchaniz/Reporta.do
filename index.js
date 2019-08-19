@@ -8,7 +8,8 @@ const
   express = require('express'),
   bodyParser = require('body-parser'),
   app = express().use(bodyParser.json()); // creates express http server
-var mongoose = require("mongoose");
+  fs = require('fs');
+  var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var d = new Date();
 mongoose.set('useFindAndModify', false);
@@ -201,30 +202,16 @@ async function handleMessage(sender_psid, received_message) {
         // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
         //console.log("the picture is in the link: " + attachment_url)
-        response = {
-          "attachment": {
-            "type": "template",
-            "payload": {
-              "template_type": "generic",
-              "elements": [{
-                "title": "Is this the right picture?",
-                "subtitle": "Tap a button to answer.",
-                "image_url": attachment_url,
-                "buttons": [
-                  {
-                    "type": "postback",
-                    "title": "Yes!",
-                    "payload": "yes",
-                  },
-                  {
-                    "type": "postback",
-                    "title": "No!",
-                    "payload": "no",
-                  }
-                ],
-              }]
-            }
+        
+        if(step==4){
+          var buff = fs.readFileSync(attachment_url);
+          fillUpdate(sender_psid, "img", buff);
+          response = {
+            "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
           }
+        } else{
+          console.log("wrong step");
+          
         }
       } else if (received_message.attachments[0].type == "location") {
 
@@ -287,7 +274,9 @@ async function handleMessage(sender_psid, received_message) {
   function step3(sender_psid, msgText) {
     if (damages.indexOf(msgText > -1)) {
       fillUpdate(sender_psid, "damages", msgText);
-      response = damagesReply;
+      response = {
+        "text": 'Envienos una imagen de los daños sufridos'
+      };
     } else {
       var aux = {
         "text": 'Utilice los botones para responder'
@@ -359,6 +348,9 @@ async function handleMessage(sender_psid, received_message) {
       case "damages":
         updates[0].damages = value;
         break;
+      case "img":
+        updates[0].img.data=value;
+        updates[0].img.contentType = 'image/png';
       case "location":
         updates[0].lat = value[0];
         updates[0].lat = value[1];
