@@ -312,6 +312,7 @@ function getUpdate(sender_psid){
     });
   }
 
+  
 async function getStep(sender_psid){
   var updates = await getUpdate(sender_psid);
   var step = updates[0].step;
