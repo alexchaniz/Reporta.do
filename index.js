@@ -251,7 +251,6 @@ async function handleMessage(sender_psid, received_message) {
           response = {
             "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
           }
-          nextStep(sender_psid);
         } else{
           console.log("wrong step");
           
