@@ -218,6 +218,8 @@ async function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
 
     var step = await getStep(sender_psid);
+    console.log("Steeepppppppppppp" + step);
+    
     // Check if the user has been more than without updating
     if (step == -1) {
       //in that case creates another entry
