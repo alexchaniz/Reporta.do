@@ -161,7 +161,7 @@ app.post('/webhook', (req, res) => {
 
       // Get the sender PSID
       let sender_psid = webhook_event.sender.id;
-      console.log(JSON.stringify(webhook_event))
+   //   console.log(JSON.stringify(webhook_event))
 
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
@@ -307,14 +307,12 @@ async function step1(sender_psid, msgText) {
     response = causeReply;
   } else {
     console.log("Correct steeep1");
-    
     var aux = {
       "text": 'Utilice los botones para responder'
     }
     await callSendAPI(sender_psid, aux)
     response = grettingsReply;
     console.log(response);
-    
   }
 }
 
