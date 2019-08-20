@@ -480,11 +480,6 @@ function create(sender_psid) {
 
 async function fillUpdate(sender_psid, field, value) {
 
-  var aux = {
-    "text": 'Su mensaje no ha podido ser procesado correctamente, por favor responda a la pregunta'
-  }
-  callSendAPI(sender_psid, aux);
-
   var updates = await getUpdate(sender_psid);
 
   updates[0].step = updates[0].step + 1;
