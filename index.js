@@ -296,7 +296,7 @@ async function handleMessage(sender_psid, received_message) {
 async function step1(sender_psid, msgText) {
   console.log("Steeeeeeep 1111111111111111");
   
-  if (msgText == "No") {
+  if (msgText == "No") {  
     response = {
       "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
     }
@@ -304,11 +304,15 @@ async function step1(sender_psid, msgText) {
     nextStep(sender_psid);
     response = causeReply;
   } else {
+    console.log("Correct steeep1");
+    
     var aux = {
       "text": 'Utilice los botones para responder'
     }
     await callSendAPI(sender_psid, aux)
     response = grettingsReply;
+    console.log(response);
+    
   }
 }
 
