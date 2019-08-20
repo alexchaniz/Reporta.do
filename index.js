@@ -570,26 +570,21 @@ async function callSendAPI(sender_psid, response) {
     "messaging_type": "RESPONSE",
     "message": response
   }
-  return new Promise((resolve, reject) => {
-    // Send the HTTP request to the Messenger Platform
-    request({
+     // Send the HTTP request to the Messenger Platform
+    return new Promise(function(resolve, reject){
+     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
       "method": "POST",
       "json": request_body
-    }).then(
-      data => resolve(data),
-      error => reject(error)
-    );
-  });
-}
-
-/*
-, (err, res, body) => {
-      if (!err) {
-        console.log('message sent!')
+    }, (err, res, body) => {
+      if (err) {
+        console.log('error sending' + err);
+        return reject(err);
       } else {
-        console.error("Unable to send message:" + err);
+        console.error("Message sent");
+        resolve(body)
       }
-    }
-    */
+    })
+    });
+}
