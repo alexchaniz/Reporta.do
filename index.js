@@ -302,6 +302,7 @@ async function handleMessage(sender_psid, received_message) {
     } else{
     await callSendAPI(sender_psid, response);
     }
+    aux=0;
   }
 }
 
