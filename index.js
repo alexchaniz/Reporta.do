@@ -320,14 +320,8 @@ async function step1(sender_psid, msgText) {
   } else {
     console.log("Correct steeep1");
     response = grettingsReply;
-    var aux = {
-      "text": 'Utilice los botones para responder'
-    }
-    var x = 0;
-    await callSendAPI(sender_psid, aux).then(function() {
-      x=1;
-    });
-
+    aux=1
+    
     while(x==0){}
 
     console.log(response);
