@@ -296,7 +296,9 @@ async function handleMessage(sender_psid, received_message) {
 async function step1(sender_psid, msgText) {
   console.log("Steeeeeeep 1111111111111111");
   
-  if (msgText == "No") {  
+  if (msgText == "No") {
+    console.log(llglggliugytxsrersdfjgyukihjlbyrvctedfhgunmk);
+      
     response = {
       "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
     }
