@@ -218,8 +218,14 @@ async function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
 
     var step = await getStep(sender_psid);
-    // Check if the message contains text
-    if (received_message.text) {
+    // Check if the user has been more than without updating
+    if (step == -1) {
+      //in that case creates another entry
+      create(sender_psid);
+      response = grettingsReply;
+
+      // Check if the message contains text
+    } else if (received_message.text) {
 
       console.log(received_message.text)
       // Create the payload for a basic text message
@@ -344,13 +350,23 @@ async function step7(sender_psid, msgText) {
     updates[0].img = undefined;
     updates[0].lat = undefined;
     updates[0].long = undefined;
-    update[0].save(function () {
+    updates[0].save(function () {
       console.log("creado");
       Update.find(function (err, doc) {
         console.log("guardadoooooooooooooooo")
         console.log(doc);
       });
     });
+    response = {
+      "text" : 'Suba una nueva imagen';
+    }
+    nextStep(sender_psid);
+  } else {
+    var aux = {
+      "text": 'Utilice los botones para responder'
+    }
+    await callSendAPI(sender_psid, aux)
+    response= anotherUpdateReply;
   }
 }
 
@@ -380,7 +396,6 @@ async function correctDemand(sender_psid) {
       response = anotherUpdateReply;
       break;
     default:
-      updates[0].step = updates[0].step - 1;
       return err;
   }
 }
@@ -392,17 +407,15 @@ async function handlePostback(sender_psid, received_postback) {
   let payload = received_postback.payload;
 
   // Set the response based on the postback payload
-  if (payload === 'yes') {
-    response = { "text": "Thanks!" }
-  } else if (payload === 'no') {
-    response = { "text": "Oops, try sending another image." }
-  } else if (payload === "Greeting") {
+  if (payload === "Greeting") {
     create(sender_psid);
     response = grettingsReply;
-  }
 
-  // Send the message to acknowledge the postback
-  await callSendAPI(sender_psid, response);
+    // Send the message to acknowledge the postback
+    await callSendAPI(sender_psid, response);
+  } else {
+    correctDemand(sender_psid);
+  }
 }
 
 function reset() {
@@ -436,6 +449,12 @@ function create(sender_psid) {
 }
 
 async function fillUpdate(sender_psid, field, value) {
+
+  var aux = {
+    "text": 'Su mensaje no ha podido ser procesado correctamente, por favor responda a la pregunta'
+  }
+  callSendAPI(sender_psid, aux);
+
   var updates = await getUpdate(sender_psid);
 
   updates[0].step = updates[0].step + 1;
@@ -493,6 +512,11 @@ function getUpdate(sender_psid) {
 
 async function getStep(sender_psid) {
   var updates = await getUpdate(sender_psid);
+  if ((updates[0].step == 8)||(d.getTime() - updates[0].date > 604000000)){
+    //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
+    if(updates[0].step <6) updates[0].remove();
+    return -1;
+  } 
   var step = updates[0].step;
   console.log("steeeeeeeeeeep " + step);
   return step;
