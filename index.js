@@ -357,7 +357,7 @@ async function step7(sender_psid, msgText) {
       });
     });
     response = {
-      "text" : 'Suba una nueva imagen';
+      "text" : 'Suba una nueva imagen'
     }
     nextStep(sender_psid);
   } else {
