@@ -296,7 +296,7 @@ async function handleMessage(sender_psid, received_message) {
     }
     // Sends the response message
     if (aux==1) {
-      await callSendAPI(sender_psid, responseAux, async function(err, data){
+      await callSendAPI(sender_psid, responseAux).then(function(err, data){
         await callSendAPI(sender_psid,response);
       })
     } else{
@@ -575,7 +575,7 @@ function getImage(url, callback) {
 }
 
 // Sends response messages via the Send API
-async function callSendAPI(sender_psid, response) {
+function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
 
@@ -587,7 +587,6 @@ async function callSendAPI(sender_psid, response) {
     "message": response
   }
      // Send the HTTP request to the Messenger Platform
-    return new Promise(function(resolve, reject){
      request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
@@ -596,11 +595,8 @@ async function callSendAPI(sender_psid, response) {
     }, (err, res, body) => {
       if (err) {
         console.log('error sending' + err);
-        return reject(err);
       } else {
         console.error("Message sent");
-        resolve(body)
       }
-    })
     });
 }
