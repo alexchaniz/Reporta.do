@@ -296,7 +296,7 @@ async function handleMessage(sender_psid, received_message) {
     }
     // Sends the response message
     if (aux==1) {
-      await callSendAPI(sender_psid, responseAux, function(err, data){
+      await callSendAPI(sender_psid, responseAux, async function(err, data){
         await callSendAPI(sender_psid,response);
       })
     } else{
