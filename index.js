@@ -577,15 +577,19 @@ async function callSendAPI(sender_psid, response) {
       "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
       "method": "POST",
       "json": request_body
-    }, (err, res, body) => {
-      if (!err) {
-        console.log('message sent!')
-      } else {
-        console.error("Unable to send message:" + err);
-      }
     }).then(
       data => resolve(data),
       error => reject(error)
     );
   });
 }
+
+/*
+, (err, res, body) => {
+      if (!err) {
+        console.log('message sent!')
+      } else {
+        console.error("Unable to send message:" + err);
+      }
+    }
+    */
