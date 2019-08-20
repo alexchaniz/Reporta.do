@@ -16,6 +16,10 @@ var d = new Date();
 mongoose.set('useFindAndModify', false);
 
 var response;
+var responseAux = {
+  "text": 'Utilice los botones para responder'
+}
+var aux = 0;
 
 //setting option and responses
 var grettingsReply = {
@@ -291,7 +295,13 @@ async function handleMessage(sender_psid, received_message) {
       }
     }
     // Sends the response message
+    if (aux==1) {
+      await callSendAPI(sender_psid, responseAux).then(() =>{
+        await callSendAPI(sender_psid,response);
+      })
+    } else{
     await callSendAPI(sender_psid, response);
+    }
   }
 }
 
