@@ -107,7 +107,7 @@ var observationReply = {
 }
 
 var anotherUpdateReply = {
-  "text": "Quiere subir la imagen de algún otro daño",
+  "text": "Quiere subir otra imagen de la zona",
   "quick_replies": [
     {
       "content_type": "text",
@@ -234,7 +234,6 @@ async function handleMessage(sender_psid, received_message) {
 
       if (step == 1) {
         step1(sender_psid, msgText);
-        console.log("llegaagagagagaggagagagagag");
       } else if (step == 2) {
         step2(sender_psid, msgText)
       } else if (step == 3) {
@@ -374,6 +373,10 @@ async function correctDemand(sender_psid) {
   var step = getStep(sender_psid)
 
   switch (step) {
+    case -1:
+      create(sender_psid);
+      response=grettingsReply;
+      break;
     case 1:
       response = grettingsReply;
       break;
@@ -512,7 +515,7 @@ function getUpdate(sender_psid) {
 
 async function getStep(sender_psid) {
   var updates = await getUpdate(sender_psid);
-  if ((updates[0].step == 8)||(d.getTime() - updates[0].date > 604000000)){
+  if ((!updates.length)||(updates[0].step == 8)||(d.getTime() - updates[0].date > 604000000)){
     //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
     if(updates[0].step <6) updates[0].remove();
     return -1;
