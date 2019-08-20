@@ -321,38 +321,28 @@ async function step1(sender_psid, msgText) {
   } else {
     console.log("Correct steeep1");
     response = grettingsReply;
-    aux=1
-    
-    while(x==0){}
-
-    console.log(response);
+    aux=1;
   }
 }
 
 async function step2(sender_psid, msgText) {
   console.log("Steeeeeeep 22222222222222222222222");
-  if (cause.indexOf(msgText > -1)) {
+  if (cause.includes(msgText)) {
     fillUpdate(sender_psid, "cause", msgText);
     response = damagesReply;
   } else {
-    var aux = {
-      "text": 'Utilice los botones para responder'
-    }
-    await callSendAPI(sender_psid, aux)
+    aux=1;
     response = causeReply;
   }
 }
 
 async function step3(sender_psid, msgText) {
   console.log("Steeeeeeep 333333333333333333");
-  if (damages.indexOf(msgText > -1)) {
+  if (damages.includes(msgText)) {
     fillUpdate(sender_psid, "damages", msgText);
     response = imageReply;
   } else {
-    var aux = {
-      "text": 'Utilice los botones para responder'
-    }
-    await callSendAPI(sender_psid, aux)
+    aux=1;
     response = damagesReply;
   }
 }
@@ -388,10 +378,7 @@ async function step7(sender_psid, msgText) {
     }
     nextStep(sender_psid);
   } else {
-    var aux = {
-      "text": 'Utilice los botones para responder'
-    }
-    await callSendAPI(sender_psid, aux)
+    aux=1
     response= anotherUpdateReply;
   }
 }
