@@ -227,6 +227,8 @@ async function handleMessage(sender_psid, received_message) {
       // Check if the message contains text
     } else if (received_message.text) {
 
+      console.log("Teeeeeeeeeeeeeeext");
+      
       console.log(received_message.text)
       // Create the payload for a basic text message
 
@@ -256,6 +258,7 @@ async function handleMessage(sender_psid, received_message) {
         //console.log("the picture is in the link: " + attachment_url)
 
         if (step == 4) {
+          console.log("Steeeeeeep 4444444444444444444");
           getImage(attachment_url, function (err, data) {
             if (err) {
               throw new Error(err);
@@ -272,6 +275,7 @@ async function handleMessage(sender_psid, received_message) {
         }
       } else if (received_message.attachments[0].type == "location") {
         if (step == 5) {
+          console.log("Steeeeeeep 55555555555555");
           let coordinates = received_message.attachments[0].payload.coordinates;
           var location = [coordinates.lat, coordinates.long];
 
@@ -290,6 +294,8 @@ async function handleMessage(sender_psid, received_message) {
 }
 
 async function step1(sender_psid, msgText) {
+  console.log("Steeeeeeep 1111111111111111");
+  
   if (msgText == "No") {
     response = {
       "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
@@ -307,6 +313,7 @@ async function step1(sender_psid, msgText) {
 }
 
 async function step2(sender_psid, msgText) {
+  console.log("Steeeeeeep 22222222222222222222222");
   if (cause.indexOf(msgText > -1)) {
     fillUpdate(sender_psid, "cause", msgText);
     response = damagesReply;
@@ -320,6 +327,7 @@ async function step2(sender_psid, msgText) {
 }
 
 async function step3(sender_psid, msgText) {
+  console.log("Steeeeeeep 333333333333333333");
   if (damages.indexOf(msgText > -1)) {
     fillUpdate(sender_psid, "damages", msgText);
     response = imageReply;
@@ -333,11 +341,13 @@ async function step3(sender_psid, msgText) {
 }
 
 async function step6(sender_psid, msgText) {
+  console.log("Steeeeeeep 66666666666666");
   fillUpdate(sender_psid, "observation", msgText);
   response = anotherUpdate;
 }
 
 async function step7(sender_psid, msgText) {
+  console.log("Steeeeeeep 77777777777777");
   if (msgText == "No.") {
     response = {
       "text": 'Muchas graias por colaborar con el servicio de monitore. Su información nos es muy util'
