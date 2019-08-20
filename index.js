@@ -296,11 +296,11 @@ async function handleMessage(sender_psid, received_message) {
     }
     // Sends the response message
     if (aux==1) {
-      await callSendAPI(sender_psid, responseAux).then(function(err, data){
-        await callSendAPI(sender_psid,response);
+      callSendAPI(sender_psid, responseAux).then(function(err, data){
+        callSendAPI(sender_psid,response);
       })
     } else{
-    await callSendAPI(sender_psid, response);
+    callSendAPI(sender_psid, response);
     }
   }
 }
