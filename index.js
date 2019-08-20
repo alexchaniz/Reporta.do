@@ -356,7 +356,7 @@ async function step3(sender_psid, msgText) {
 async function step6(sender_psid, msgText) {
   console.log("Steeeeeeep 66666666666666");
   fillUpdate(sender_psid, "observation", msgText);
-  response = anotherUpdate;
+  response = anotherUpdateReply;
 }
 
 async function step7(sender_psid, msgText) {
