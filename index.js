@@ -86,6 +86,14 @@ var damagesReply = {
   ]
 }
 
+var imageReply = {
+  "text": 'Envienos una imagen de los daños sufridos'
+}
+
+var locationReply = {
+  "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
+}
+
 var observationReply = {
   "text": "Si quiere hacer alguna observación añadalá en el siguiente mensaje",
   "quick_replies": [
@@ -98,7 +106,7 @@ var observationReply = {
   ]
 }
 
-var anotherUpdate = {
+var anotherUpdateReply = {
   "text": "Quiere subir la imagen de algún otro daño",
   "quick_replies": [
     {
@@ -225,12 +233,14 @@ async function handleMessage(sender_psid, received_message) {
         step2(sender_psid, msgText)
       } else if (step == 3) {
         step3(sender_psid, msgText)
-      } else if (step==6){
-        step6(sender_psid,msgText)
-      } else if(step == 7){
-        step7(sender_psid,msgText)
-      } else if(msgText=="borrartodo"){
+      } else if (step == 6) {
+        step6(sender_psid, msgText)
+      } else if (step == 7) {
+        step7(sender_psid, msgText)
+      } else if (msgText == "borrartodo") {
         reset();
+      } else {
+        correctDemand(sender_psid);
       }
     } else if (received_message.attachments) {
 
@@ -239,21 +249,21 @@ async function handleMessage(sender_psid, received_message) {
         // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
         //console.log("the picture is in the link: " + attachment_url)
-        
-        if(step==4){
+
+        if (step == 4) {
           getImage(attachment_url, function (err, data) {
             if (err) {
               throw new Error(err);
-          } else{
-            fillUpdate(sender_psid, "img", data);
-          }
+            } else {
+              fillUpdate(sender_psid, "img", data);
+            }
           });
           response = {
             "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
           }
-        } else{
+        } else {
           console.log("wrong step");
-          
+          correctDemand(sender_psid);
         }
       } else if (received_message.attachments[0].type == "location") {
         if (step == 5) {
@@ -263,73 +273,71 @@ async function handleMessage(sender_psid, received_message) {
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
         } else {
-          response = {
-            "text": `Not a supported messag type`
-          }
+          correctDemand(sender_psid);
         }
+      } else {
+        correctDemand(sender_psid);
       }
     }
-          // Sends the response message
-          callSendAPI(sender_psid, response);
+    // Sends the response message
+    await callSendAPI(sender_psid, response);
   }
 }
 
-  function step1(sender_psid, msgText) {
-    if (msgText == "No") {
-      response = {
-        "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
-      }
-    } else if (msgText == "¡Si!") {
-      nextStep(sender_psid);
-      response = causeReply;
-    } else {
-      var aux = {
-        "text": 'Utilice los botones para responder'
-      }
-      callSendAPI(sender_psid, aux)
-      response = grettingsReply;
+function step1(sender_psid, msgText) {
+  if (msgText == "No") {
+    response = {
+      "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
     }
+  } else if (msgText == "¡Si!") {
+    nextStep(sender_psid);
+    response = causeReply;
+  } else {
+    var aux = {
+      "text": 'Utilice los botones para responder'
+    }
+    await callSendAPI(sender_psid, aux)
+    response = grettingsReply;
   }
+}
 
-  function step2(sender_psid, msgText) {
-    if (cause.indexOf(msgText > -1)) {
-      fillUpdate(sender_psid, "cause", msgText);
-      response = damagesReply;
-    } else {
-      var aux = {
-        "text": 'Utilice los botones para responder'
-      }
-      callSendAPI(sender_psid, aux)
-      response = causeReply;
+function step2(sender_psid, msgText) {
+  if (cause.indexOf(msgText > -1)) {
+    fillUpdate(sender_psid, "cause", msgText);
+    response = damagesReply;
+  } else {
+    var aux = {
+      "text": 'Utilice los botones para responder'
     }
+    await callSendAPI(sender_psid, aux)
+    response = causeReply;
   }
+}
 
-  function step3(sender_psid, msgText) {
-    if (damages.indexOf(msgText > -1)) {
-      fillUpdate(sender_psid, "damages", msgText);
-      response = {
-        "text": 'Envienos una imagen de los daños sufridos'
-      };
-    } else {
-      var aux = {
-        "text": 'Utilice los botones para responder'
-      }
-      callSendAPI(sender_psid, aux)
-      response = damagesReply;
+function step3(sender_psid, msgText) {
+  if (damages.indexOf(msgText > -1)) {
+    fillUpdate(sender_psid, "damages", msgText);
+    response = imageReply;
+  } else {
+    var aux = {
+      "text": 'Utilice los botones para responder'
     }
- }
+    await callSendAPI(sender_psid, aux)
+    response = damagesReply;
+  }
+}
 
- function step6(sender_psid,msgText) {
-   fillUpdate(sender_psid, "observation", msgText);
-   response = anotherUpdate;
- }
+function step6(sender_psid, msgText) {
+  fillUpdate(sender_psid, "observation", msgText);
+  response = anotherUpdate;
+}
 
- async function step7(sender_psid, msgText) {
-   if(msgText=="No.") {
-     response =  {
+async function step7(sender_psid, msgText) {
+  if (msgText == "No.") {
+    response = {
       "text": 'Muchas graias por colaborar con el servicio de monitore. Su información nos es muy util'
-    } 
-  }else if (msgText == "Si"){
+    }
+  } else if (msgText == "Si") {
 
     var updates = await getUpdate(sender_psid);
     updates[0].step = 4;
@@ -343,160 +351,189 @@ async function handleMessage(sender_psid, received_message) {
         console.log(doc);
       });
     });
-
-    }
+  }
 }
 
-  // Handles messaging_postbacks events
-  function handlePostback(sender_psid, received_postback) {
+async function correctDemand(sender_psid) {
+  var step = getStep(sender_psid)
 
-    // Get the payload for the postback
-    let payload = received_postback.payload;
-
-    // Set the response based on the postback payload
-    if (payload === 'yes') {
-      response = { "text": "Thanks!" }
-    } else if (payload === 'no') {
-      response = { "text": "Oops, try sending another image." }
-    } else if (payload === "Greeting") {
-      create(sender_psid);
+  switch (step) {
+    case 1:
       response = grettingsReply;
-    }
+      break;
+    case 2:
+      response = causeReply;
+      break;
+    case 3:
+      response = damagesReply;
+      break;
+    case 4:
+      response = imageReply;
+      break;
+    case 5:
+      response = locationReply;
+      break;
+    case 6:
+      response = observationReply;
+      break;
+    case 7:
+      response = anotherUpdateReply;
+      break;
+    default:
+      updates[0].step = updates[0].step - 1;
+      return err;
+  }
+}
 
-    // Send the message to acknowledge the postback
-    callSendAPI(sender_psid, response);
+// Handles messaging_postbacks events
+function handlePostback(sender_psid, received_postback) {
+
+  // Get the payload for the postback
+  let payload = received_postback.payload;
+
+  // Set the response based on the postback payload
+  if (payload === 'yes') {
+    response = { "text": "Thanks!" }
+  } else if (payload === 'no') {
+    response = { "text": "Oops, try sending another image." }
+  } else if (payload === "Greeting") {
+    create(sender_psid);
+    response = grettingsReply;
   }
 
-  function reset(){
-    Update.deleteMany({}, function (err, doc) {
-      console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+  // Send the message to acknowledge the postback
+  await callSendAPI(sender_psid, response);
+}
+
+function reset() {
+  Update.deleteMany({}, function (err, doc) {
+    console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+  });
+}
+
+function create(sender_psid) {
+  Update.deleteMany({}, function (err, doc) {
+    console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+  });
+  var update = new Update({
+    sender_id: sender_psid,
+    step: 1,
+    cause: undefined,
+    damages: undefined,
+    date: d.getTime(),
+    lat: undefined,
+    long: undefined,
+    img: undefined
+  });
+
+  update.save(function () {
+    console.log("creado");
+    Update.find(function (err, doc) {
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
     });
+  });
+}
+
+async function fillUpdate(sender_psid, field, value) {
+  var updates = await getUpdate(sender_psid);
+
+  updates[0].step = updates[0].step + 1;
+
+  switch (field) {
+    case "cause":
+      updates[0].cause = value;
+      break;
+    case "damages":
+      updates[0].damages = value;
+      break;
+    case "img":
+      updates[0].img.data = value;
+      updates[0].img.contentType = 'image/png';
+      break;
+    case "location":
+      updates[0].lat = value[0];
+      updates[0].long = value[1];
+      break;
+    case "observation":
+      updates[0].observation = value;
+    default:
+      updates[0].step = updates[0].step - 1;
+      return err;
   }
 
-  function create(sender_psid) {
-    Update.deleteMany({}, function (err, doc) {
-      console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+  Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
+    console.log("field : " + field + "-------saved")
+    Update.find(function (err, doc) {
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
     });
-    var update = new Update({
-      sender_id: sender_psid,
-      step: 1,
-      cause: undefined,
-      damages: undefined,
-      date: d.getTime(),
-      lat: undefined,
-      long: undefined,
-      img: undefined
+  })
+}
+
+async function nextStep(sender_psid) {
+  var updates = await getUpdate(sender_psid);
+
+  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+    console.log("nexesteeeeeeeped");
+    Update.find(function (err, docx) {
+      console.log(docx);
+    });
+  });
+}
+
+function getUpdate(sender_psid) {
+  return new Promise((resolve, reject) => {
+    Update.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
+      data => resolve(data),
+      error => reject(error)
+    );
+  });
+}
+
+async function getStep(sender_psid) {
+  var updates = await getUpdate(sender_psid);
+  var step = updates[0].step;
+  console.log("steeeeeeeeeeep " + step);
+  return step;
+}
+
+function getImage(url, callback) {
+  https.get(url, res => {
+    // Initialise an array
+    const bufs = [];
+
+    // Add the data to the buffer collection
+    res.on('data', function (chunk) {
+      bufs.push(chunk)
     });
 
-    update.save(function () {
-      console.log("creado");
-      Update.find(function (err, doc) {
-        console.log("guardadoooooooooooooooo")
-        console.log(doc);
-      });
+    // This signifies the end of a request
+    res.on('end', function () {
+      // We can join all of the 'chunks' of the image together
+      const data = Buffer.concat(bufs);
+
+      // Then we can call our callback.
+      callback(null, data);
     });
-  }
-
-  async function fillUpdate(sender_psid, field, value) {
-    var updates = await getUpdate(sender_psid);
-
-    updates[0].step = updates[0].step + 1;
-
-    switch (field) {
-      case "cause":
-        updates[0].cause = value;
-        break;
-      case "damages":
-        updates[0].damages = value;
-        break;
-      case "img":
-        updates[0].img.data=value;
-        updates[0].img.contentType = 'image/png';
-        break;
-      case "location":
-        updates[0].lat = value[0];
-        updates[0].long = value[1];
-        break;
-      case "observation":
-        updates[0].observation = value;
-      default:
-        updates[0].step = updates[0].step - 1;
-        return err;
-    }
-
-    Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
-      console.log("field : " + field + "-------saved")
-      Update.find(function (err, doc) {
-        console.log("guardadoooooooooooooooo")
-        console.log(doc);
-      });
-    })
-
-
-  }
-
-  async function nextStep(sender_psid) {
-    var updates = await getUpdate(sender_psid);
-
-    Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
-      console.log("nexesteeeeeeeped");
-      Update.find(function (err, docx) {
-        console.log(docx);
-      });
-    });
-  }
-
-  function getUpdate(sender_psid) {
-    return new Promise((resolve, reject) => {
-      Update.find({ sender_id: sender_psid }).then(
-        data => resolve(data),
-        error => reject(error)
-      );
-    });
-  }
-
-  async function getStep(sender_psid) {
-    var updates = await getUpdate(sender_psid);
-    var step = updates[0].step;
-    console.log("steeeeeeeeeeep " + step);
-    return step;
-  }
-
-  function getImage(url, callback) {
-    https.get(url, res => {
-        // Initialise an array
-        const bufs = [];
-
-        // Add the data to the buffer collection
-        res.on('data', function (chunk) {
-            bufs.push(chunk)
-        });
-
-        // This signifies the end of a request
-        res.on('end', function () {
-            // We can join all of the 'chunks' of the image together
-            const data = Buffer.concat(bufs);
-
-            // Then we can call our callback.
-            callback(null, data);
-        });
-    })
+  })
     // Inform the callback of the error.
     .on('error', callback);
 }
 
-  // Sends response messages via the Send API
-  function callSendAPI(sender_psid, response) {
-    // Construct the message body
-    let request_body
+// Sends response messages via the Send API
+async function callSendAPI(sender_psid, response) {
+  // Construct the message body
+  let request_body
 
-    request_body = {
-      "recipient": {
-        "id": sender_psid
-      },
-      "messaging_type": "RESPONSE",
-      "message": response
-    }
+  request_body = {
+    "recipient": {
+      "id": sender_psid
+    },
+    "messaging_type": "RESPONSE",
+    "message": response
+  }
+  return new Promise((resolve, reject) => {
     // Send the HTTP request to the Messenger Platform
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
@@ -509,5 +546,9 @@ async function handleMessage(sender_psid, received_message) {
       } else {
         console.error("Unable to send message:" + err);
       }
-    });
-  }
+    }).then(
+      data => resolve(data),
+      error => reject(error)
+    );
+  });
+}
