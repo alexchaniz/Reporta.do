@@ -284,7 +284,7 @@ async function handleMessage(sender_psid, received_message) {
   }
 }
 
-function step1(sender_psid, msgText) {
+async function step1(sender_psid, msgText) {
   if (msgText == "No") {
     response = {
       "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
@@ -301,7 +301,7 @@ function step1(sender_psid, msgText) {
   }
 }
 
-function step2(sender_psid, msgText) {
+async function step2(sender_psid, msgText) {
   if (cause.indexOf(msgText > -1)) {
     fillUpdate(sender_psid, "cause", msgText);
     response = damagesReply;
@@ -314,7 +314,7 @@ function step2(sender_psid, msgText) {
   }
 }
 
-function step3(sender_psid, msgText) {
+async function step3(sender_psid, msgText) {
   if (damages.indexOf(msgText > -1)) {
     fillUpdate(sender_psid, "damages", msgText);
     response = imageReply;
@@ -327,12 +327,12 @@ function step3(sender_psid, msgText) {
   }
 }
 
-function step6(sender_psid, msgText) {
+async function step6(sender_psid, msgText) {
   fillUpdate(sender_psid, "observation", msgText);
   response = anotherUpdate;
 }
 
-async function step7(sender_psid, msgText) {
+async async function step7(sender_psid, msgText) {
   if (msgText == "No.") {
     response = {
       "text": 'Muchas graias por colaborar con el servicio de monitore. Su información nos es muy util'
