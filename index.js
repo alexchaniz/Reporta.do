@@ -328,11 +328,17 @@ async function step1(sender_psid, msgText) {
 async function step2(sender_psid, msgText) {
   console.log("Steeeeeeep 22222222222222222222222");
   if (cause.includes(msgText)) {
+    if(msgText="otro"){
+      response = {
+        "text": 'Escriba la causa del problema'
+      }
+    }else {
     fillUpdate(sender_psid, "cause", msgText);
     response = damagesReply;
+    }
   } else {
-    aux=1;
-    response = causeReply;
+    fillUpdate(sender_psid, "cause", msgText);
+    response = damagesReply;
   }
 }
 
@@ -488,6 +494,7 @@ async function fillUpdate(sender_psid, field, value) {
       break;
     case "observation":
       updates[0].observation = value;
+      break;
     default:
       updates[0].step = updates[0].step - 1;
       return err;
