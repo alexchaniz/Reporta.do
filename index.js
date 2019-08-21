@@ -385,6 +385,8 @@ async function step7(sender_psid, msgText) {
     response = {
       "text" : 'Suba una nueva imagen'
     }
+    console.log(response);
+    
     nextStep(sender_psid);
   } else {
     aux=1
@@ -540,7 +542,7 @@ async function getStep(sender_psid) {
     //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
     if(updates[0].step <6) updates[0].remove();
     return -1;
-  } 
+  }
   var step = updates[0].step;
   console.log("steeeeeeeeeeep " + step);
   return step;
