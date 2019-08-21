@@ -369,7 +369,9 @@ async function step7(sender_psid, msgText) {
   } else if (msgText == "Si") {
 
     console.log("Step 7 siiiiiiii");
-    
+    response = {
+      "text" : 'Suba una nueva imagen'
+    }
     var updates = await getUpdate(sender_psid);
     var newUpdate = new Update;
     newUpdate.step = 4;
@@ -383,9 +385,7 @@ async function step7(sender_psid, msgText) {
         console.log(doc);
       });*/
     });
-    response = {
-      "text" : 'Suba una nueva imagen'
-    }
+    
     console.log(response);
     
     nextStep(sender_psid);
