@@ -373,7 +373,7 @@ async function step7(sender_psid, msgText) {
     var newUpdate = new Update;
     newUpdate.step = 4;
     newUpdate.sender_id = updates[0].sender_id;
-    newUpdate.date = updates[0].date;
+    newUpdate.date = d.getDate();
     newUpdate.damages = updates[0].damages;
     newUpdate.save(function () {
       console.log("creado");
