@@ -222,7 +222,7 @@ async function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
 
     var step = await getStep(sender_psid);
-    console.log("Steeepppppppppppp" + step);
+    console.log("Getsteeeeeeeep" + step);
     
     // Check if the user has been more than without updating
     if (step == -1) {
@@ -368,11 +368,12 @@ async function step7(sender_psid, msgText) {
   } else if (msgText == "Si") {
 
     var updates = await getUpdate(sender_psid);
-    updates[0].step = 4;
-    updates[0].img = undefined;
-    updates[0].lat = undefined;
-    updates[0].long = undefined;
-    updates[0].save(function () {
+    var newUpdate = new Update;
+    newUpdate.step = 4;
+    newUpdate.sender_id = updates[0].sender_id;
+    newUpdate.date = updates[0].date;
+    newUpdate.damages = updates[0].damages;
+    newUpdate.save(function () {
       console.log("creado");
       Update.find(function (err, doc) {
         console.log("guardadoooooooooooooooo")
@@ -419,7 +420,7 @@ async function correctDemand(sender_psid) {
       response = anotherUpdateReply;
       break;
     default:
-      return err;
+      return "Step" + err;
   }
 }
 
@@ -437,7 +438,9 @@ async function handlePostback(sender_psid, received_postback) {
     // Send the message to acknowledge the postback
     await callSendAPI(sender_psid, response);
   } else {
-    correctDemand(sender_psid);
+    correctDemand(sender_psid, function(err, dat){
+      if(err) console.log();
+    });
   }
 }
 
