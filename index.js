@@ -367,6 +367,8 @@ async function step7(sender_psid, msgText) {
     }
   } else if (msgText == "Si") {
 
+    console.log("Step 7 siiiiiiii");
+    
     var updates = await getUpdate(sender_psid);
     var newUpdate = new Update;
     newUpdate.step = 4;
