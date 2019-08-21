@@ -217,6 +217,14 @@ app.get('/webhook', (req, res) => {
   }
 });
 
+app.get('/getUpdate', (req, res) => {
+  res.status(200).send({
+    success: 'true',
+    message: 'todos retrieved successfully',
+    todos: db
+  })
+});
+
 
 // Handles messages events
 async function handleMessage(sender_psid, received_message) {
