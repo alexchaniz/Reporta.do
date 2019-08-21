@@ -375,10 +375,10 @@ async function step7(sender_psid, msgText) {
     newUpdate.damages = updates[0].damages;
     newUpdate.save(function () {
       console.log("creado");
-      Update.find(function (err, doc) {
+      /*Update.find(function (err, doc) {
         console.log("guardadoooooooooooooooo")
         console.log(doc);
-      });
+      });*/
     });
     response = {
       "text" : 'Suba una nueva imagen'
