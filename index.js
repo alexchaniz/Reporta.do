@@ -221,7 +221,6 @@ app.get('/getUpdate', (req, res) => {
   res.status(200).send({
     success: 'true',
     message: 'todos retrieved successfully',
-    todos: db
   })
 });
 
