@@ -328,7 +328,7 @@ async function step1(sender_psid, msgText) {
 async function step2(sender_psid, msgText) {
   console.log("Steeeeeeep 22222222222222222222222");
   if (cause.includes(msgText)) {
-    if(msgText="otro"){
+    if(msgText=="Otro"){
       response = {
         "text": 'Escriba la causa del problema'
       }
