@@ -165,7 +165,7 @@ app.post('/webhook', (req, res) => {
 
       // Get the sender PSID
       let sender_psid = webhook_event.sender.id;
-   //   console.log(JSON.stringify(webhook_event))
+      //   console.log(JSON.stringify(webhook_event))
 
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
@@ -191,7 +191,7 @@ app.post('/webhook', (req, res) => {
 app.get('/webhook', (req, res) => {
 
   // Your verify token. Should be a random string.
-  let VERIFY_TOKEN = "<YOUR_VERIFY_TOKEN>"
+  let VERIFY_TOKEN = process.env.VERIFY_TOKEN
 
   // Parse the query params
   let mode = req.query['hub.mode'];
@@ -223,7 +223,7 @@ async function handleMessage(sender_psid, received_message) {
 
     var step = await getStep(sender_psid);
     console.log("Getsteeeeeeeep" + step);
-    
+
     // Check if the user has been more than without updating
     if (step == -1) {
       //in that case creates another entry
@@ -234,7 +234,7 @@ async function handleMessage(sender_psid, received_message) {
     } else if (received_message.text) {
 
       console.log("Teeeeeeeeeeeeeeext");
-      
+
       console.log(received_message.text)
       // Create the payload for a basic text message
 
@@ -295,24 +295,24 @@ async function handleMessage(sender_psid, received_message) {
       }
     }
     // Sends the response message
-    if (aux==1) {
-      await callSendAPI(sender_psid, responseAux).then(async function(err, data){
-        await callSendAPI(sender_psid,response);
+    if (aux == 1) {
+      await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
+        await callSendAPI(sender_psid, response);
       })
-    } else{
+    } else {
       console.log(response);
-    await callSendAPI(sender_psid, response);
+      await callSendAPI(sender_psid, response);
     }
-    aux=0;
+    aux = 0;
   }
 }
 
 async function step1(sender_psid, msgText) {
   console.log("Steeeeeeep 1111111111111111");
-  
+
   if (msgText == "No") {
     console.log("llglggliugytxsrersdfjgyukihjlbyrvctedfhgunmk");
-      
+
     response = {
       "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
     }
@@ -322,20 +322,20 @@ async function step1(sender_psid, msgText) {
   } else {
     console.log("Correct steeep1");
     response = grettingsReply;
-    aux=1;
+    aux = 1;
   }
 }
 
 async function step2(sender_psid, msgText) {
   console.log("Steeeeeeep 22222222222222222222222");
   if (cause.includes(msgText)) {
-    if(msgText=="Otro"){
+    if (msgText == "Otro") {
       response = {
         "text": 'Escriba la causa del problema'
       }
-    }else {
-    fillUpdate(sender_psid, "cause", msgText);
-    response = damagesReply;
+    } else {
+      fillUpdate(sender_psid, "cause", msgText);
+      response = damagesReply;
     }
   } else {
     fillUpdate(sender_psid, "cause", msgText);
@@ -349,7 +349,7 @@ async function step3(sender_psid, msgText) {
     fillUpdate(sender_psid, "damages", msgText);
     response = imageReply;
   } else {
-    aux=1;
+    aux = 1;
     response = damagesReply;
   }
 }
@@ -370,7 +370,7 @@ async function step7(sender_psid, msgText) {
 
     console.log("Step 7 siiiiiiii");
     response = {
-      "text" : 'Suba una nueva imagen'
+      "text": 'Suba una nueva imagen'
     }
     var updates = await getUpdate(sender_psid);
     var newUpdate = new Update;
@@ -385,13 +385,13 @@ async function step7(sender_psid, msgText) {
         console.log(doc);
       });*/
     });
-    
+
     console.log(response);
-    
+
     nextStep(sender_psid);
   } else {
-    aux=1
-    response= anotherUpdateReply;
+    aux = 1
+    response = anotherUpdateReply;
   }
   console.log(response);
 }
@@ -402,7 +402,7 @@ async function correctDemand(sender_psid) {
   switch (step) {
     case -1:
       create(sender_psid);
-      response=grettingsReply;
+      response = grettingsReply;
       break;
     case 1:
       response = grettingsReply;
@@ -444,8 +444,8 @@ async function handlePostback(sender_psid, received_postback) {
     // Send the message to acknowledge the postback
     await callSendAPI(sender_psid, response);
   } else {
-    correctDemand(sender_psid, function(err, dat){
-      if(err) console.log();
+    correctDemand(sender_psid, function (err, dat) {
+      if (err) console.log();
     });
   }
 }
@@ -540,9 +540,11 @@ function getUpdate(sender_psid) {
 
 async function getStep(sender_psid) {
   var updates = await getUpdate(sender_psid);
-  if ((!updates.length)||(updates[0].step == 8)||(d.getTime() - updates[0].date > 604000000)){
+  if ((!updates.length) || (updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
     //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
-    if(updates[0].step <6) updates[0].remove();
+    if (updates[0].step < 6) {
+      updates[0].remove();
+    }
     return -1;
   }
   var step = updates[0].step;
@@ -585,9 +587,9 @@ async function callSendAPI(sender_psid, response) {
     "messaging_type": "RESPONSE",
     "message": response
   }
-     // Send the HTTP request to the Messenger Platform
-    return new Promise(function(resolve, reject){
-     request({
+  // Send the HTTP request to the Messenger Platform
+  return new Promise(function (resolve, reject) {
+    request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
       "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
       "method": "POST",
@@ -601,5 +603,5 @@ async function callSendAPI(sender_psid, response) {
         resolve(body)
       }
     })
-    });
+  });
 }
