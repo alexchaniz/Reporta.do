@@ -300,6 +300,7 @@ async function handleMessage(sender_psid, received_message) {
         await callSendAPI(sender_psid,response);
       })
     } else{
+      console.log(response);
     await callSendAPI(sender_psid, response);
     }
     aux=0;
@@ -392,6 +393,7 @@ async function step7(sender_psid, msgText) {
     aux=1
     response= anotherUpdateReply;
   }
+  console.log(response);
 }
 
 async function correctDemand(sender_psid) {
