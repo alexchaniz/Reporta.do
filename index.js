@@ -218,9 +218,11 @@ app.get('/webhook', (req, res) => {
 });
 
 app.get('/getUpdate', (req, res) => {
+  var senderAuxId = req.body.senderId;
   res.status(200).send({
     success: 'true',
     message: 'todos retrieved successfully',
+    sender_Id: senderAuxId
   })
 });
 
