@@ -377,7 +377,7 @@ async function step7(sender_psid, msgText) {
   console.log("Steeeeeeep 77777777777777");
   if (msgText == "No.") {
     response = {
-      "text": 'Muchas graias por colaborar con el servicio de monitore. Su información nos es muy util'
+      "text": 'Muchas graias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//quirky-lalande-b290cd.netlify.com/'
     }
   } else if (msgText == "Si") {
 
