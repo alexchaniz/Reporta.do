@@ -217,7 +217,7 @@ app.get('/webhook', (req, res) => {
   }
 });
 
-app.get('/getUpdate', (req, res) => {
+/*app.get('/getUpdate', (req, res) => {
   var senderAuxId = req.body.senderId;
   console.log(senderAuxId);
   
@@ -227,6 +227,7 @@ app.get('/getUpdate', (req, res) => {
     sender_Id: senderAuxId
   })
 });
+*/
 
 
 // Handles messages events
