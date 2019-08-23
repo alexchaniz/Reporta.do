@@ -327,7 +327,7 @@ async function step1(sender_psid, msgText) {
     console.log("llglggliugytxsrersdfjgyukihjlbyrvctedfhgunmk");
 
     response = {
-      "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo'
+      "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
   } else if (msgText == "¡Si!") {
     nextStep(sender_psid);
@@ -377,7 +377,7 @@ async function step7(sender_psid, msgText) {
   console.log("Steeeeeeep 77777777777777");
   if (msgText == "No.") {
     response = {
-      "text": 'Muchas graias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//quirky-lalande-b290cd.netlify.com/'
+      "text": 'Muchas graias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
   } else if (msgText == "Si") {
 
