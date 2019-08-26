@@ -95,7 +95,18 @@ var imageReply = {
 }
 
 var locationReply = {
-  "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
+  "attachment": {
+    "type": "template",
+    "payload": {
+      "template_type": "generic",
+      "elements": [{
+        "title": "Ahora envienos la ubicación utilizando dicha funcionalidad en messenger",
+        "subtitle": "En la foto le mostramos donde encontrar esta opción",
+        "image_url": './location.jpg',
+        "buttons": [],
+      }]
+    }
+  }
 }
 
 var observationReply = {
@@ -191,7 +202,7 @@ app.post('/webhook', (req, res) => {
 app.get('/webhook', (req, res) => {
 
   console.log("Intentando conectar con facebook app");
-  
+
   // Your verify token. Should be a random string.
   let VERIFY_TOKEN = process.env.VERIFY_TOKEN;
 
