@@ -476,7 +476,8 @@ function correctDemand(sender_psid) {
       response = anotherUpdateReply;
       break;
     default:
-      return "Step" + err;
+      
+      return "Step";
   }
 }
 
