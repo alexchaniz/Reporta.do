@@ -298,10 +298,6 @@ async function handleMessage(sender_psid, received_message) {
               fillUpdate(sender_psid, "img", data);
             }
           });
-          aux=1;
-        responseAux = {
-          "text": 'Es importante que nos envie su ubicación pata ayudarle'
-        }
           response = locationReply;
         } else {
           console.log("wrong step");
