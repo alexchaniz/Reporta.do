@@ -297,9 +297,7 @@ async function handleMessage(sender_psid, received_message) {
               fillUpdate(sender_psid, "img", data);
             }
           });
-          response = {
-            "text": 'Ahora envienos la ubicación utilizando dicha funcionalidad en messenger'
-          }
+          response = locationReply
         } else {
           console.log("wrong step");
           correctDemand(sender_psid);
