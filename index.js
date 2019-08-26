@@ -150,7 +150,8 @@ var updateSchema = {
   lat: { type: String },
   long: { type: String },
   img: { data: Buffer, contentType: String },
-  observation: { type: String }
+  observation: { type: String },
+  imgUrl: {type: String }
 };
 
 var update_schema = new Schema(updateSchema);
@@ -295,7 +296,8 @@ async function handleMessage(sender_psid, received_message) {
             if (err) {
               throw new Error(err);
             } else {
-              fillUpdate(sender_psid, "img", data);
+              var image = [data, attachment_url];
+              fillUpdate(sender_psid, "img", image);
             }
           });
           response = locationReply;
@@ -532,8 +534,9 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].damages = value;
       break;
     case "img":
-      updates[0].img.data = value;
+      updates[0].img.data = value[0];
       updates[0].img.contentType = 'image/png';
+      updates[0].imgUrl = value[1];
       break;
     case "location":
       updates[0].lat = value[0];
