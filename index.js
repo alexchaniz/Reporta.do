@@ -100,10 +100,21 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Envienos la ubicación utilizando dicha funcionalidad en messenger",
-        "subtitle": "En la foto le mostramos donde encontrar esta opción",
+        "title": "Is this the right picture?",
+        "subtitle": "Tap a button to answer.",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location.jpg",
-        "buttons": [ ]
+        "buttons": [
+          {
+            "type": "postback",
+            "title": "Yes!",
+            "payload": "yes",
+          },
+          {
+            "type": "postback",
+            "title": "No!",
+            "payload": "no",
+          }
+        ],
       }]
     }
   }
@@ -640,7 +651,7 @@ async function callSendAPI(sender_psid, response) {
       if (err) {
         console.log('error sending' + err);
         return reject(err);
-      } else {    
+      } else {       
         console.error("Message sent");
         resolve(body)
       }
