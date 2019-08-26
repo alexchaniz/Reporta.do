@@ -151,7 +151,8 @@ var updateSchema = {
   Y: { type: String },
   img: { data: Buffer, contentType: String },
   observation: { type: String },
-  imgUrl: {type: String }
+  imgUrl: { type: String },
+  tomarControl: { type: Boolean }
 };
 
 var update_schema = new Schema(updateSchema);
@@ -266,8 +267,12 @@ async function handleMessage(sender_psid, received_message) {
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
-
-      if (step == 1) {
+      if (msgText = "Asistencia personalizada 123") {
+        fillUpdate(sender_psid, "control", true);
+      } else if (msgText = "Cerrar asistencia 123") {
+        fillUpdate(sender_psid, "step", 8);
+        fillUpdate(sender_psid, "control", false);
+      } else if (step == 1) {
         step1(sender_psid, msgText);
       } else if (step == 2) {
         step2(sender_psid, msgText)
@@ -279,6 +284,9 @@ async function handleMessage(sender_psid, received_message) {
         step7(sender_psid, msgText)
       } else if (msgText == "borrartodo") {
         reset();
+      } else if (step == 10) {
+        fillUpdate(sender_psid, "observation", msgText);
+        return;
       } else {
         correctDemand(sender_psid, step);
       }
@@ -301,6 +309,17 @@ async function handleMessage(sender_psid, received_message) {
             }
           });
           response = locationReply;
+        } else if (step == 10) {
+          getImage(attachment_url, function (err, data) {
+            if (err) {
+              throw new Error(err);
+            } else {
+              var image = [data, attachment_url];
+              fillUpdate(sender_psid, "img", image);
+            }
+          });
+          fillUpdate(sender_psid, "img", msgText);
+          return;
         } else {
           console.log("wrong step");
           correctDemand(sender_psid, step);
@@ -313,9 +332,15 @@ async function handleMessage(sender_psid, received_message) {
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
+        } else if (step == 10) {
+          let coordinates = received_message.attachments[0].payload.coordinates;
+          var location = [coordinates.X, coordinates.Y];
+          fillUpdate(sender_psid, "observations", location);
         } else {
           correctDemand(sender_psid, step);
         }
+      } else if (step == 10) {
+        fillUpdate(sender_psid, "observations", msgText);
       } else {
         correctDemand(sender_psid, step);
       }
@@ -325,11 +350,11 @@ async function handleMessage(sender_psid, received_message) {
       await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
         await callSendAPI(sender_psid, response);
         console.log("Se envia mensaje previo de alcaración");
-        
+
         responseAux = {
           "text": 'Utilice los botones para responder'
         }
-        aux = 0;  
+        aux = 0;
       })
     } else {
       console.log("No hay mensaje previo de alcaración");
@@ -402,8 +427,8 @@ async function step7(sender_psid, msgText) {
   } else if (msgText == "Si") {
 
     console.log("Step 7 siiiiiiii");
-    aux=1;
-    responseAux={
+    aux = 1;
+    responseAux = {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
     response = causeReply
@@ -432,7 +457,7 @@ async function step7(sender_psid, msgText) {
 }
 
 function correctDemand(sender_psid, step) {
-console.log("correct demand");
+  console.log("correct demand");
 
   switch (step) {
     case -1:
@@ -452,10 +477,10 @@ console.log("correct demand");
       response = imageReply;
       break;
     case 5:
-        aux=1;
-        responseAux = {
-          "text": 'Es importante que nos envie su ubicación pata ayudarle'
-        }
+      aux = 1;
+      responseAux = {
+        "text": 'Es importante que nos envie su ubicación pata ayudarle'
+      }
       response = locationReply;
       break;
     case 6:
@@ -465,7 +490,6 @@ console.log("correct demand");
       response = anotherUpdateReply;
       break;
     default:
-
       return "Step";
   }
 }
@@ -506,9 +530,11 @@ function create(sender_psid) {
     cause: undefined,
     damages: undefined,
     date: d.getTime(),
+    observation: "",
     X: undefined,
     Y: undefined,
-    img: undefined
+    img: undefined,
+    tomarControl: false
   });
 
   update.save(function () {
@@ -543,7 +569,13 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].Y = value[1];
       break;
     case "observation":
-      updates[0].observation = value;
+      updates[0].observation += value;
+      break;
+    case "control":
+      updates[0].tomarControl = value;
+      break;
+    case "step":
+      updates[0].step=value;
       break;
     default:
       updates[0].step = updates[0].step - 1;
@@ -584,14 +616,14 @@ async function getStep(sender_psid) {
     var updates = await getUpdate(sender_psid);
     if (updates == []) {
       console.log("updates estavacio");
-      
       return -1;
+    } else if (updates[0].tomarControl) {
+      return 10;
     } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 86400000)) {
       //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
-     console.log("Updates recibio el paso" + updates[0].step);
-     
-     console.log();
-      
+      console.log("Updates recibio el paso" + updates[0].step);
+      console.log();
+
       if (updates[0].step < 6) {
         updates[0].remove();
       }
