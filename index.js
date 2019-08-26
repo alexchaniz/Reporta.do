@@ -279,7 +279,7 @@ async function handleMessage(sender_psid, received_message) {
       } else if (msgText == "borrartodo") {
         reset();
       } else {
-        correctDemand(sender_psid);
+        correctDemand(sender_psid, step);
       }
     } else if (received_message.attachments) {
 
@@ -301,7 +301,7 @@ async function handleMessage(sender_psid, received_message) {
           response = locationReply;
         } else {
           console.log("wrong step");
-          correctDemand(sender_psid);
+          correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
         if (step == 5) {
@@ -312,10 +312,10 @@ async function handleMessage(sender_psid, received_message) {
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
         } else {
-          correctDemand(sender_psid);
+          correctDemand(sender_psid, step);
         }
       } else {
-        correctDemand(sender_psid);
+        correctDemand(sender_psid, step);
       }
     }
     // Sends the response message
@@ -429,8 +429,7 @@ async function step7(sender_psid, msgText) {
   console.log(response);
 }
 
-function correctDemand(sender_psid) {
-  var step = getStep(sender_psid)
+function correctDemand(sender_psid, step) {
 console.log("correct demand");
 
   switch (step) {
@@ -483,7 +482,7 @@ async function handlePostback(sender_psid, received_postback) {
     // Send the message to acknowledge the postback
     await callSendAPI(sender_psid, response);
   } else {
-    correctDemand(sender_psid, function (err, dat) {
+    correctDemand(sender_psid, step, function (err, dat) {
       if (err) console.log();
     });
   }
