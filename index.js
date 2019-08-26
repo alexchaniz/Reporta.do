@@ -322,12 +322,16 @@ async function handleMessage(sender_psid, received_message) {
     if (aux == 1) {
       await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
         await callSendAPI(sender_psid, response);
+        console.log("Se envia mensaje previo de alcaración");
+        
         responseAux = {
           "text": 'Utilice los botones para responder'
         }
         aux = 0;  
       })
     } else {
+      console.log("No hay mensaje previo de alcaración");
+
       console.log(response);
       await callSendAPI(sender_psid, response);
     }
