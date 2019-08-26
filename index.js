@@ -97,9 +97,9 @@ var imageReply = {
 
 var locationReply = {
   "attachment": {
-    "type": "template",
+    "type": "tempXe",
     "payload": {
-      "template_type": "generic",
+      "tempXe_type": "generic",
       "elements": [{
         "title": "Envienos la ubicación en que tuvo lugar",
         "subtitle": "Utilice el botón que aparece en la foto",
@@ -147,8 +147,8 @@ var updateSchema = {
   cause: { type: String },
   damages: { type: String },
   date: { type: Number },
-  lat: { type: String },
-  long: { type: String },
+  X: { type: String },
+  Y: { type: String },
   img: { data: Buffer, contentType: String },
   observation: { type: String },
   imgUrl: {type: String }
@@ -309,7 +309,7 @@ async function handleMessage(sender_psid, received_message) {
         if (step == 5) {
           console.log("Steeeeeeep 55555555555555");
           let coordinates = received_message.attachments[0].payload.coordinates;
-          var location = [coordinates.lat, coordinates.long];
+          var location = [coordinates.X, coordinates.Y];
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
@@ -506,8 +506,8 @@ function create(sender_psid) {
     cause: undefined,
     damages: undefined,
     date: d.getTime(),
-    lat: undefined,
-    long: undefined,
+    X: undefined,
+    Y: undefined,
     img: undefined
   });
 
@@ -539,8 +539,8 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].imgUrl = value[1];
       break;
     case "location":
-      updates[0].lat = value[0];
-      updates[0].long = value[1];
+      updates[0].X = value[0];
+      updates[0].Y = value[1];
       break;
     case "observation":
       updates[0].observation = value;
@@ -642,7 +642,7 @@ async function callSendAPI(sender_psid, response) {
     "messaging_type": "RESPONSE",
     "message": response
   }
-  // Send the HTTP request to the Messenger Platform
+  // Send the HTTP request to the Messenger PXform
   return new Promise(function (resolve, reject) {
     request({
       "uri": "https://graph.facebook.com/v2.6/me/messages",
