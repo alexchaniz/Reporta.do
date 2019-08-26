@@ -103,7 +103,7 @@ var locationReply = {
         "title": "Envienos la ubicación utilizando dicha funcionalidad en messenger",
         "subtitle": "En la foto le mostramos donde encontrar esta opción",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location.jpg",
-        "buttons": [ ],
+        "buttons": [ ]
       }]
     }
   }
@@ -640,9 +640,7 @@ async function callSendAPI(sender_psid, response) {
       if (err) {
         console.log('error sending' + err);
         return reject(err);
-      } else {
-        console.log(res);
-        
+      } else {    
         console.error("Message sent");
         resolve(body)
       }
