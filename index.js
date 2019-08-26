@@ -19,6 +19,7 @@ var response;
 var responseAux = {
   "text": 'Utilice los botones para responder'
 }
+
 var aux = 0;
 
 //setting option and responses
@@ -122,7 +123,7 @@ var observationReply = {
 }
 
 var anotherUpdateReply = {
-  "text": "Quiere subir otra imagen de la zona",
+  "text": "¿Quiere reportar otro daño?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -321,12 +322,15 @@ async function handleMessage(sender_psid, received_message) {
     if (aux == 1) {
       await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
         await callSendAPI(sender_psid, response);
+        responseAux = {
+          "text": 'Utilice los botones para responder'
+        }
+        aux = 0;  
       })
     } else {
       console.log(response);
       await callSendAPI(sender_psid, response);
     }
-    aux = 0;
   }
 }
 
@@ -387,20 +391,22 @@ async function step7(sender_psid, msgText) {
   console.log("Steeeeeeep 77777777777777");
   if (msgText == "No.") {
     response = {
-      "text": 'Muchas graias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+      "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
   } else if (msgText == "Si") {
 
     console.log("Step 7 siiiiiiii");
-    response = {
-      "text": 'Suba una nueva imagen'
+    aux=1;
+    responseAux={
+      "text": 'Usted ha decidido reportar un nuevo daño'
     }
+    response = causeReply
     var updates = await getUpdate(sender_psid);
     var newUpdate = new Update;
-    newUpdate.step = 4;
+    newUpdate.step = 2;
     newUpdate.sender_id = updates[0].sender_id;
     newUpdate.date = d.getTime() + 1;
-    newUpdate.damages = updates[0].damages;
+    //newUpdate.damages = updates[0].damages;
     newUpdate.save(function () {
       console.log("creado");
       /*Update.find(function (err, doc) {
@@ -440,6 +446,10 @@ function correctDemand(sender_psid) {
       response = imageReply;
       break;
     case 5:
+        responseAux = {
+          "text": 'Es importante que nos envie la ubicación pata ayudarle'
+        }
+        aux=1;
       response = locationReply;
       break;
     case 6:
@@ -567,7 +577,7 @@ async function getStep(sender_psid) {
     var updates = await getUpdate(sender_psid);
     if (updates == []) {
       return -1
-    } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
+    } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 86400000)) {
       //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
       if (updates[0].step < 6) {
         updates[0].remove();
