@@ -631,7 +631,7 @@ async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
 
-  console.log(response);
+  console.log(JSON.stringify(response));
   
   request_body = {
     "recipient": {
