@@ -564,7 +564,7 @@ function getUpdate(sender_psid) {
 
 async function getStep(sender_psid) {
   var updates = await getUpdate(sender_psid);
-  if ((!updates.length()) || (updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
+  if ((updates==[] || (updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
     //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
     if (updates[0].step < 6) {
       updates[0].remove();
