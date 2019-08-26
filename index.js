@@ -100,9 +100,9 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Envienos la ubicación utilizando dicha funcionalidad en messenger",
-        "subtitle": "En la foto le mostramos donde encontrar esta opción",
-        "image_url": "./location.jpg"
+        "title": "Envienos la ubicación en que tuvo lugar",
+        "subtitle": "Utilice el botón que aparece en la foto",
+        "image_url": "https://quirky-lalande-b290cd.netlify.com/location.jpg"
       //  "buttons": [{}]
       }]
     }
