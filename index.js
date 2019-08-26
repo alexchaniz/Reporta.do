@@ -267,12 +267,12 @@ async function handleMessage(sender_psid, received_message) {
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
-      if (msgText = "Asistencia personalizada 123") {
+ /*     if (msgText = "Asistencia personalizada 123") {
         fillUpdate(sender_psid, "control", true);
       } else if (msgText = "Cerrar asistencia 123") {
         fillUpdate(sender_psid, "step", 8);
-        fillUpdate(sender_psid, "control", false);
-      } else if (step == 1) {
+        fillUpdate(sender_psid, "control", false);*/
+       if (step == 1) {
         step1(sender_psid, msgText);
       } else if (step == 2) {
         step2(sender_psid, msgText)
@@ -284,9 +284,11 @@ async function handleMessage(sender_psid, received_message) {
         step7(sender_psid, msgText)
       } else if (msgText == "borrartodo") {
         reset();
-      } else if (step == 10) {
+      /*} else if (step == 10) {
         fillUpdate(sender_psid, "observation", msgText);
-        return;
+        console.log("no controla el bot");
+        
+        return;*/
       } else {
         correctDemand(sender_psid, step);
       }
@@ -309,7 +311,7 @@ async function handleMessage(sender_psid, received_message) {
             }
           });
           response = locationReply;
-        } else if (step == 10) {
+        /*} else if (step == 10) {
           getImage(attachment_url, function (err, data) {
             if (err) {
               throw new Error(err);
@@ -319,7 +321,7 @@ async function handleMessage(sender_psid, received_message) {
             }
           });
           fillUpdate(sender_psid, "img", msgText);
-          return;
+          return;*/
         } else {
           console.log("wrong step");
           correctDemand(sender_psid, step);
@@ -332,15 +334,15 @@ async function handleMessage(sender_psid, received_message) {
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
-        } else if (step == 10) {
+        /*} else if (step == 10) {
           let coordinates = received_message.attachments[0].payload.coordinates;
           var location = [coordinates.X, coordinates.Y];
-          fillUpdate(sender_psid, "observations", location);
+          fillUpdate(sender_psid, "observations", location);*/
         } else {
           correctDemand(sender_psid, step);
         }
-      } else if (step == 10) {
-        fillUpdate(sender_psid, "observations", msgText);
+      /*} else if (step == 10) {
+        fillUpdate(sender_psid, "observations", msgText);*/
       } else {
         correctDemand(sender_psid, step);
       }
@@ -617,8 +619,8 @@ async function getStep(sender_psid) {
     if (updates == []) {
       console.log("updates estavacio");
       return -1;
-    } else if (updates[0].tomarControl) {
-      return 10;
+    /*} else if (updates[0].tomarControl) {
+      return 10;*/
     } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 86400000)) {
       //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
       console.log("Updates recibio el paso" + updates[0].step);
