@@ -109,22 +109,6 @@ var locationReply = {
   }
 }
 
-/*{
-  "attachment": {
-    "type": "template",
-    "payload": {
-      "template_type": "generic",
-      "elements": [{
-        "title": "Envienos la ubicación utilizando dicha funcionalidad en messenger",
-        "subtitle": "En la foto le mostramos donde encontrar esta opción",
-        "image_url": './location.jpg',
-        "buttons": [],
-      }]
-    }
-  }
-}
-*/
-
 var observationReply = {
   "text": "Si quiere hacer alguna observación añadalá en el siguiente mensaje",
   "quick_replies": [
@@ -580,7 +564,7 @@ function getUpdate(sender_psid) {
 
 async function getStep(sender_psid) {
   var updates = await getUpdate(sender_psid);
-  if ((!updates.length) || (updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
+  if ((!updates.length()) || (updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
     //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
     if (updates[0].step < 6) {
       updates[0].remove();
