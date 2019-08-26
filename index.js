@@ -427,6 +427,7 @@ async function step7(sender_psid, msgText) {
 
 function correctDemand(sender_psid) {
   var step = getStep(sender_psid)
+console.log("correct demand");
 
   switch (step) {
     case -1:
