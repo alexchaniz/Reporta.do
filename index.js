@@ -652,6 +652,8 @@ async function callSendAPI(sender_psid, response) {
         console.log('error sending' + err);
         return reject(err);
       } else {
+        console.log(res);
+        
         console.error("Message sent");
         resolve(body)
       }
