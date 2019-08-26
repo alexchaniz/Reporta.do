@@ -100,7 +100,7 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Ahora envienos la ubicación utilizando dicha funcionalidad en messenger",
+        "title": "Envienos la ubicación utilizando dicha funcionalidad en messenger",
         "subtitle": "En la foto le mostramos donde encontrar esta opción",
         "image_url": './location.jpg',
         "buttons": [],
