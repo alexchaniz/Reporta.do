@@ -446,10 +446,10 @@ function correctDemand(sender_psid) {
       response = imageReply;
       break;
     case 5:
+        aux=1;
         responseAux = {
           "text": 'Es importante que nos envie su ubicación pata ayudarle'
         }
-        aux=1;
       response = locationReply;
       break;
     case 6:
