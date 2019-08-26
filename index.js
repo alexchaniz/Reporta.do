@@ -100,6 +100,32 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
+        "title": "Is this the right picture?",
+        "subtitle": "Tap a button to answer.",
+        "image_url": "./location.jpg",
+        "buttons": [
+          {
+            "type": "postback",
+            "title": "Yes!",
+            "payload": "yes",
+          },
+          {
+            "type": "postback",
+            "title": "No!",
+            "payload": "no",
+          }
+        ],
+      }]
+    }
+  }
+}
+
+/*{
+  "attachment": {
+    "type": "template",
+    "payload": {
+      "template_type": "generic",
+      "elements": [{
         "title": "Envienos la ubicación utilizando dicha funcionalidad en messenger",
         "subtitle": "En la foto le mostramos donde encontrar esta opción",
         "image_url": './location.jpg',
@@ -108,6 +134,7 @@ var locationReply = {
     }
   }
 }
+*/
 
 var observationReply = {
   "text": "Si quiere hacer alguna observación añadalá en el siguiente mensaje",
@@ -297,7 +324,7 @@ async function handleMessage(sender_psid, received_message) {
               fillUpdate(sender_psid, "img", data);
             }
           });
-          response = locationReply
+          response = locationReply;
         } else {
           console.log("wrong step");
           correctDemand(sender_psid);
@@ -419,7 +446,7 @@ async function step7(sender_psid, msgText) {
   console.log(response);
 }
 
-async function correctDemand(sender_psid) {
+function correctDemand(sender_psid) {
   var step = getStep(sender_psid)
 
   switch (step) {
