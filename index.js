@@ -102,7 +102,7 @@ var locationReply = {
       "elements": [{
         "title": "Is this the right picture?",
         "subtitle": "Tap a button to answer.",
-        "image_url": "./location.jpg",
+        "image_url": "https://quirky-lalande-b290cd.netlify.com/location.jpg",
         "buttons": [
           {
             "type": "postback",
