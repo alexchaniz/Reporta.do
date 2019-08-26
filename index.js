@@ -103,7 +103,7 @@ var locationReply = {
         "title": "Envienos la ubicación en que tuvo lugar",
         "subtitle": "Utilice el botón que aparece en la foto",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location.jpg"
-      //  "buttons": [{}]
+        //  "buttons": [{}]
       }]
     }
   }
@@ -449,7 +449,7 @@ function correctDemand(sender_psid) {
       response = anotherUpdateReply;
       break;
     default:
-      
+
       return "Step";
   }
 }
@@ -563,21 +563,25 @@ function getUpdate(sender_psid) {
 }
 
 async function getStep(sender_psid) {
-  var updates = await getUpdate(sender_psid);
-  console.log(updates);
-  
-  if (updates==null){
-    return -1
-  } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
-    //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
-    if (updates[0].step < 6) {
-      updates[0].remove();
+  try {
+    var updates = await getUpdate(sender_psid);
+    console.log(updates);
+
+    if (updates == null) {
+      return -1
+    } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 604000000)) {
+      //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
+      if (updates[0].step < 6) {
+        updates[0].remove();
+      }
+      return -1;
     }
+    var step = updates[0].step;
+    console.log("steeeeeeeeeeep " + step);
+    return step;
+  } catch (e) {
     return -1;
   }
-  var step = updates[0].step;
-  console.log("steeeeeeeeeeep " + step);
-  return step;
 }
 
 function getImage(url, callback) {
@@ -609,7 +613,7 @@ async function callSendAPI(sender_psid, response) {
   let request_body
 
   console.log(JSON.stringify(response));
-  
+
   request_body = {
     "recipient": {
       "id": sender_psid
@@ -628,7 +632,7 @@ async function callSendAPI(sender_psid, response) {
       if (err) {
         console.log('error sending' + err);
         return reject(err);
-      } else {       
+      } else {
         console.error("Message sent");
         resolve(body)
       }
