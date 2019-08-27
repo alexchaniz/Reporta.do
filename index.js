@@ -10,6 +10,8 @@ const
   app = express().use(bodyParser.json()); // creates express http server  
 
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const Http = new XMLHttpRequest();
+
 var https = require('https');
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
@@ -710,10 +712,10 @@ function sendToArcGis(update){
       "attributes" : update
     }
   ];
+
   stringObject = JSON.stringify(object);
   
-  const Http = new XMLHttpRequest();
-  const url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + stringObject;
+  var url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + stringObject;
   Http.open("POST", url);
   Http.send();
   
