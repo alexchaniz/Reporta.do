@@ -538,7 +538,7 @@ function create(sender_psid) {
     Y: undefined,
     img: undefined,
     tomarControl: false,
-    formatedDate: d.toLocaleString() + " " + d.toTimeString
+    formatedDate: d.toLocaleString() + " " + d.toTimeString()
   });
 
   update.save(function () {
@@ -619,7 +619,7 @@ async function getStep(sender_psid) {
   try {
     var d = new Date();
     var updates = await getUpdate(sender_psid);
-    console.log("tiempo pasado " + d.getTime() - updates[0].date);
+    console.log("tiempo pasado " + (d.getTime() - updates[0].date));
     
     if (updates == []) {
       console.log("updates estavacio");
