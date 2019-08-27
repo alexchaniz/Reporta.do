@@ -97,7 +97,7 @@ var imageReply = {
 
 var locationReply = {
   "attachment": {
-    "type": "tempXe",
+    "type": "template",
     "payload": {
       "tempXe_type": "generic",
       "elements": [{
