@@ -103,7 +103,7 @@ var locationReply = {
       "elements": [{
         "title": "Envienos la ubicación en que tuvo lugar",
         "subtitle": "Utilice el botón que aparece en la foto",
-        "image_url": "https://quirky-lalande-b290cd.netlify.com/location.jpg"
+        "image_url": "https://quirky-lalande-b290cd.netlify.com/location1.jpg"
         //  "buttons": [{}]
       }]
     }
