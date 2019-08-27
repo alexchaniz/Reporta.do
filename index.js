@@ -12,7 +12,7 @@ const
 var https = require('https');
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var d = new Date();
+
 mongoose.set('useFindAndModify', false);
 
 var response;
@@ -525,6 +525,8 @@ function reset() {
 
 function create(sender_psid) {
 
+  var d = new Date();
+
   var update = new Update({
     sender_id: sender_psid,
     step: 1,
@@ -615,8 +617,9 @@ function getUpdate(sender_psid) {
 
 async function getStep(sender_psid) {
   try {
+    var d = new Date();
     var updates = await getUpdate(sender_psid);
-    console.log(d.getTime() - updates[0].date);
+    console.log("tiempo pasado " + d.getTime() - updates[0].date);
     
     if (updates == []) {
       console.log("updates estavacio");
