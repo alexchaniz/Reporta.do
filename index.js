@@ -152,7 +152,8 @@ var updateSchema = {
   img: { data: Buffer, contentType: String },
   observation: { type: String },
   imgUrl: { type: String },
-  tomarControl: { type: Boolean }
+  tomarControl: { type: Boolean },
+  formatedDate: {type: String}
 };
 
 var update_schema = new Schema(updateSchema);
@@ -534,7 +535,8 @@ function create(sender_psid) {
     X: undefined,
     Y: undefined,
     img: undefined,
-    tomarControl: false
+    tomarControl: false,
+    formatedDate: d.toLocaleString() + " " + d.toTimeString
   });
 
   update.save(function () {
