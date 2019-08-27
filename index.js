@@ -523,9 +523,7 @@ function reset() {
 }
 
 function create(sender_psid) {
-  Update.deleteMany({}, function (err, doc) {
-    console.log("removeeeeeeeeeeeeeeeeeeeeeed");
-  });
+
   var update = new Update({
     sender_id: sender_psid,
     step: 1,
