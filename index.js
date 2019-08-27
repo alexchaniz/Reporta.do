@@ -713,6 +713,7 @@ function sendToArcGis(update){
     }
   ];
 
+  try{
   stringObject = JSON.stringify(object);
   
   var url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + stringObject;
@@ -724,4 +725,8 @@ function sendToArcGis(update){
     
     console.log(Http.responseText);
   }
+} catch{
+  console.log("error snding to arcgis");
+  
+}
 }
