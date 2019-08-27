@@ -99,7 +99,7 @@ var locationReply = {
   "attachment": {
     "type": "template",
     "payload": {
-      "tempXe_type": "generic",
+      "template_type": "generic",
       "elements": [{
         "title": "Envienos la ubicación en que tuvo lugar",
         "subtitle": "Utilice el botón que aparece en la foto",
