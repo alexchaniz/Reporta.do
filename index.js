@@ -7,8 +7,9 @@ const request = require('request');
 const
   express = require('express'),
   bodyParser = require('body-parser'),
-  app = express().use(bodyParser.json()); // creates express http server
+  app = express().use(bodyParser.json()); // creates express http server  
 
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var https = require('https');
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
@@ -574,6 +575,7 @@ async function fillUpdate(sender_psid, field, value) {
       break;
     case "observation":
       updates[0].observation += value;
+      sendToArcGis(updates[0]);
       break;
     case "control":
       updates[0].tomarControl = value;
@@ -698,4 +700,26 @@ async function callSendAPI(sender_psid, response) {
       }
     })
   });
+}
+
+function sendToArcGis(update){
+
+  var object = [
+    {
+      "geometry" : { "x" : update.X, "y" : update.Y},
+      "attributes" : update
+    }
+  ];
+  stringObject = JSON.stringify(object);
+  
+  const Http = new XMLHttpRequest();
+  const url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + stringObject;
+  Http.open("POST", url);
+  Http.send();
+  
+  Http.onreadystatechange = (e) => {
+    console.log("arcgiiiiisssssssssssssssssssssssssss");
+    
+    console.log(Http.responseText);
+  }
 }

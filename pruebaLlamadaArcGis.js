@@ -72,11 +72,10 @@ console.log(response);
 
 );
 */
-var https = require('https');
+/*var https = require('https');
 
 
-jsonObject = JSON.stringify({
-    "features":[{
+jsonObject = JSON.stringify([{
     "attributes" : {
       "sender_id" : 23,
       "cause" : "lalalong",
@@ -88,8 +87,7 @@ jsonObject = JSON.stringify({
       "x" : -122.41247978999991,
       "y" : 37.770630098000083
     }
-  }],
-  "f":"JSON"};
+  }])
  
 // prepare the header
 var postheaders = {
@@ -99,10 +97,10 @@ var postheaders = {
  
 // the post options
 var optionspost = {
-    host : 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures',
+    host : 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + jsonObject,
     //port : 443,
  //   path : '/addFeatures',
-    body : jsonObject,
+  // body : jsonObject,
     method : 'POST',
     headers : postheaders
 };
@@ -130,7 +128,7 @@ reqPost.end();
 reqPost.on('error', function(e) {
     console.error(e);
 });
-
+*/
 
 //---------------------------
 /*
@@ -177,3 +175,28 @@ jsonObject = JSON.stringify({
   httpGet(jsonObject);
 
   */
+
+ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+
+ jsonObject = JSON.stringify([{
+  "attributes" : {
+    "sender_id" : 23,
+    "cause" : "lalalong",
+    "damages" : "skrr",
+    "lat" : 33,
+    "longitud" : 36
+  },
+  "geometry" : {
+    "x" : 0,
+    "y" : 0
+  }
+}])
+
+const Http = new XMLHttpRequest();
+const url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + jsonObject;
+Http.open("POST", url);
+Http.send();
+
+Http.onreadystatechange = (e) => {
+  console.log(Http.responseText)
+}
