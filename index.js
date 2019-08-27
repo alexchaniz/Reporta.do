@@ -614,6 +614,8 @@ function getUpdate(sender_psid) {
 async function getStep(sender_psid) {
   try {
     var updates = await getUpdate(sender_psid);
+    console.log(d.getTime() - updates[0].date);
+    
     if (updates == []) {
       console.log("updates estavacio");
       return -1;
