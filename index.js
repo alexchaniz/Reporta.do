@@ -272,7 +272,9 @@ async function handleMessage(sender_psid, received_message) {
       } else if (msgText = "Cerrar asistencia 123") {
         fillUpdate(sender_psid, "step", 8);
         fillUpdate(sender_psid, "control", false);*/
-       if (step == 1) {
+        if (msgText == "borrartodo") {
+          reset();
+        } else if (step == 1) {
         step1(sender_psid, msgText);
       } else if (step == 2) {
         step2(sender_psid, msgText)
@@ -282,8 +284,6 @@ async function handleMessage(sender_psid, received_message) {
         step6(sender_psid, msgText)
       } else if (step == 7) {
         step7(sender_psid, msgText)
-      } else if (msgText == "borrartodo") {
-        reset();
       /*} else if (step == 10) {
         fillUpdate(sender_psid, "observation", msgText);
         console.log("no controla el bot");
