@@ -626,7 +626,7 @@ async function getStep(sender_psid) {
       return -1;
     /*} else if (updates[0].tomarControl) {
       return 10;*/
-    } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 60000)) {
+    } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 900000)) {
       //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
       console.log("Updates recibio el paso" + updates[0].step);
       console.log();
