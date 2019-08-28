@@ -709,10 +709,19 @@ function sendToArcGis(update){
 
   var object = [
     {
-      "geometry" : { "x" : update.X, "y" : update.Y},
-      "attributes" : update
+      "attributes" : update,
+      "geometry" : { 
+        "x" : update.X, 
+        "y" : update.Y}
     }
   ];
+  
+
+  console.log("printing object to send to arcgissssssss");
+console.log(object);
+console.log(update);
+
+
 
   try{
  // stringObject = JSON.stringify(object);
