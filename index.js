@@ -43,7 +43,7 @@ var grettingsReply = {
   ]
 }
 
-var cause = ["Terremoto", "Huracán", "Vaguada", "Otro"]
+var cause = ["Terremoto", "Huracan", "Vaguada", "Otro"]
 var causeReply = {
   "text": "Me podría decir la causa de este",
   "quick_replies": [
@@ -54,7 +54,7 @@ var causeReply = {
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Huracán",
+      "title": "Huracan",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
