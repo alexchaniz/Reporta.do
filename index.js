@@ -715,9 +715,9 @@ function sendToArcGis(update){
   ];
 
   try{
-  stringObject = JSON.stringify(object);
+ // stringObject = JSON.stringify(object);
   
-  var url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + stringObject;
+  var url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);
   Http.open("POST", url);
   Http.send();
   
