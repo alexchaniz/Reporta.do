@@ -182,7 +182,7 @@ jsonObject = JSON.stringify({
   "attributes" : {
     "sender_id" : 23,
     "cause" : "lalalong",
-    "damages" : "skrr",
+    "damages" : "https://scontent.xx.fbcdn.net/v/t1.15752-9/69231118_507861743377147_7014946539546083328_n.jpg?_nc_cat=109&_nc_oc=AQkNvASlHO9Zbs2xyAbr6nNbomaYwQN0Xt9_560Aa4NSMgnqewB1UFO-kg6pfheCS4V1t_aOL4uod2Zrp9gSsCfO&_nc_ad=z-m&_nc_cid=0&_nc_zor=9&_nc_ht=scontent.xx&oh=31bb71b5e58219877b7051ae1d441acc&oe=5DCE2D04",
     "lat" : 33,
     "longitud" : 36
   },

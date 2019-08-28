@@ -742,6 +742,7 @@ var object = [
     var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
    console.log(url);
    
+   strOrderArr = strOrderArr.replace("]}}", "\]}}")
     Http.open("POST", url);
     Http.send();
 
