@@ -539,7 +539,7 @@ function create(sender_psid) {
     cause: undefined,
     damages: undefined,
     date: d.getTime(),
-    observation: "",
+    observation: ".",
     X: undefined,
     Y: undefined,
     img: undefined,
@@ -707,10 +707,8 @@ async function callSendAPI(sender_psid, response) {
   });
 }
 
-function sendToArcGis(update) {
 
-//  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
-  //var imgAux = update.imgUrl.replace(/&/g,"...");
+function sendToArcGis(update) {
 
   var xhr = new XMLHttpRequest();
   var blob;
@@ -727,18 +725,21 @@ xhr.onload = function( e ) {
     var arrayBufferView = new Uint8Array( this.response );
     blob = new Blob( [ arrayBufferView ], { type: update.img.contentType } );
 }
+
+console.log(blob);
+
  // var imgg = new Blob(update.img.data, {type : update.img,type})
 
 var object = [
     {
       "attributes": {
-        "sender_id1": update.sender_id,
+        "MongoId": update._id,
         "cause": update.cause,
         "damages": update.damages,
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-        "img": blob,
+        "img1": blob,
         //"img": { "data": update.img.data, "Type": update.img.contentType },
         "observation": update.observation,
        // "imgUrl1": imgAux ,
