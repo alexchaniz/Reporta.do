@@ -736,7 +736,10 @@ var object = [
   console.log(object);
 
   try {
-   // stringObject = JSON.stringify(object);
+stringObject = JSON.stringify(object);
+console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
+
+console.log(stringObject);
 
     var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
    console.log(url);
