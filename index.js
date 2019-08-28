@@ -426,7 +426,7 @@ async function step6(sender_psid, msgText) {
 
 async function step7(sender_psid, msgText) {
   console.log("Steeeeeeep 77777777777777");
-  var d = new date()
+  var d = new Date()
   if (msgText == "No.") {
     response = {
       "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
