@@ -722,7 +722,7 @@ var object = [
         "Y": update.Y,
       //  "img": { "data": update.img.data, "contentType": update.img.contentType },
         "observation": update.observation,
-        "imgUrl": update.imgUrl + "\"",
+        "imgUrl": update.imgUrl + "\\",
         "formatedDate": update.formatedDate
       },
       "geometry": {
