@@ -77,7 +77,7 @@ var damagesReply = {
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "No hubo daños",
+      "title": "No hubo danos",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
