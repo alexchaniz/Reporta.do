@@ -71,7 +71,7 @@ var causeReply = {
   ]
 }
 
-var damages = ["No hubo daños", "Si, hay gente herida", "Si, gente ha fallecido"]
+var damages = ["No hubo danos", "Si, hay gente herida", "Si, gente ha fallecido"]
 var damagesReply = {
   "text": "¿Hay persons heridas?",
   "quick_replies": [
