@@ -727,7 +727,7 @@ function sendToArcGis(update){
   }
 } catch(err){
   console.log("error sending to arcgis");
-  console.log(e);
+  console.log(err);
   
 }
 }
