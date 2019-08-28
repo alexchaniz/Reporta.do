@@ -720,7 +720,7 @@ var object = [
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-      //  "img": { "data": update.img.data, "contentType": update.img.contentType },
+       "img1": { "data": update.img.data, "contentType": update.img.contentType },
         "observation": update.observation,
     //    "imgUrl": update.imgUrl ,
         "formatedDate": update.formatedDate
