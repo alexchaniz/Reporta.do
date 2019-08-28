@@ -710,9 +710,24 @@ async function callSendAPI(sender_psid, response) {
 function sendToArcGis(update) {
 
 //  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
-  var imgAux = update.imgUrl.replace(/&/g,"...");
+  //var imgAux = update.imgUrl.replace(/&/g,"...");
 
-  var blob = new Blob([update.img.data], {type: "update.img.contentType"}); 
+  var xhr = new XMLHttpRequest();
+  var blob;
+
+// Use JSFiddle logo as a sample image to avoid complicating
+// this example with cross-domain issues.
+xhr.open( "GET", update.imgUrl, true );
+
+// Ask for the result as an ArrayBuffer.
+xhr.responseType = "arraybuffer";
+
+xhr.onload = function( e ) {
+    // Obtain a blob: URL for the image data.
+    var arrayBufferView = new Uint8Array( this.response );
+    blob = new Blob( [ arrayBufferView ], { type: update.img.contentType } );
+}
+ // var imgg = new Blob(update.img.data, {type : update.img,type})
 
 var object = [
     {
@@ -723,7 +738,8 @@ var object = [
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-        "img": blob ,
+        "img": blob,
+        //"img": { "data": update.img.data, "Type": update.img.contentType },
         "observation": update.observation,
        // "imgUrl1": imgAux ,
         "formatedDate": update.formatedDate
