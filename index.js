@@ -727,11 +727,12 @@ xhr.onload = function( e ) {
 }
 console.log("blooooooooooooooooooooooooob");
 
-console.log(blob);
+console.log(blob.stringify());
 
  // var imgg = new Blob(update.img.data, {type : update.img,type})
 
- var raster = update.img.rasterize();
+ var urlImgAux = update.imgUrl;
+ var res = urlImgAux.replace(/&/g, "xxx");
 var object = [
     {
       "attributes": {
@@ -744,7 +745,7 @@ var object = [
         "img1": raster,
         //"img": { "data": update.img.data, "Type": update.img.contentType },
         "observation": update.observation,
-       // "imgUrl1": imgAux ,
+        "imgUrl1": res ,
         "formatedDate": update.formatedDate
       },
       "geometry": {
