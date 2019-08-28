@@ -731,6 +731,7 @@ console.log(blob);
 
  // var imgg = new Blob(update.img.data, {type : update.img,type})
 
+ var raster = update.img.rasterize();
 var object = [
     {
       "attributes": {
@@ -740,7 +741,7 @@ var object = [
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-        "img1": blob,
+        "img1": raster,
         //"img": { "data": update.img.data, "Type": update.img.contentType },
         "observation": update.observation,
        // "imgUrl1": imgAux ,
