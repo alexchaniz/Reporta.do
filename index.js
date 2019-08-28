@@ -725,6 +725,7 @@ xhr.onload = function( e ) {
     var arrayBufferView = new Uint8Array( this.response );
     blob = new Blob( [ arrayBufferView ], { type: update.img.contentType } );
 }
+console.log("blooooooooooooooooooooooooob");
 
 console.log(blob);
 
@@ -752,10 +753,7 @@ var object = [
     }
   ];
 
-  console.log("()()()()()()()()printing object to send to arcgissssssss");
-  console.log(object);
 
-  try {
 var stringObject = JSON.stringify(object);
 console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
 
@@ -772,9 +770,4 @@ console.log(stringObject);
 
       console.log(Http.responseText);
     }
-  } catch (err) {
-    console.log("error sending to arcgis");
-    console.log(err);
-
-  }
 }
