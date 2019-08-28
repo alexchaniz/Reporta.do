@@ -727,7 +727,7 @@ xhr.onload = function( e ) {
 }
 console.log("blooooooooooooooooooooooooob");
 
-console.log(blob.stringify());
+console.log(blob);
 
  // var imgg = new Blob(update.img.data, {type : update.img,type})
 
