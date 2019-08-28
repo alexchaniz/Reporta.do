@@ -156,7 +156,7 @@ var updateSchema = {
   observation: { type: String },
   imgUrl: { type: String },
   tomarControl: { type: Boolean },
-  formatedDate: {type: String}
+  formatedDate: { type: String }
 };
 
 var update_schema = new Schema(updateSchema);
@@ -271,14 +271,14 @@ async function handleMessage(sender_psid, received_message) {
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
- /*     if (msgText = "Asistencia personalizada 123") {
-        fillUpdate(sender_psid, "control", true);
-      } else if (msgText = "Cerrar asistencia 123") {
-        fillUpdate(sender_psid, "step", 8);
-        fillUpdate(sender_psid, "control", false);*/
-        if (msgText == "borrartodo") {
-          reset();
-        } else if (step == 1) {
+      /*     if (msgText = "Asistencia personalizada 123") {
+             fillUpdate(sender_psid, "control", true);
+           } else if (msgText = "Cerrar asistencia 123") {
+             fillUpdate(sender_psid, "step", 8);
+             fillUpdate(sender_psid, "control", false);*/
+      if (msgText == "borrartodo") {
+        reset();
+      } else if (step == 1) {
         step1(sender_psid, msgText);
       } else if (step == 2) {
         step2(sender_psid, msgText)
@@ -288,11 +288,11 @@ async function handleMessage(sender_psid, received_message) {
         step6(sender_psid, msgText)
       } else if (step == 7) {
         step7(sender_psid, msgText)
-      /*} else if (step == 10) {
-        fillUpdate(sender_psid, "observation", msgText);
-        console.log("no controla el bot");
-        
-        return;*/
+        /*} else if (step == 10) {
+          fillUpdate(sender_psid, "observation", msgText);
+          console.log("no controla el bot");
+          
+          return;*/
       } else {
         correctDemand(sender_psid, step);
       }
@@ -315,17 +315,17 @@ async function handleMessage(sender_psid, received_message) {
             }
           });
           response = locationReply;
-        /*} else if (step == 10) {
-          getImage(attachment_url, function (err, data) {
-            if (err) {
-              throw new Error(err);
-            } else {
-              var image = [data, attachment_url];
-              fillUpdate(sender_psid, "img", image);
-            }
-          });
-          fillUpdate(sender_psid, "img", msgText);
-          return;*/
+          /*} else if (step == 10) {
+            getImage(attachment_url, function (err, data) {
+              if (err) {
+                throw new Error(err);
+              } else {
+                var image = [data, attachment_url];
+                fillUpdate(sender_psid, "img", image);
+              }
+            });
+            fillUpdate(sender_psid, "img", msgText);
+            return;*/
         } else {
           console.log("wrong step");
           correctDemand(sender_psid, step);
@@ -338,15 +338,15 @@ async function handleMessage(sender_psid, received_message) {
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
-        /*} else if (step == 10) {
-          let coordinates = received_message.attachments[0].payload.coordinates;
-          var location = [coordinates.X, coordinates.Y];
-          fillUpdate(sender_psid, "observations", location);*/
+          /*} else if (step == 10) {
+            let coordinates = received_message.attachments[0].payload.coordinates;
+            var location = [coordinates.X, coordinates.Y];
+            fillUpdate(sender_psid, "observations", location);*/
         } else {
           correctDemand(sender_psid, step);
         }
-      /*} else if (step == 10) {
-        fillUpdate(sender_psid, "observations", msgText);*/
+        /*} else if (step == 10) {
+          fillUpdate(sender_psid, "observations", msgText);*/
       } else {
         correctDemand(sender_psid, step);
       }
@@ -584,7 +584,7 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].tomarControl = value;
       break;
     case "step":
-      updates[0].step=value;
+      updates[0].step = value;
       break;
     default:
       updates[0].step = updates[0].step - 1;
@@ -625,12 +625,12 @@ async function getStep(sender_psid) {
     var d = new Date();
     var updates = await getUpdate(sender_psid);
     console.log("tiempo pasado " + (d.getTime() - updates[0].date));
-    
+
     if (updates == []) {
       console.log("updates estavacio");
       return -1;
-    /*} else if (updates[0].tomarControl) {
-      return 10;*/
+      /*} else if (updates[0].tomarControl) {
+        return 10;*/
     } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 900000)) {
       //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
       console.log("Updates recibio el paso" + updates[0].step);
@@ -705,11 +705,12 @@ async function callSendAPI(sender_psid, response) {
   });
 }
 
-function sendToArcGis(update){
+function sendToArcGis(update) {
 
+  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
   var object = [
     {
-      "attributes" : {
+      "attributes": {
         "sender_id": update.sender_id,
         "cause": update.cause,
         "damages": update.damages,
@@ -721,34 +722,32 @@ function sendToArcGis(update){
         "imgUrl": update.imgUrl,
         "formatedDate": update.formatedDate
       },
-      "geometry" : { 
-        "x" : update.X, 
-        "y" : update.Y}
+      "geometry": {
+        "x": update.X,
+        "y": update.Y
+      }
     }
   ];
-  
+
 
   console.log("printing object to send to arcgissssssss");
-console.log(object);
-console.log(update);
+  console.log(object);
 
+  try {
+    // stringObject = JSON.stringify(object);
 
+    var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);
+    Http.open("POST", url);
+    Http.send();
 
-  try{
- // stringObject = JSON.stringify(object);
-  
-  var url='https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);
-  Http.open("POST", url);
-  Http.send();
-  
-  Http.onreadystatechange = (e) => {
-    console.log("arcgiiiiisssssssssssssssssssssssssss");
-    
-    console.log(Http.responseText);
+    Http.onreadystatechange = (e) => {
+      console.log("arcgiiiiisssssssssssssssssssssssssss");
+
+      console.log(Http.responseText);
+    }
+  } catch (err) {
+    console.log("error sending to arcgis");
+    console.log(err);
+
   }
-} catch(err){
-  console.log("error sending to arcgis");
-  console.log(err);
-  
-}
 }
