@@ -709,7 +709,7 @@ async function callSendAPI(sender_psid, response) {
 
 function sendToArcGis(update) {
 
-  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
+//  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
   var object = [
     {
       "attributes": {
@@ -719,7 +719,7 @@ function sendToArcGis(update) {
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-        "img": { "data": update.img.data, "contentType": update.img.contentType },
+      //  "img": { "data": update.img.data, "contentType": update.img.contentType },
         "observation": update.observation,
         "imgUrl": update.imgUrl,
         "formatedDate": update.formatedDate
@@ -732,7 +732,7 @@ function sendToArcGis(update) {
   ];
 
 
-  console.log("printing object to send to arcgissssssss");
+  console.log("()()()()()()()()printing object to send to arcgissssssss");
   console.log(object);
 
   try {
