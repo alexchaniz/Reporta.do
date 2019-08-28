@@ -710,7 +710,7 @@ async function callSendAPI(sender_psid, response) {
 function sendToArcGis(update) {
 
 //  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
-  update.imgUrl =update.imgUrl.replace("&","...")
+  var imgAux = update.imgUrl.replace("/&/g","...")
 var object = [
     {
       "attributes": {
@@ -722,7 +722,7 @@ var object = [
         "Y": update.Y,
       //  "img": { "data": update.img.data, "contentType": update.img.contentType },
         "observation": update.observation,
-        "imgUrl1": update.imgUrl ,
+        "imgUrl1": imgAux ,
         "formatedDate": update.formatedDate
       },
       "geometry": {
