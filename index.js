@@ -736,7 +736,7 @@ var object = [
   console.log(object);
 
   try {
-stringObject = JSON.stringify(object);
+var stringObject = JSON.stringify(object);
 console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
 
 console.log(stringObject);
