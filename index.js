@@ -714,13 +714,13 @@ function sendToArcGis(update) {
 var object = [
     {
       "attributes": {
-        "sender_idd": update.sender_id,
+        "sender_id1": update.sender_id,
         "cause": update.cause,
         "damages": update.damages,
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-       "img1": { "data": update.img.data, "contentType": update.img.contentType },
+      //  "img": { "data": update.img.data, "contentType": update.img.contentType },
         "observation": update.observation,
     //    "imgUrl": update.imgUrl ,
         "formatedDate": update.formatedDate
