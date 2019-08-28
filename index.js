@@ -334,7 +334,9 @@ async function handleMessage(sender_psid, received_message) {
         if (step == 5) {
           console.log("Steeeeeeep 55555555555555");
           let coordinates = received_message.attachments[0].payload.coordinates;
-          var location = [coordinates.X, coordinates.Y];
+          var location = [coordinates.lat, coordinates.long];
+          console.log(coordinates);
+          
 
           fillUpdate(sender_psid, "location", location);
           response = observationReply;
