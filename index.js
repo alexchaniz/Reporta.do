@@ -742,7 +742,7 @@ var object = [
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-        "img1": raster,
+        "img1": blob,
         //"img": { "data": update.img.data, "Type": update.img.contentType },
         "observation": update.observation,
         "imgUrl1": res ,
