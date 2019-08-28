@@ -711,6 +711,9 @@ function sendToArcGis(update) {
 
 //  console.log("sender_id"+ update.sender_id+ "cause"+ update.cause +"damages"+ update.damages +"date"+update.date+ "X"+ update.X+ "Y"+ update.Y+ "observation"+ update.observation+"imgUrl"+ update.imgUrl+ "formatedDate"+update.formatedDate+ "geometry" + "x"+ update.X+"y"+ update.Y)
   var imgAux = update.imgUrl.replace(/&/g,"...");
+
+  var blob = new Blob([update.img.data], {type: "update.img.contentType"}); 
+
 var object = [
     {
       "attributes": {
@@ -720,7 +723,7 @@ var object = [
         "date": update.date,
         "X": update.X,
         "Y": update.Y,
-        "img": { "data": update.img.data, "Type": update.img.contentType },
+        "img": blob ,
         "observation": update.observation,
        // "imgUrl1": imgAux ,
         "formatedDate": update.formatedDate
