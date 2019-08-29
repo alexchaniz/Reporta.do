@@ -404,7 +404,7 @@ async function handleMessage(sender_psid, received_message) {
             step10(sender_psid, msgText);
             break;
           default:
-            correctDemand(sender_psid);
+            //correctDemand(sender_psid);
             break;
         }
         /*} else if (step == 10) {
@@ -671,7 +671,7 @@ function correctDemand(sender_psid, step) {
     case 9:
       response = observationReply;
       break;
-    default:
+  /*  default:
       aux = 1;
       responseAux = {
         "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
@@ -679,6 +679,7 @@ function correctDemand(sender_psid, step) {
       response = grettingsReply;
       fillUpdate(sender_psid, "step", step)
       break;
+      */
   }
 }
 
