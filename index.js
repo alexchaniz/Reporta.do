@@ -405,11 +405,11 @@ async function handleMessage(sender_psid, received_message) {
           case 6:
             step6(sender_psid, msgText);
             break;
+          case 9:
+            step9(sender_psid, msgText);
+            break;
           case 10:
             step10(sender_psid, msgText);
-            break;
-          case 11:
-            step11(sender_psid, msgText);
             break;
           default:
             correctDemand(sender_psid, step);
@@ -567,8 +567,9 @@ async function step5(sender_psid, msgText) {
   console.log("Steeeeeeep 5555555555555");
 
   if (msgText == "No") {
-    fillUpdate(sender_psid, "humansHarmed", msgText);
+    fillUpdate(sender_psid, "humansHarmed", msgText, ()=>{
     fillUpdate(sender_psid, "humansDeath", msgText);
+    });
     response = imageReply;
   } else if (msgText == "Si") {
     response = harmedPeopleReply;
@@ -592,16 +593,16 @@ async function step6(sender_psid, msgText) {
   }
 }
 
-async function step10(sender_psid, msgText) {
-  console.log("Steeeeeeep 10000000000000");
+async function step9(sender_psid, msgText) {
+  console.log("Steeeeeeep 99999999999999");
 
   //Saves any text recibed
   fillUpdate(sender_psid, "observation", msgText);
   response = anotherUpdateReply;
 }
 
-async function step11(sender_psid, msgText) {
-  console.log("Steeeeeeep 11 11 11 11  11");
+async function step10(sender_psid, msgText) {
+  console.log("Steeeeeeep 100000000000000");
   var d = new Date()
   if (msgText == "No") {
     response = {
