@@ -613,11 +613,11 @@ async function step10(sender_psid, msgText) {
     responseAux = {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
-    response = causeReply
-    var updates = await getUpdate(sender_psid);
+    response = causeReply;
+    
     var newUpdate = new Update;
-    newUpdate.step = 2;
-    newUpdate.sender_id = updates[0].sender_id;
+    newUpdate.step = 3;
+    newUpdate.sender_id = sender_psid;
     newUpdate.date = d.getTime() + 1;
     //newUpdate.damages = updates[0].damages;
     newUpdate.save(function () {
@@ -848,7 +848,7 @@ async function getStep(sender_psid) {
 
       //Check the case there is a wrong step saves
       //Also checks if the conversation has expired
-    } else if ((updates[0].step > 11) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
@@ -892,30 +892,31 @@ function getImage(url, callback) {
 
 async function getCauseInfo(sender_psid) {
 
+  aux = 1;
   var update = await getUpdate(sender_psid);  
   switch (update[0].cause) {
     case cause[1]:
-      response = {
+      responseAux = {
         "text": "Información huracán"
       }
       break;
     case cause[2]:
-      response = {
+      responseAux = {
         "text": "Información lluvias torrenciales"
       }
       break;
     case cause[3]:
-      response = {
+      responseAux = {
         "text": "Información deslizamiento de tierras"
       }
       break;
     case cause[4]:
-      response = {
+      responseAux = {
         "text": "Información terremoto"
       }
       break;
     case cause[5]:
-      response = {
+      responseAux = {
         "text": "Información fuego o explosión"
       }
       break;
