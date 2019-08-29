@@ -412,76 +412,76 @@ async function handleMessage(sender_psid, received_message) {
           console.log("no controla el bot");
           
           return;*/
+      }
+
+    } else if (received_message.attachments) {
+
+      if (received_message.attachments[0].type == "image") {
+
+        // Get the URL of the message attachment
+        let attachment_url = received_message.attachments[0].payload.url;
+        //console.log("the picture is in the link: " + attachment_url)
+
+        if (step == 7) {
+          console.log("Steeeeeeep 777777777777777");
+          getImage(attachment_url, function (err, data) {
+            if (err) {
+              throw new Error(err);
+            } else {
+              var image = [data, attachment_url];
+              fillUpdate(sender_psid, "img", image);
+            }
+          });
+          response = locationReply;
+
+        } else {
+          console.log("wrong step");
+          correctDemand(sender_psid, step);
         }
+      } else if (received_message.attachments[0].type == "location") {
+        if (step == 8) {
+          console.log("Steeeeeeep 666666666666");
+          let coordinates = received_message.attachments[0].payload.coordinates;
+          var location = [coordinates.lat, coordinates.long];
+          console.log(coordinates);
 
-      } else if (received_message.attachments) {
-
-        if (received_message.attachments[0].type == "image") {
-
-          // Get the URL of the message attachment
-          let attachment_url = received_message.attachments[0].payload.url;
-          //console.log("the picture is in the link: " + attachment_url)
-
-          if (step == 7) {
-            console.log("Steeeeeeep 777777777777777");
-            getImage(attachment_url, function (err, data) {
-              if (err) {
-                throw new Error(err);
-              } else {
-                var image = [data, attachment_url];
-                fillUpdate(sender_psid, "img", image);
-              }
-            });
-            response = locationReply;
-
-          } else {
-            console.log("wrong step");
-            correctDemand(sender_psid, step);
-          }
-        } else if (received_message.attachments[0].type == "location") {
-          if (step == 8) {
-            console.log("Steeeeeeep 666666666666");
-            let coordinates = received_message.attachments[0].payload.coordinates;
-            var location = [coordinates.lat, coordinates.long];
-            console.log(coordinates);
-
-            fillUpdate(sender_psid, "location", location);
-            response = observationReply;
-            /*} else if (step == 10) {
-              let coordinates = received_message.attachments[0].payload.coordinates;
-              var location = [coordinates.X, coordinates.Y];
-              fillUpdate(sender_psid, "observations", location);*/
-          } else {
-            correctDemand(sender_psid, step);
-          }
+          fillUpdate(sender_psid, "location", location);
+          response = observationReply;
           /*} else if (step == 10) {
-            fillUpdate(sender_psid, "observations", msgText);*/
+            let coordinates = received_message.attachments[0].payload.coordinates;
+            var location = [coordinates.X, coordinates.Y];
+            fillUpdate(sender_psid, "observations", location);*/
         } else {
           correctDemand(sender_psid, step);
         }
+        /*} else if (step == 10) {
+          fillUpdate(sender_psid, "observations", msgText);*/
       } else {
-        correctDemand(sender_psid);
+        correctDemand(sender_psid, step);
       }
+    } else {
+      correctDemand(sender_psid);
+    }
 
-      // Sends the response message
-      if (aux == 1) {
-        await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
-          await callSendAPI(sender_psid, response);
-          console.log("Se envia mensaje previo de alcaración");
-
-          responseAux = {
-            "text": 'Utilice los botones para responder'
-          }
-          aux = 0;
-        })
-      } else {
-        console.log("No hay mensaje previo de alcaración");
-
-        console.log(response);
+    // Sends the response message
+    if (aux == 1) {
+      await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
         await callSendAPI(sender_psid, response);
-      }
+        console.log("Se envia mensaje previo de alcaración");
+
+        responseAux = {
+          "text": 'Utilice los botones para responder'
+        }
+        aux = 0;
+      })
+    } else {
+      console.log("No hay mensaje previo de alcaración");
+
+      console.log(response);
+      await callSendAPI(sender_psid, response);
     }
   }
+}
 
 //Steps of the conversantion as ordered
 async function step1(sender_psid, msgText) {
@@ -557,8 +557,8 @@ async function step4(sender_psid, msgText) {
 
 async function step5(sender_psid, msgText) {
   console.log("Steeeeeeep 5555555555555");
-  
-  if (msgText == "No"){
+
+  if (msgText == "No") {
     fillUpdate(sender_psid, "humansHarmed", msgText);
     nextStep(sender_psid);
     response = imageReply;
@@ -674,15 +674,18 @@ function correctDemand(sender_psid, step) {
     case 9:
       response = observationReply;
       break;
-   default:
+    case 10:
+      response = anotherUpdateReply;
+      break;
+    default:
       aux = 1;
       responseAux = {
         "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
       }
       response = grettingsReply;
-      fillUpdate(sender_psid, "step", step)
+      fillUpdate(sender_psid, "step", 1);
       break;
-      
+
   }
 }
 
@@ -785,12 +788,13 @@ async function fillUpdate(sender_psid, field, value) {
   Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
     console.log("field : " + field + "-------saved")
     Update.find(function (err, doc) {
-      if(err){
-        console.log(err);        
+      if (err) {
+        console.log(err);
       } else {
-      console.log("guardadoooooooooooooooo")
-      console.log(doc);
-    }});
+        console.log("guardadoooooooooooooooo")
+        console.log(doc);
+      }
+    });
   })
 }
 
