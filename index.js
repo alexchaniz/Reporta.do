@@ -140,7 +140,7 @@ var causeReply = {
 
 var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
 var humanDamagesReply = {
-  "text": "¿Ha sufrido daños o muerto alfún miembro de su familia o comunidad?",
+  "text": "¿Ha sufrido daños o muerto algún miembro de su familia o comunidad?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -157,7 +157,7 @@ var humanDamagesReply = {
 }
 
 var harmedPeopleReply = {
-  "text": "¿Ha sufrido daños o muerto alfún miembro de su familia o comunidad?",
+  "text": "¿Cuantas personas han resultado heridas?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -178,7 +178,7 @@ var harmedPeopleReply = {
   ]
 }
 
-var deathPeople = ["No hubo daños", "1 a 5", "5 a 10", "Más de 10"]
+var deathPeople = ["No hubo muertos", "1 a 5", "5 a 10", "Más de 10"]
 var deathPeopleReply = {
   "text": "Si hubo muertos, ¿Podría indicarnos cuantos?",
   "quick_replies": [
@@ -377,7 +377,7 @@ async function handleMessage(sender_psid, received_message) {
              fillUpdate(sender_psid, "control", true);
            } else if (msgText = "Cerrar asistencia 123") {
              fillUpdate(sender_psid, "step", 8);
-             fillUpdate(sender_psid, "control", false);*/
+             fillUpdate(Getsteeeeeeeep7, "control", false);*/
       if (msgText == "borrartodo") {
         reset();
       } else if (step) {
@@ -404,7 +404,6 @@ async function handleMessage(sender_psid, received_message) {
             step10(sender_psid, msgText);
             break;
           default:
-            correctDemand(sender_psid, step);
             break;
         }
         /*} else if (step == 10) {
@@ -412,6 +411,7 @@ async function handleMessage(sender_psid, received_message) {
           console.log("no controla el bot");
           
           return;*/
+        }
 
       } else if (received_message.attachments) {
 
@@ -460,6 +460,7 @@ async function handleMessage(sender_psid, received_message) {
           correctDemand(sender_psid, step);
         }
       }
+
       // Sends the response message
       if (aux == 1) {
         await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
@@ -479,7 +480,6 @@ async function handleMessage(sender_psid, received_message) {
       }
     }
   }
-}
 
 //Steps of the conversantion as ordered
 async function step1(sender_psid, msgText) {
@@ -560,7 +560,10 @@ async function step5(sender_psid, msgText) {
   } else if (harmedPeople.includes(msgText)) {
     fillUpdate(sender_psid, "humansHarmed", msgText);
     response = deathPeopleReply;
-  } else {
+  }else if (msgText == "No"){
+    fillUpdate(sender_psid, "humansHarmed", msgText);
+    nextStep(sender_psid);
+  }else {
     aux = 1;
     response = humanDamagesReply;
   }
