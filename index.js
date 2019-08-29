@@ -438,12 +438,11 @@ async function handleMessage(sender_psid, received_message) {
             correctDemand(sender_psid, step);
           }
         } else if (received_message.attachments[0].type == "location") {
-          if (step == 6) {
+          if (step == 8) {
             console.log("Steeeeeeep 666666666666");
             let coordinates = received_message.attachments[0].payload.coordinates;
             var location = [coordinates.lat, coordinates.long];
             console.log(coordinates);
-
 
             fillUpdate(sender_psid, "location", location);
             response = observationReply;
@@ -555,15 +554,17 @@ async function step4(sender_psid, msgText) {
 
 async function step5(sender_psid, msgText) {
   console.log("Steeeeeeep 5555555555555");
-  if (msgText == "Si") {
+  
+  if (msgText == "No"){
+    fillUpdate(sender_psid, "humansHarmed", msgText);
+    nextStep(sender_psid);
+    response = imageReply;
+  } else if (msgText == "Si") {
     response = harmedPeopleReply;
   } else if (harmedPeople.includes(msgText)) {
     fillUpdate(sender_psid, "humansHarmed", msgText);
     response = deathPeopleReply;
-  }else if (msgText == "No"){
-    fillUpdate(sender_psid, "humansHarmed", msgText);
-    nextStep(sender_psid);
-  }else {
+  } else {
     aux = 1;
     response = humanDamagesReply;
   }
@@ -779,9 +780,12 @@ async function fillUpdate(sender_psid, field, value) {
   Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
     console.log("field : " + field + "-------saved")
     Update.find(function (err, doc) {
+      if(err){
+        console.log(err);        
+      } else {
       console.log("guardadoooooooooooooooo")
       console.log(doc);
-    });
+    }});
   })
 }
 
