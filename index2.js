@@ -27,24 +27,7 @@ var aux = 0;
 
 //setting option and responses
 var grettingsReply = {
-  "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
-  "quick_replies": [
-    {
-      "content_type": "text",
-      "title": "Reportar daños",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Información",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }
-  ]
-}
-
-var grettingsInfoReply = {
-  "text": "¿Quiere reportar algún daño?",
+  "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
   "quick_replies": [
     {
       "content_type": "text",
@@ -252,6 +235,18 @@ app.get('/webhook', (req, res) => {
   }
 });
 
+/*app.get('/getUpdate', (req, res) => {
+  var senderAuxId = req.body.senderId;
+  console.log(senderAuxId);
+  
+  res.status(200).send({
+    success: 'true',
+    message: 'todos retrieved successfully',
+    sender_Id: senderAuxId
+  })
+});
+*/
+
 
 // Handles messages events
 async function handleMessage(sender_psid, received_message) {
@@ -381,23 +376,19 @@ async function handleMessage(sender_psid, received_message) {
 async function step1(sender_psid, msgText) {
   console.log("Steeeeeeep 1111111111111111");
 
-  if (msgText == "Información") {
+  if (msgText == "No") {
+    console.log("llglggliugytxsrersdfjgyukihjlbyrvctedfhgunmk");
 
-    aux=1
-     responseAux = {
-      "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-    }
-    response= grettingsInfoReply;
-  } else if ((msgText == "¡Si!")||(msgText=="Reportr daños")) {
-    nextStep(sender_psid);
-    response = safePlace;
-  } else if (msgText == "No"){
     response = {
-      "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
-    };
+      "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+    }
+  } else if (msgText == "¡Si!") {
+    nextStep(sender_psid);
+    response = causeReply;
   } else {
+    console.log("Correct steeep1");
+    response = grettingsReply;
     aux = 1;
-    response=grettingsReply;
   }
 }
 
