@@ -885,7 +885,7 @@ function getImage(url, callback) {
     .on('error', callback);
 }
 
-function getCauseInfo(sender_psid) {
+async function getCauseInfo(sender_psid) {
 
   var update = await getUpdate(sender_psid);  
   switch (update[0].cause) {
