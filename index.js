@@ -60,23 +60,72 @@ var grettingsInfoReply = {
   ]
 }
 
-var cause = ["Terremoto", "Huracan", "Vaguada", "Otro"]
+var safePlace = {
+  "text": "¿Está en un lugar seguro?",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "Si",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "No",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
+
+var homeSafe = {
+  "text": "¿Ha sufrido daños su vivienda?",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "No",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Daños leves",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Daños graves",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
+
+var cause = [ "Huracán o tormenta tropical", "Lluvias intensas", "Deslizamiento de tierras", "Terremoto", "Explosión o incendio", "Otro"]
 var causeReply = {
   "text": "Me podría decir la causa de este",
   "quick_replies": [
     {
+      "content_type": "text",
+      "title": "Huracán o tormenta tropical",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Lluvias intensas",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Deslizamiento de tierras",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
       "content_type": "text",
       "title": "Terremoto",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Huracan",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Vaguada",
+      "title": "Explosión o incendio",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
@@ -388,7 +437,7 @@ async function step1(sender_psid, msgText) {
       "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
     response= grettingsInfoReply;
-  } else if ((msgText == "¡Si!")||(msgText=="Reportr daños")) {
+  } else if ((msgText == "¡Si!")||(msgText=="Reportar daños")) {
     nextStep(sender_psid);
     response = safePlace;
   } else if (msgText == "No"){
@@ -403,6 +452,26 @@ async function step1(sender_psid, msgText) {
 
 async function step2(sender_psid, msgText) {
   console.log("Steeeeeeep 22222222222222222222222");
+
+  if (msgText == "No") {
+response = {
+  "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
+}
+  } else if(msgText == "Si"){
+    nextStep(sender_psid);
+    aux = 1;
+    responseAux = {
+      "text": "Ok, continuemos"
+    }
+    response = causeReply;
+  } else {
+    aux = 1;
+    response=safePlace;
+  }
+}
+
+async function step3(sender_psid, msgText) {
+  console.log("Steeeeeeep 22222222222222222222222");
   if (cause.includes(msgText)) {
     if (msgText == "Otro") {
       response = {
@@ -410,11 +479,11 @@ async function step2(sender_psid, msgText) {
       }
     } else {
       fillUpdate(sender_psid, "cause", msgText);
-      response = damagesReply;
+      response = homeSafe;
     }
   } else {
     fillUpdate(sender_psid, "cause", msgText);
-    response = damagesReply;
+    response = homeSafe;
   }
 }
 
