@@ -77,7 +77,7 @@ var safePlace = {
   ]
 }
 
-var homeDamages = [ "Huracán o tormenta tropical", "Lluvias intensas", "Deslizamiento de tierras", "Terremoto", "Explosión o incendio", "Otro"]
+var homeDamages = [ "Daños graves", "Daños leves", "No"]
 var homeDamagesReply = {
   "text": "¿Ha sufrido daños su vivienda?",
   "quick_replies": [
