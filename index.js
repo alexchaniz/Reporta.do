@@ -138,7 +138,7 @@ var causeReply = {
   ]
 }
 
-var harmedPeople [ "1 a 5", "5 a 10", "Más de 10"]
+var harmedPeople= [ "1 a 5", "5 a 10", "Más de 10"]
 var humanDamagesReply = {
   "text": "¿Ha sufrido daños o muerto alfún miembro de su familia o comunidad?",
   "quick_replies": [
@@ -183,6 +183,7 @@ var harmedPeopleReply = {
   ]
 }
 
+var deathPeople= [ "No hubo daños", "1 a 5", "5 a 10", "Más de 10"]
 var deathPeopleReply = {
   "text": "Si hubo muertos, ¿Podría indicarnos cuantos?",
   "quick_replies": [
@@ -569,7 +570,7 @@ async function step5(sender_psid, msgText) {
 
 async function step6(sender_psid, msgText) {
   console.log("Steeeeeeep 5555555555555");
-  if(harmedPeople.includes(msgText)){
+  if(deathPeople.includes(msgText)){
     fillUpdate(sender_psid, "humansDeath", msgText);
     response = deathPeopleReply;
   } else {
