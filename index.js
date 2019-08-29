@@ -633,8 +633,7 @@ async function step10(sender_psid, msgText) {
   } else if (msgText = "Información") {
     getCauseInfo(sender_psid);
     response = anotherUpdateReply;
-  }
-  else {
+  } else {
     aux = 1
     response = anotherUpdateReply;
   }
