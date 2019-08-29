@@ -567,9 +567,7 @@ async function step5(sender_psid, msgText) {
   console.log("Steeeeeeep 5555555555555");
 
   if (msgText == "No") {
-    fillUpdate(sender_psid, "humansHarmed", msgText, ()=>{
-    fillUpdate(sender_psid, "humansDeath", msgText);
-    });
+    fillUpdate(sender_psid, "noHumansHarmed", msgText)
     response = imageReply;
   } else if (msgText == "Si") {
     response = harmedPeopleReply;
@@ -758,7 +756,7 @@ async function fillUpdate(sender_psid, field, value) {
 
   var updates = await getUpdate(sender_psid);
 
-  updates[0].step = updates[0].step + 1;
+  updates[0].step += 1;
 
   switch (field) {
     case "cause":
@@ -772,6 +770,12 @@ async function fillUpdate(sender_psid, field, value) {
       break;
     case "humansDeath":
       updates[0].humansDeath = value;
+      break;
+    case "noHumansHarmed":
+        updates[0].humansHarmed = value;
+        updates[0].humansDeath = value;
+        updates[0].step += 1;
+  
       break;
     case "img":
       updates[0].img.data = value[0];
