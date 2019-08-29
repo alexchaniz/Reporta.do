@@ -663,6 +663,7 @@ function correctDemand(sender_psid, step) {
         "text": 'Una foto es de mucha ayuda para ubicar los daños.'
       }
       response = imageReply;
+      break;
     case 8:
       aux = 1;
       responseAux = {
@@ -673,7 +674,7 @@ function correctDemand(sender_psid, step) {
     case 9:
       response = observationReply;
       break;
-  /*  default:
+   default:
       aux = 1;
       responseAux = {
         "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
@@ -681,7 +682,7 @@ function correctDemand(sender_psid, step) {
       response = grettingsReply;
       fillUpdate(sender_psid, "step", step)
       break;
-      */
+      
   }
 }
 
