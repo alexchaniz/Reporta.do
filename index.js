@@ -238,16 +238,21 @@ var observationReply = {
 }
 
 var anotherUpdateReply = {
-  "text": "¿Quiere reportar otro daño?",
+  "text": "¿Quiere información sobre como actuar o reportar otro daño?",
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "Si",
+      "title": "No",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "No.",
+      "title": "Reportar",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Información",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
@@ -402,6 +407,9 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 10:
             step10(sender_psid, msgText);
+            break;
+          case 11:
+            step11(sender_psid, msgText);
             break;
           default:
             correctDemand(sender_psid, step);
@@ -560,7 +568,7 @@ async function step5(sender_psid, msgText) {
 
   if (msgText == "No") {
     fillUpdate(sender_psid, "humansHarmed", msgText);
-    nextStep(sender_psid);
+    fillUpdate(sender_psid, "humansDeath", msgText);
     response = imageReply;
   } else if (msgText == "Si") {
     response = harmedPeopleReply;
@@ -592,16 +600,16 @@ async function step10(sender_psid, msgText) {
   response = anotherUpdateReply;
 }
 
-async function step7(sender_psid, msgText) {
-  console.log("Steeeeeeep 77777777777777");
+async function step11(sender_psid, msgText) {
+  console.log("Steeeeeeep 11 11 11 11  11");
   var d = new Date()
-  if (msgText == "No.") {
+  if (msgText == "No") {
     response = {
       "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
-  } else if (msgText == "Si") {
+  } else if (msgText == "Reportar") {
 
-    console.log("Step 7 siiiiiiii");
+    console.log("Step 111 siiiiiiii");
     aux = 1;
     responseAux = {
       "text": 'Usted ha decidido reportar un nuevo daño'
@@ -623,8 +631,11 @@ async function step7(sender_psid, msgText) {
 
     console.log(response);
 
-    nextStep(sender_psid);
-  } else {
+  } else if (msgText = "Información") {
+    getCauseInfo(sender_psid);
+    response = anotherUpdateReply;
+  }
+  else {
     aux = 1
     response = anotherUpdateReply;
   }
@@ -832,7 +843,7 @@ async function getStep(sender_psid) {
 
       //Check the case there is a wrong step saves
       //Also checks if the conversation has expired
-    } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 11) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
@@ -872,6 +883,53 @@ function getImage(url, callback) {
   })
     // Inform the callback of the error.
     .on('error', callback);
+}
+
+function getCauseInfo(sender_psid) {
+
+  var update = await getUpdate(sender_psid);  
+  switch (update[0].cause) {
+    case cause[1]:
+      response = {
+        "text": "Información huracán"
+      }
+      break;
+    case cause[2]:
+      response = {
+        "text": "Información lluvias torrenciales"
+      }
+      break;
+    case cause[3]:
+      response = {
+        "text": "Información deslizamiento de tierras"
+      }
+      break;
+    case cause[4]:
+      response = {
+        "text": "Información terremoto"
+      }
+      break;
+    case cause[5]:
+      response = {
+        "text": "Información fuego o explosión"
+      }
+      break;
+    default:
+      break;
+  }
+  
+  Update.findByIdAndUpdate(update[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+    if (err) {
+      console.log(err);
+      
+    } else{
+    console.log("nexesteeeeeeeped");
+    Update.find(function (err, docx) {
+      console.log(docx);
+    });
+  }
+  });
+
 }
 
 // Sends response messages via the Send API
@@ -941,7 +999,9 @@ function sendUpdateToArcGis(update) {
     "attributes": {
       "MongoId": update._id,
       "cause": update.cause,
-      "damages": update.damages,
+      "homeDamages": update.homeDamages,
+      "humansHarmed": update.humansHarmed,
+      "humansDeath": update.humansDeath,
       "date": update.date,
       "X": update.X,
       "Y": update.Y,
