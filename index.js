@@ -77,7 +77,8 @@ var safePlace = {
   ]
 }
 
-var homeSafe = {
+var homeDamages = [ "Huracán o tormenta tropical", "Lluvias intensas", "Deslizamiento de tierras", "Terremoto", "Explosión o incendio", "Otro"]
+var homeDamagesReply = {
   "text": "¿Ha sufrido daños su vivienda?",
   "quick_replies": [
     {
@@ -101,7 +102,7 @@ var homeSafe = {
 
 var cause = [ "Huracán o tormenta tropical", "Lluvias intensas", "Deslizamiento de tierras", "Terremoto", "Explosión o incendio", "Otro"]
 var causeReply = {
-  "text": "Me podría decir la causa de este",
+  "text": "Me podría decir la causa de los daños",
   "quick_replies": [
     {
       "content_type": "text",
@@ -137,23 +138,72 @@ var causeReply = {
   ]
 }
 
-var damages = ["No hubo danos", "Si, hay gente herida", "Si, gente ha fallecido"]
-var damagesReply = {
-  "text": "¿Hay persons heridas?",
+harmedPeople [ "1 a 5", "5 a 10", "Más de 10"]
+var humanDamagesReply = {
+  "text": "¿Ha sufrido daños o muerto alfún miembro de su familia o comunidad?",
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "No hubo danos",
+      "title": "Si",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Si, hay gente herida",
+      "title": "No",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
       "title": "Si, gente ha fallecido",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
+
+var harmedPeopleReply = {
+  "text": "¿Ha sufrido daños o muerto alfún miembro de su familia o comunidad?",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "1 a 5",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "5 a 10",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Más de 10",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
+
+var deathPeopleReply = {
+  "text": "Si hubo muertos, ¿Podría indicarnos cuantos?",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "No hubo muertos",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "1 a 5",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "5 a 10",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Más de 10",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
@@ -214,7 +264,9 @@ var updateSchema = {
   sender_id: { type: Number },
   step: { type: Number },
   cause: { type: String },
-  damages: { type: String },
+  homeDamages: { type: String },
+  humansHarmed: { type: String},
+  humansDeath: { type: String},
   date: { type: Number },
   X: { type: Number },
   Y: { type: Number },
@@ -338,7 +390,11 @@ async function handleMessage(sender_psid, received_message) {
         step2(sender_psid, msgText)
       } else if (step == 3) {
         step3(sender_psid, msgText)
-      } else if (step == 6) {
+      } else if (step == 4) {
+        step4(sender_psid, msgText)
+      } else if (step == 5) {
+        step5(sender_psid, msgText)
+      }else if (step == 6) {
         step6(sender_psid, msgText)
       } else if (step == 7) {
         step7(sender_psid, msgText)
@@ -471,7 +527,7 @@ response = {
 }
 
 async function step3(sender_psid, msgText) {
-  console.log("Steeeeeeep 22222222222222222222222");
+  console.log("Steeeeeeep 33333333333333333333333333");
   if (cause.includes(msgText)) {
     if (msgText == "Otro") {
       response = {
@@ -479,15 +535,50 @@ async function step3(sender_psid, msgText) {
       }
     } else {
       fillUpdate(sender_psid, "cause", msgText);
-      response = homeSafe;
+      response = homeDamagesReply;
     }
   } else {
     fillUpdate(sender_psid, "cause", msgText);
-    response = homeSafe;
+    response = homeDamagesReply;
   }
 }
 
-async function step3(sender_psid, msgText) {
+async function step4(sender_psid, msgText) {
+  console.log("Steeeeeeep 44444444444444444");
+  if (homeDamages.includes(msgText)) {
+      fillUpdate(sender_psid, "homeDamages", msgText);
+      response = humanDamagesReply;
+  } else {
+    aux=1;
+    response = homeDamagesReply;
+  }
+}
+
+async function step5(sender_psid, msgText) {
+  console.log("Steeeeeeep 5555555555555");
+  if (msgText=="Si") {
+      response = harmedPeopleReply;
+  } else if(harmedPeople.includes(msgText)){
+    fillUpdate(sender_psid, "humansHarmed", msgText);
+    response = deathPeopleReply;
+  } else {
+    aux=1;
+    response = harmedPeopleReply;
+  }
+}
+
+async function step6(sender_psid, msgText) {
+  console.log("Steeeeeeep 5555555555555");
+  if(harmedPeople.includes(msgText)){
+    fillUpdate(sender_psid, "humansDeath", msgText);
+    response = deathPeopleReply;
+  } else {
+    aux=1;
+    response = deathPeopleReply;
+  }
+}
+
+async function step3kk(sender_psid, msgText) {
   console.log("Steeeeeeep 333333333333333333");
   if (damages.includes(msgText)) {
     fillUpdate(sender_psid, "damages", msgText);
@@ -644,8 +735,14 @@ async function fillUpdate(sender_psid, field, value) {
     case "cause":
       updates[0].cause = value;
       break;
-    case "damages":
-      updates[0].damages = value;
+    case "homeDamages":
+      updates[0].homeDamages = value;
+      break;
+    case "humansHarmed":
+      updates[0].humansHarmed = value;
+      break;
+    case "humansDeath":
+      updates[0].humansDeath = value;
       break;
     case "img":
       updates[0].img.data = value[0];
