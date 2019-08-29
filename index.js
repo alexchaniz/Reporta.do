@@ -207,7 +207,7 @@ var deathPeopleReply = {
 }
 
 var imageReply = {
-  "text": 'Envienos una imagen de los daños sufridos'
+  "text": 'Envienos una foto'
 }
 
 var locationReply = {
@@ -385,9 +385,6 @@ async function handleMessage(sender_psid, received_message) {
           case 1:
             step1(sender_psid, msgText);
             break;
-          case 1:
-            step1(sender_psid, msgText);
-            break;
           case 2:
             step2(sender_psid, msgText);
             break;
@@ -402,9 +399,6 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 6:
             step6(sender_psid, msgText);
-            break;
-          case 7:
-            step7(sender_psid, msgText);
             break;
           case 10:
             step10(sender_psid, msgText);
@@ -487,481 +481,481 @@ async function handleMessage(sender_psid, received_message) {
   }
 }
 
-    //Steps of the conversantion as ordered
-    async function step1(sender_psid, msgText) {
-      console.log("Steeeeeeep 1111111111111111");
+//Steps of the conversantion as ordered
+async function step1(sender_psid, msgText) {
+  console.log("Steeeeeeep 1111111111111111");
 
-      //Check if we recibe the text from the Quick Replys
-      if (msgText == "Información") {
-        aux = 1
-        responseAux = {
-          "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-        }
-        response = grettingsInfoReply;
-      } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-        nextStep(sender_psid);
-        response = safePlaceReply;
-      } else if (msgText == "No") {
-        response = {
-          "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
-        };
+  //Check if we recibe the text from the Quick Replys
+  if (msgText == "Información") {
+    aux = 1
+    responseAux = {
+      "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+    }
+    response = grettingsInfoReply;
+  } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
+    nextStep(sender_psid);
+    response = safePlaceReply;
+  } else if (msgText == "No") {
+    response = {
+      "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
+    };
+  } else {
+    aux = 1;
+    response = grettingsReply;
+  }
+}
+
+async function step2(sender_psid, msgText) {
+  console.log("Steeeeeeep 22222222222222222222222");
+
+  if (msgText == "No") {
+    response = {
+      "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
+    }
+  } else if (msgText == "Si") {
+    nextStep(sender_psid);
+    aux = 1;
+    responseAux = {
+      "text": "Ok, continuemos"
+    }
+    response = causeReply;
+  } else {
+    aux = 1;
+    response = safePlaceReply;
+  }
+}
+
+async function step3(sender_psid, msgText) {
+  console.log("Steeeeeeep 33333333333333333333333333");
+  if (cause.includes(msgText)) {
+    if (msgText == "Otro") {
+      response = {
+        "text": 'Escriba la causa del problema'
+      }
+    } else {
+      fillUpdate(sender_psid, "cause", msgText);
+      response = homeDamagesReply;
+    }
+  } else {
+    fillUpdate(sender_psid, "cause", msgText);
+    response = homeDamagesReply;
+  }
+}
+
+async function step4(sender_psid, msgText) {
+  console.log("Steeeeeeep 44444444444444444");
+  if (homeDamages.includes(msgText)) {
+    fillUpdate(sender_psid, "homeDamages", msgText);
+    response = humanDamagesReply;
+  } else {
+    aux = 1;
+    response = homeDamagesReply;
+  }
+}
+
+async function step5(sender_psid, msgText) {
+  console.log("Steeeeeeep 5555555555555");
+  if (msgText == "Si") {
+    response = harmedPeopleReply;
+  } else if (harmedPeople.includes(msgText)) {
+    fillUpdate(sender_psid, "humansHarmed", msgText);
+    response = deathPeopleReply;
+  } else {
+    aux = 1;
+    response = humanDamagesReply;
+  }
+}
+
+async function step6(sender_psid, msgText) {
+  console.log("Steeeeeeep 666666666666");
+  if (deathPeople.includes(msgText)) {
+    fillUpdate(sender_psid, "humansDeath", msgText);
+    response = imageReply;
+  } else {
+    aux = 1;
+    response = deathPeopleReply;
+  }
+}
+
+async function step10(sender_psid, msgText) {
+  console.log("Steeeeeeep 10000000000000");
+
+  //Saves any text recibed
+  fillUpdate(sender_psid, "observation", msgText);
+  response = anotherUpdateReply;
+}
+
+async function step7(sender_psid, msgText) {
+  console.log("Steeeeeeep 77777777777777");
+  var d = new Date()
+  if (msgText == "No.") {
+    response = {
+      "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+    }
+  } else if (msgText == "Si") {
+
+    console.log("Step 7 siiiiiiii");
+    aux = 1;
+    responseAux = {
+      "text": 'Usted ha decidido reportar un nuevo daño'
+    }
+    response = causeReply
+    var updates = await getUpdate(sender_psid);
+    var newUpdate = new Update;
+    newUpdate.step = 2;
+    newUpdate.sender_id = updates[0].sender_id;
+    newUpdate.date = d.getTime() + 1;
+    //newUpdate.damages = updates[0].damages;
+    newUpdate.save(function () {
+      console.log("creado");
+      /*Update.find(function (err, doc) {
+        console.log("guardadoooooooooooooooo")
+        console.log(doc);
+      });*/
+    });
+
+    console.log(response);
+
+    nextStep(sender_psid);
+  } else {
+    aux = 1
+    response = anotherUpdateReply;
+  }
+  console.log(response);
+}
+
+function correctDemand(sender_psid, step) {
+  console.log("correct demand");
+
+  switch (step) {
+    case -1:
+      create(sender_psid);
+      response = grettingsReply;
+      break;
+    case 1:
+      response = grettingsReply;
+      break;
+    case 2:
+      response = safePlaceReply;
+      break;
+    case 3:
+      response = causeReply;
+      break;
+    case 4:
+      response = homeDamagesReply;
+      break;
+    case 5:
+      response = humanDamagesReply;
+      break;
+    case 6:
+      response = deathPeopleReply;
+      break;
+    case 7:
+      aux = 1;
+      responseAux = {
+        "text": 'Una foto es de mucha ayuda para ubicar los daños.'
+      }
+      response = imageReply;
+    case 8:
+      aux = 1;
+      responseAux = {
+        "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
+      }
+      response = locationReply;
+      break;
+    case 9:
+      response = observationReply;
+      break;
+    default:
+      aux = 1;
+      responseAux = {
+        "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
+      }
+      response = grettingsReply;
+      fillUpdate(sender_psid, "step", step)
+      break;
+  }
+}
+
+// Handles messaging_postbacks events
+async function handlePostback(sender_psid, received_postback) {
+
+  // Get the payload for the postback
+  let payload = received_postback.payload;
+
+  // Set the response based on the postback payload
+  if (payload === "Greeting") {
+    create(sender_psid);
+    response = grettingsReply;
+
+    // Send the message to acknowledge the postback
+    await callSendAPI(sender_psid, response);
+  } else {
+    correctDemand(sender_psid, step, function (err, dat) {
+      if (err) console.log();
+    });
+  }
+}
+
+function reset() {
+  Update.deleteMany({}, function (err, doc) {
+    console.log("removeeeeeeeeeeeeeeeeeeeeeed");
+  });
+}
+
+function create(sender_psid) {
+
+  var d = new Date();
+
+  var update = new Update({
+    sender_id: sender_psid,
+    step: 1,
+    cause: undefined,
+    damages: undefined,
+    date: d.getTime(),
+    observation: ".",
+    X: undefined,
+    Y: undefined,
+    img: undefined,
+    tomarControl: false,
+    formatedDate: d.toLocaleString() + " " + d.toTimeString()
+  });
+
+  update.save(function () {
+    console.log("creado");
+    Update.find(function (err, doc) {
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
+    });
+  });
+}
+
+async function fillUpdate(sender_psid, field, value) {
+
+  var updates = await getUpdate(sender_psid);
+
+  updates[0].step = updates[0].step + 1;
+
+  switch (field) {
+    case "cause":
+      updates[0].cause = value;
+      break;
+    case "homeDamages":
+      updates[0].homeDamages = value;
+      break;
+    case "humansHarmed":
+      updates[0].humansHarmed = value;
+      break;
+    case "humansDeath":
+      updates[0].humansDeath = value;
+      break;
+    case "img":
+      updates[0].img.data = value[0];
+      updates[0].img.contentType = 'image/png';
+      updates[0].imgUrl = value[1];
+      break;
+    case "location":
+      updates[0].X = value[0];
+      updates[0].Y = value[1];
+      break;
+    case "observation":
+      updates[0].observation += value;
+      sendUpdateToArcGis(updates[0]);
+      break;
+    case "control":
+      updates[0].tomarControl = value;
+      break;
+    case "step":
+      updates[0].step = value;
+      break;
+    default:
+      updates[0].step = updates[0].step - 1;
+      return err;
+  }
+
+  Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
+    console.log("field : " + field + "-------saved")
+    Update.find(function (err, doc) {
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
+    });
+  })
+}
+
+async function nextStep(sender_psid) {
+  var updates = await getUpdate(sender_psid);
+
+  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+    console.log("nexesteeeeeeeped");
+    Update.find(function (err, docx) {
+      console.log(docx);
+    });
+  });
+}
+
+function getUpdate(sender_psid) {
+  return new Promise((resolve, reject) => {
+    Update.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
+      data => resolve(data),
+      error => reject(error)
+    );
+  });
+}
+
+async function getStep(sender_psid) {
+  try {
+    var d = new Date();
+    var updates = await getUpdate(sender_psid);
+    console.log("tiempo pasado " + (d.getTime() - updates[0].date));
+
+    if (updates == []) {
+      console.log("updates is empty");
+      return -1;
+      /*} else if (updates[0].tomarControl) {
+        return 10;*/
+
+      //Check the case there is a wrong step saves
+      //Also checks if the conversation has expired
+    } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
+      console.log("Updates recibió el paso" + updates[0].step);
+      console.log();
+
+      if (updates[0].step < 6) {
+        updates[0].remove();
+      }
+      return -1;
+    } else {
+      var step = updates[0].step;
+      console.log("steeeeeeeeeeep " + step);
+      return step;
+    }
+  } catch (e) {
+    return -1;
+  }
+}
+
+//This converts de image to bin
+function getImage(url, callback) {
+  https.get(url, res => {
+    // Initialise an array
+    const bufs = [];
+
+    // Add the data to the buffer collection
+    res.on('data', function (chunk) {
+      bufs.push(chunk)
+    });
+
+    // This signifies the end of a request
+    res.on('end', function () {
+      // We can join all of the 'chunks' of the image together
+      const data = Buffer.concat(bufs);
+
+      // Then we can call our callback.
+      callback(null, data);
+    });
+  })
+    // Inform the callback of the error.
+    .on('error', callback);
+}
+
+// Sends response messages via the Send API
+async function callSendAPI(sender_psid, response) {
+  // Construct the message body
+  let request_body
+
+  console.log(JSON.stringify(response));
+
+  request_body = {
+    "recipient": {
+      "id": sender_psid
+    },
+    "messaging_type": "RESPONSE",
+    "message": response
+  }
+  // Send the HTTP request to the Messenger PXform
+  return new Promise(function (resolve, reject) {
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (err) {
+        console.log('error sending' + err);
+        return reject(err);
       } else {
-        aux = 1;
-        response = grettingsReply;
+        console.error("Message sent");
+        resolve(body)
       }
+    })
+  });
+}
+
+
+function sendUpdateToArcGis(update) {
+
+  var xhr = new XMLHttpRequest();
+  var blob;
+
+  // Use JSFiddle logo as a sample image to avoid complicating
+  // this example with cross-domain issues.
+  xhr.open("GET", update.imgUrl, true);
+
+  // Ask for the result as an ArrayBuffer.
+  xhr.responseType = "arraybuffer";
+
+  xhr.onload = function (e) {
+    // Obtain a blob: URL for the image data.
+    var arrayBufferView = new Uint8Array(this.response);
+    console.log("aaaaaaaaaaaaarrrrrrrrrraaaaaaybuffer");
+
+    console.log(arrayBufferView);
+
+    blob = new Blob([arrayBufferView], { type: update.img.contentType });
+  }
+  console.log("blooooooooooooooooooooooooob");
+
+  console.log(blob);
+
+  // var imgg = new Blob(update.img.data, {type : update.img,type})
+
+  var urlImgAux = update.imgUrl;
+  var res = urlImgAux.replace(/&/g, "aspersan");
+  var object = [{
+    "attributes": {
+      "MongoId": update._id,
+      "cause": update.cause,
+      "damages": update.damages,
+      "date": update.date,
+      "X": update.X,
+      "Y": update.Y,
+      //"img1": update.img.data,
+      //"img": { "data": update.img.data, "Type": update.img.contentType },
+      "observation": update.observation,
+      "imgUrl1": res,
+      "formatedDate": update.formatedDate
+    },
+    "geometry": {
+      "x": update.X,
+      "y": update.Y
     }
-
-    async function step2(sender_psid, msgText) {
-      console.log("Steeeeeeep 22222222222222222222222");
-
-      if (msgText == "No") {
-        response = {
-          "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
-        }
-      } else if (msgText == "Si") {
-        nextStep(sender_psid);
-        aux = 1;
-        responseAux = {
-          "text": "Ok, continuemos"
-        }
-        response = causeReply;
-      } else {
-        aux = 1;
-        response = safePlaceReply;
-      }
-    }
-
-    async function step3(sender_psid, msgText) {
-      console.log("Steeeeeeep 33333333333333333333333333");
-      if (cause.includes(msgText)) {
-        if (msgText == "Otro") {
-          response = {
-            "text": 'Escriba la causa del problema'
-          }
-        } else {
-          fillUpdate(sender_psid, "cause", msgText);
-          response = homeDamagesReply;
-        }
-      } else {
-        fillUpdate(sender_psid, "cause", msgText);
-        response = homeDamagesReply;
-      }
-    }
-
-    async function step4(sender_psid, msgText) {
-      console.log("Steeeeeeep 44444444444444444");
-      if (homeDamages.includes(msgText)) {
-        fillUpdate(sender_psid, "homeDamages", msgText);
-        response = humanDamagesReply;
-      } else {
-        aux = 1;
-        response = homeDamagesReply;
-      }
-    }
-
-    async function step5(sender_psid, msgText) {
-      console.log("Steeeeeeep 5555555555555");
-      if (msgText == "Si") {
-        response = harmedPeopleReply;
-      } else if (harmedPeople.includes(msgText)) {
-        fillUpdate(sender_psid, "humansHarmed", msgText);
-        response = deathPeopleReply;
-      } else {
-        aux = 1;
-        response = humanDamagesReply;
-      }
-    }
-
-    async function step6(sender_psid, msgText) {
-      console.log("Steeeeeeep 666666666666");
-      if (deathPeople.includes(msgText)) {
-        fillUpdate(sender_psid, "humansDeath", msgText);
-        response = deathPeopleReply;
-      } else {
-        aux = 1;
-        response = deathPeopleReply;
-      }
-    }
-
-    async function step10(sender_psid, msgText) {
-      console.log("Steeeeeeep 66666666666666");
-
-      //Saves any text recibed
-      fillUpdate(sender_psid, "observation", msgText);
-      response = anotherUpdateReply;
-    }
-
-    async function step7(sender_psid, msgText) {
-      console.log("Steeeeeeep 77777777777777");
-      var d = new Date()
-      if (msgText == "No.") {
-        response = {
-          "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-        }
-      } else if (msgText == "Si") {
-
-        console.log("Step 7 siiiiiiii");
-        aux = 1;
-        responseAux = {
-          "text": 'Usted ha decidido reportar un nuevo daño'
-        }
-        response = causeReply
-        var updates = await getUpdate(sender_psid);
-        var newUpdate = new Update;
-        newUpdate.step = 2;
-        newUpdate.sender_id = updates[0].sender_id;
-        newUpdate.date = d.getTime() + 1;
-        //newUpdate.damages = updates[0].damages;
-        newUpdate.save(function () {
-          console.log("creado");
-          /*Update.find(function (err, doc) {
-            console.log("guardadoooooooooooooooo")
-            console.log(doc);
-          });*/
-        });
-
-        console.log(response);
-
-        nextStep(sender_psid);
-      } else {
-        aux = 1
-        response = anotherUpdateReply;
-      }
-      console.log(response);
-    }
-
-    function correctDemand(sender_psid, step) {
-      console.log("correct demand");
-
-      switch (step) {
-        case -1:
-          create(sender_psid);
-          response = grettingsReply;
-          break;
-        case 1:
-          response = grettingsReply;
-          break;
-        case 2:
-          response = safePlaceReply;
-          break;
-        case 3:
-          response = causeReply;
-          break;
-        case 4:
-          response = homeDamagesReply;
-          break;
-        case 5:
-          response = humanDamagesReply;
-          break;
-        case 6:
-          response = deathPeopleReply;
-          break;
-        case 7:
-          aux = 1;
-          responseAux = {
-            "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
-          }
-          response = locationReply;
-          break;
-        case 8:
-          aux = 1;
-          responseAux = {
-            "text": 'Una foto es de mucha ayuda para ubicar los daños.'
-          }
-          response = locationReply;
-        case 9:
-          response = deathPeopleReply;
-          break;
-        default:
-          aux = 1;
-          responseAux = {
-            "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
-          }
-          response = grettingsReply;
-          fillUpdate(sender_psid, "step", step)
-          break;
-      }
-    }
-
-    // Handles messaging_postbacks events
-    async function handlePostback(sender_psid, received_postback) {
-
-      // Get the payload for the postback
-      let payload = received_postback.payload;
-
-      // Set the response based on the postback payload
-      if (payload === "Greeting") {
-        create(sender_psid);
-        response = grettingsReply;
-
-        // Send the message to acknowledge the postback
-        await callSendAPI(sender_psid, response);
-      } else {
-        correctDemand(sender_psid, step, function (err, dat) {
-          if (err) console.log();
-        });
-      }
-    }
-
-    function reset() {
-      Update.deleteMany({}, function (err, doc) {
-        console.log("removeeeeeeeeeeeeeeeeeeeeeed");
-      });
-    }
-
-    function create(sender_psid) {
-
-      var d = new Date();
-
-      var update = new Update({
-        sender_id: sender_psid,
-        step: 1,
-        cause: undefined,
-        damages: undefined,
-        date: d.getTime(),
-        observation: ".",
-        X: undefined,
-        Y: undefined,
-        img: undefined,
-        tomarControl: false,
-        formatedDate: d.toLocaleString() + " " + d.toTimeString()
-      });
-
-      update.save(function () {
-        console.log("creado");
-        Update.find(function (err, doc) {
-          console.log("guardadoooooooooooooooo")
-          console.log(doc);
-        });
-      });
-    }
-
-    async function fillUpdate(sender_psid, field, value) {
-
-      var updates = await getUpdate(sender_psid);
-
-      updates[0].step = updates[0].step + 1;
-
-      switch (field) {
-        case "cause":
-          updates[0].cause = value;
-          break;
-        case "homeDamages":
-          updates[0].homeDamages = value;
-          break;
-        case "humansHarmed":
-          updates[0].humansHarmed = value;
-          break;
-        case "humansDeath":
-          updates[0].humansDeath = value;
-          break;
-        case "img":
-          updates[0].img.data = value[0];
-          updates[0].img.contentType = 'image/png';
-          updates[0].imgUrl = value[1];
-          break;
-        case "location":
-          updates[0].X = value[0];
-          updates[0].Y = value[1];
-          break;
-        case "observation":
-          updates[0].observation += value;
-          sendUpdateToArcGis(updates[0]);
-          break;
-        case "control":
-          updates[0].tomarControl = value;
-          break;
-        case "step":
-          updates[0].step = value;
-          break;
-        default:
-          updates[0].step = updates[0].step - 1;
-          return err;
-      }
-
-      Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
-        console.log("field : " + field + "-------saved")
-        Update.find(function (err, doc) {
-          console.log("guardadoooooooooooooooo")
-          console.log(doc);
-        });
-      })
-    }
-
-    async function nextStep(sender_psid) {
-      var updates = await getUpdate(sender_psid);
-
-      Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
-        console.log("nexesteeeeeeeped");
-        Update.find(function (err, docx) {
-          console.log(docx);
-        });
-      });
-    }
-
-    function getUpdate(sender_psid) {
-      return new Promise((resolve, reject) => {
-        Update.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
-          data => resolve(data),
-          error => reject(error)
-        );
-      });
-    }
-
-    async function getStep(sender_psid) {
-      try {
-        var d = new Date();
-        var updates = await getUpdate(sender_psid);
-        console.log("tiempo pasado " + (d.getTime() - updates[0].date));
-
-        if (updates == []) {
-          console.log("updates is empty");
-          return -1;
-          /*} else if (updates[0].tomarControl) {
-            return 10;*/
-
-          //Check the case there is a wrong step saves
-          //Also checks if the conversation has expired
-        } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
-          console.log("Updates recibió el paso" + updates[0].step);
-          console.log();
-
-          if (updates[0].step < 6) {
-            updates[0].remove();
-          }
-          return -1;
-        } else {
-          var step = updates[0].step;
-          console.log("steeeeeeeeeeep " + step);
-          return step;
-        }
-      } catch (e) {
-        return -1;
-      }
-    }
-
-    //This converts de image to bin
-    function getImage(url, callback) {
-      https.get(url, res => {
-        // Initialise an array
-        const bufs = [];
-
-        // Add the data to the buffer collection
-        res.on('data', function (chunk) {
-          bufs.push(chunk)
-        });
-
-        // This signifies the end of a request
-        res.on('end', function () {
-          // We can join all of the 'chunks' of the image together
-          const data = Buffer.concat(bufs);
-
-          // Then we can call our callback.
-          callback(null, data);
-        });
-      })
-        // Inform the callback of the error.
-        .on('error', callback);
-    }
-
-    // Sends response messages via the Send API
-    async function callSendAPI(sender_psid, response) {
-      // Construct the message body
-      let request_body
-
-      console.log(JSON.stringify(response));
-
-      request_body = {
-        "recipient": {
-          "id": sender_psid
-        },
-        "messaging_type": "RESPONSE",
-        "message": response
-      }
-      // Send the HTTP request to the Messenger PXform
-      return new Promise(function (resolve, reject) {
-        request({
-          "uri": "https://graph.facebook.com/v2.6/me/messages",
-          "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
-          "method": "POST",
-          "json": request_body
-        }, (err, res, body) => {
-          if (err) {
-            console.log('error sending' + err);
-            return reject(err);
-          } else {
-            console.error("Message sent");
-            resolve(body)
-          }
-        })
-      });
-    }
+  }];
 
 
-    function sendUpdateToArcGis(update) {
+  var stringObject = JSON.stringify(object);
+  console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
 
-      var xhr = new XMLHttpRequest();
-      var blob;
+  console.log(stringObject);
 
-      // Use JSFiddle logo as a sample image to avoid complicating
-      // this example with cross-domain issues.
-      xhr.open("GET", update.imgUrl, true);
+  var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
+  console.log(url);
 
-      // Ask for the result as an ArrayBuffer.
-      xhr.responseType = "arraybuffer";
+  Http.open("POST", url);
+  Http.send();
 
-      xhr.onload = function (e) {
-        // Obtain a blob: URL for the image data.
-        var arrayBufferView = new Uint8Array(this.response);
-        console.log("aaaaaaaaaaaaarrrrrrrrrraaaaaaybuffer");
+  Http.onreadystatechange = (e) => {
+    console.log("arcgiiiiisssssssssssssssssssssssssss");
 
-        console.log(arrayBufferView);
-
-        blob = new Blob([arrayBufferView], { type: update.img.contentType });
-      }
-      console.log("blooooooooooooooooooooooooob");
-
-      console.log(blob);
-
-      // var imgg = new Blob(update.img.data, {type : update.img,type})
-
-      var urlImgAux = update.imgUrl;
-      var res = urlImgAux.replace(/&/g, "aspersan");
-      var object = [{
-        "attributes": {
-          "MongoId": update._id,
-          "cause": update.cause,
-          "damages": update.damages,
-          "date": update.date,
-          "X": update.X,
-          "Y": update.Y,
-          //"img1": update.img.data,
-          //"img": { "data": update.img.data, "Type": update.img.contentType },
-          "observation": update.observation,
-          "imgUrl1": res,
-          "formatedDate": update.formatedDate
-        },
-        "geometry": {
-          "x": update.X,
-          "y": update.Y
-        }
-      }];
-
-
-      var stringObject = JSON.stringify(object);
-      console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
-
-      console.log(stringObject);
-
-      var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
-      console.log(url);
-
-      Http.open("POST", url);
-      Http.send();
-
-      Http.onreadystatechange = (e) => {
-        console.log("arcgiiiiisssssssssssssssssssssssssss");
-
-        console.log(Http.responseText);
-      }
-    }
+    console.log(Http.responseText);
+  }
+}
