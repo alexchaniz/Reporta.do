@@ -484,9 +484,11 @@ async function handleMessage(sender_psid, received_message) {
         await callSendAPI(sender_psid, response);
       }
     }
+  }
+}
 
     //Steps of the conversantion as ordered
-      async function step1(sender_psid, msgText) {
+    async function step1(sender_psid, msgText) {
       console.log("Steeeeeeep 1111111111111111");
 
       //Check if we recibe the text from the Quick Replys
@@ -764,7 +766,7 @@ async function handleMessage(sender_psid, received_message) {
           break;
         case "observation":
           updates[0].observation += value;
-          sendToArcGis(updates[0]);
+          sendUpdateToArcGis(updates[0]);
           break;
         case "control":
           updates[0].tomarControl = value;
@@ -811,15 +813,15 @@ async function handleMessage(sender_psid, received_message) {
         var d = new Date();
         var updates = await getUpdate(sender_psid);
         console.log("tiempo pasado " + (d.getTime() - updates[0].date));
-        
+
         if (updates == []) {
           console.log("updates is empty");
           return -1;
           /*} else if (updates[0].tomarControl) {
             return 10;*/
 
-        //Check the case there is a wrong step saves
-        //Also checks if the conversation has expired
+          //Check the case there is a wrong step saves
+          //Also checks if the conversation has expired
         } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
           console.log("Updates recibió el paso" + updates[0].step);
           console.log();
@@ -828,10 +830,10 @@ async function handleMessage(sender_psid, received_message) {
             updates[0].remove();
           }
           return -1;
-        } else{
-        var step = updates[0].step;
-        console.log("steeeeeeeeeeep " + step);
-        return step;
+        } else {
+          var step = updates[0].step;
+          console.log("steeeeeeeeeeep " + step);
+          return step;
         }
       } catch (e) {
         return -1;
@@ -896,7 +898,7 @@ async function handleMessage(sender_psid, received_message) {
     }
 
 
-    function sendToArcGis(update) {
+    function sendUpdateToArcGis(update) {
 
       var xhr = new XMLHttpRequest();
       var blob;
@@ -925,27 +927,25 @@ async function handleMessage(sender_psid, received_message) {
 
       var urlImgAux = update.imgUrl;
       var res = urlImgAux.replace(/&/g, "aspersan");
-      var object = [
-        {
-          "attributes": {
-            "MongoId": update._id,
-            "cause": update.cause,
-            "damages": update.damages,
-            "date": update.date,
-            "X": update.X,
-            "Y": update.Y,
-            //"img1": update.img.data,
-            //"img": { "data": update.img.data, "Type": update.img.contentType },
-            "observation": update.observation,
-            "imgUrl1": res,
-            "formatedDate": update.formatedDate
-          },
-          "geometry": {
-            "x": update.X,
-            "y": update.Y
-          }
+      var object = [{
+        "attributes": {
+          "MongoId": update._id,
+          "cause": update.cause,
+          "damages": update.damages,
+          "date": update.date,
+          "X": update.X,
+          "Y": update.Y,
+          //"img1": update.img.data,
+          //"img": { "data": update.img.data, "Type": update.img.contentType },
+          "observation": update.observation,
+          "imgUrl1": res,
+          "formatedDate": update.formatedDate
+        },
+        "geometry": {
+          "x": update.X,
+          "y": update.Y
         }
-      ];
+      }];
 
 
       var stringObject = JSON.stringify(object);
