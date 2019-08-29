@@ -100,7 +100,7 @@ var homeDamagesReply = {
   ]
 }
 
-var cause = ["Huracán o tormenta tropical", "Lluvias intensas", "Deslizamiento de tierras", "Terremoto", "Explosión o incendio", "Otro"]
+var cause = ["Huracán", "Lluvias intensas", "Deslizamiento", "Terremoto", "Explosión o incendio", "Otro"]
 var causeReply = {
   "text": "Me podría decir la causa de los daños",
   "quick_replies": [
@@ -614,7 +614,7 @@ async function step10(sender_psid, msgText) {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
     response = causeReply;
-    
+
     var newUpdate = new Update;
     newUpdate.step = 3;
     newUpdate.sender_id = sender_psid;
