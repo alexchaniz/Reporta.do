@@ -404,6 +404,7 @@ async function handleMessage(sender_psid, received_message) {
             step10(sender_psid, msgText);
             break;
           default:
+            correctDemand(sender_psid);
             break;
         }
         /*} else if (step == 10) {
