@@ -743,8 +743,13 @@ async function handlePostback(sender_psid, received_postback) {
     var step = await getStep(sender_psid);
 
     if (payload === "stepback") {
+      if (step == 10) {
+        fillUpdate(sender_psid, "step", 1)
+      response=grettingsReply;
+      } else{
       fillUpdate(sender_psid, "step", step - 1)
       correctDemand(sender_psid, step-1);
+      }
     } else if (payload == "restart") {
       fillUpdate(sender_psid, "step", 1)
       response=grettingsReply;

@@ -228,7 +228,7 @@ request_body = {
           "type": "web_url",
           "title": "Comparte nuestro trabajo",
           "url": "https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/",
-          "webview_height_ratio": "full"
+          "webview_height_ratio": "compact"
         }]
     }]
 }
