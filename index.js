@@ -319,10 +319,11 @@ app.post('/webhook', (req, res) => {
         console.log("2---------------------------------------------");
         handlePostback(sender_psid, webhook_event.postback);
       }
+
+      messagingActions(sender_psid, "mark_seen")
+      messagingActions(sender_psid, "typing_on")
     });
 
-    messagingActions(sender_psid, "mark_seen")
-    messagingActions(sender_psid, "typing_on")
     // Returns a '200 OK' response to all requests
     res.status(200).send('EVENT_RECEIVED');
   } else {
@@ -982,7 +983,7 @@ async function callSendAPI(sender_psid, response) {
         console.log('error sending' + err);
         return reject(err);
       } else {
-        console.error("Message sent");
+        console.log("Message sent");
         resolve(body)
       }
     })
@@ -1078,10 +1079,8 @@ function messagingActions(sender_psid, action){
   }, (err, res, body) => {
     if (err) {
       console.log('error msg action' + err);
-      return reject(err);
     } else {
       console.log("Action: " + action);
-      resolve(body)
     }
   })
 }
