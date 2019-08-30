@@ -18,7 +18,7 @@ var Schema = mongoose.Schema;
 
 mongoose.set('useFindAndModify', false);
 
-var updates;
+var updates = [];
 var response;
 
 var aux = 0;
