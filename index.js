@@ -321,8 +321,8 @@ app.post('/webhook', (req, res) => {
       }
 
       messagingActions(sender_psid, "mark_seen")
-      await messagingActions(sender_psid, "typing_on").then(async function(){
-      messagingActions(sender_psid, "typing_off")
+      await messagingActions(sender_psid, "typing_on").then(async function () {
+        messagingActions(sender_psid, "typing_off")
       })
 
     });
@@ -391,14 +391,14 @@ async function handleMessage(sender_psid, received_message) {
 
       var msgText = received_message.text;
       /*     */
-       if (msgText == "borrartodo") {
-         response ={
-           "text": "Base de datos mongodb reiniciada correctamente"
-         }
+      if (msgText == "borrartodo") {
+        response = {
+          "text": "Base de datos mongodb reiniciada correctamente"
+        }
         reset();
       } else if (msgText == "Asistencia 123") {
         console.log("controlando porqueeee");
-        
+
         fillUpdate(sender_psid, "tomarControl", true);
         response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
@@ -407,7 +407,7 @@ async function handleMessage(sender_psid, received_message) {
         fillUpdate(sender_psid, "step", 9);
         fillUpdate(sender_psid, "tomarControl", false);
         fillUpdate(sender_psid, "observation", ". Acabo la toma de control.")
-        aux=1;
+        aux = 1;
         responseAux = {
           "text": "El operario dejó de tener el control"
         }
@@ -415,9 +415,9 @@ async function handleMessage(sender_psid, received_message) {
       } else if (step) {
         switch (step) {
           case -2:
-            response={}
-              fillUpdate(sender_psid, "observation", msgText)
-          break;
+            response = {}
+            fillUpdate(sender_psid, "observation", msgText)
+            break;
           case 1:
             step1(sender_psid, msgText);
             break;
@@ -446,7 +446,7 @@ async function handleMessage(sender_psid, received_message) {
             correctDemand(sender_psid, step);
             break;
         }
-       }
+      }
 
     } else if (received_message.attachments) {
 
@@ -622,7 +622,7 @@ async function step8(sender_psid, received_message) {
 
   fillUpdate(sender_psid, "location", location);
   if (!updates[0].tomarControl) {
-  response = observationReply;
+    response = observationReply;
   } else {
     response = {}
   }
@@ -738,13 +738,22 @@ async function handlePostback(sender_psid, received_postback) {
     create(sender_psid, 1);
     response = grettingsReply;
 
-    // Send the message to acknowledge the postback
-    await callSendAPI(sender_psid, response);
   } else {
-    correctDemand(sender_psid, step, function (err, dat) {
-      if (err) console.log();
-    });
+    var step = await getStep(sender_psid);
+
+    if (payload === "stepback") {
+      fillUpdate(sender_psid, "step", step - 2)
+      correctDemand(sender_psid, step);
+    } else if (payload == restart) {
+      fillUpdate(sender_psid, "step", 1)
+      correctDemand(sender_psid, step);
+    } else {
+      correctDemand(sender_psid, step);
+    }
   }
+
+  // Send the message to acknowledge the postback
+  await callSendAPI(sender_psid, response);
 }
 
 function reset() {
@@ -870,10 +879,10 @@ async function getStep(sender_psid) {
     if (updates == []) {
       console.log("updates is empty");
       return -1;
-    } else if (updates[0].tomarControl){
+    } else if (updates[0].tomarControl) {
       console.log("Control tomado");
       return -2;
-  }else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
@@ -948,9 +957,9 @@ async function getCauseInfo(sender_psid) {
       }
       break;
     default:
-        responseAux = {
-          "text": "Hubo un error, no le podemos ayudar con información sobre la causa"
-        }
+      responseAux = {
+        "text": "Hubo un error, no le podemos ayudar con información sobre la causa"
+      }
       break;
   }
 
@@ -1060,20 +1069,20 @@ function sendUpdateToArcGis(update) {
   }
 }
 
-async function messagingActions(sender_psid, action){
+async function messagingActions(sender_psid, action) {
 
   let request_body
 
 
   request_body = {
-    "recipient":{
+    "recipient": {
       "id": sender_psid
     },
     "sender_action": action
   }
 
   console.log("Action: " + action);
-  
+
 
   return new Promise(function (resolve, reject) {
     request({
