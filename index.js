@@ -390,14 +390,14 @@ async function handleMessage(sender_psid, received_message) {
            "text": "Base de datos mongodb reiniciada correctamente"
          }
         reset();
-      } else if (msgText = "Asistencia 123") {
+      } else if (msgText == "Asistencia 123") {
         console.log("controlando porqueeee");
         
         fillUpdate(sender_psid, "tomarControl", true);
         response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
         }
-      } else if (msgText = "Asistencia 321") {
+      } else if (msgText == "Asistencia 321") {
         fillUpdate(sender_psid, "step", 10);
         fillUpdate(sender_psid, "tomarControl", false);
         fillUpdate(sender_psid, "observation", ". Acabo la toma de control.")
