@@ -1071,6 +1071,9 @@ function messagingActions(sender_psid, action){
     "sender_action": action
   }
 
+  console.log("Action: " + action);
+  
+
   request({
     "uri": "https://graph.facebook.com/v2.6/me/messages",
     "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
