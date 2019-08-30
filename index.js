@@ -219,8 +219,8 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Envienos su ubicación usando el icono señalado",
-        "subtitle": "Una vez pulsado el icono pulse 'Enviar'. En otro caso escribanos su dirección",
+        "title": "Envienos su ubicación usando el botón de la imagen",
+        "subtitle": "Una vez localizado pulse 'Enviar'. En otro caso escribanos su dirección",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location1.jpg"
         //  "buttons": [{}]
       }]
