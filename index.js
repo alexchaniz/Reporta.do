@@ -932,26 +932,19 @@ async function getCauseInfo(sender_psid) {
         "text": "Información terremoto"
       }
       break;
-    case cause[5]:
+    case cause[4]:
       responseAux = {
         "text": "Información fuego o explosión"
       }
       break;
     default:
+        responseAux = {
+          "text": "Hubo un error, no le podemos ayudar con información sobre la causa"
+        }
       break;
   }
 
-  Update.findByIdAndUpdate(update[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
-    if (err) {
-      console.log(err);
-
-    } else {
-      console.log("nexesteeeeeeeped");
-      Update.find(function (err, docx) {
-        console.log(docx);
-      });
-    }
-  });
+  nextStep;
 
 }
 
