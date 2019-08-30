@@ -615,7 +615,11 @@ async function step8(sender_psid, received_message) {
   console.log(coordinates);
 
   fillUpdate(sender_psid, "location", location);
+  if (!updates[0].tomarControl) {
   response = observationReply;
+  } else {
+    response = {}
+  }
   /*} else if (step == 10) {
     let coordinates = received_message.attachments[0].payload.coordinates;
     var location = [coordinates.X, coordinates.Y];
