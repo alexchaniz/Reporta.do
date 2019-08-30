@@ -477,7 +477,7 @@ async function handleMessage(sender_psid, received_message) {
       correctDemand(sender_psid);
     }
 
-    messagingActions(sender_psid, "typing_off", ()=>{
+    messagingActions(sender_psid, "typing_off", async function(){
 
     // Sends the response message
     if (aux == 1) {
