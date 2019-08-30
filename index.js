@@ -398,9 +398,13 @@ async function handleMessage(sender_psid, received_message) {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
         }
       } else if (msgText == "Asistencia 321") {
-        fillUpdate(sender_psid, "step", 10);
+        fillUpdate(sender_psid, "step", 9);
         fillUpdate(sender_psid, "tomarControl", false);
         fillUpdate(sender_psid, "observation", ". Acabo la toma de control.")
+        aux=1;
+        responseAux = {
+          "text": "El operario dejó de tener el control"
+        }
         response = anotherUpdateReply
       } else if (step) {
         switch (step) {
