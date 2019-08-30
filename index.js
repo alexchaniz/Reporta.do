@@ -386,8 +386,13 @@ async function handleMessage(sender_psid, received_message) {
       var msgText = received_message.text;
       /*     */
        if (msgText == "borrartodo") {
+         response ={
+           "text": "Base de datos mongodb reiniciada correctamente"
+         }
         reset();
       } else if (msgText = "Asistencia 123") {
+        console.log("controlando porqueeee");
+        
         fillUpdate(sender_psid, "tomarControl", true);
         response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
