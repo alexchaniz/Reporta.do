@@ -476,8 +476,8 @@ async function handleMessage(sender_psid, received_message) {
     } else {
       correctDemand(sender_psid);
     }
-    
-    messagingActions(sender_psid, "typing_off")
+
+    messagingActions(sender_psid, "typing_off", ()=>{
 
     // Sends the response message
     if (aux == 1) {
@@ -496,6 +496,7 @@ async function handleMessage(sender_psid, received_message) {
       console.log(response);
       await callSendAPI(sender_psid, response);
     }
+  });
   }
 }
 
