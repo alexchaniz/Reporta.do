@@ -321,6 +321,8 @@ app.post('/webhook', (req, res) => {
       }
     });
 
+    messagingActions(sender_psid, "mark_seen")
+    messagingActions(sender_psid, "typing_on")
     // Returns a '200 OK' response to all requests
     res.status(200).send('EVENT_RECEIVED');
   } else {
@@ -807,7 +809,7 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].Y = value[1];
       break;
     case "observation":
-      updates[0].observation += value;
+      updates[0].observation += value + "--";
       if (!updates[0].tomarControl) {
         sendUpdateToArcGis(updates[0]);
       }
@@ -957,6 +959,8 @@ async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
 
+  messagingActions(sender_psid, "typing_off")
+
   console.log(JSON.stringify(response));
 
   request_body = {
@@ -1046,12 +1050,38 @@ function sendUpdateToArcGis(update) {
   var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
   console.log(url);
 
-  Http.open("POST", url);
-  Http.send();
 
   Http.onreadystatechange = (e) => {
     console.log("arcgiiiiisssssssssssssssssssssssssss");
 
     console.log(Http.responseText);
   }
+}
+
+function messagingActions(sender_psid, action){
+
+  let request_body
+
+
+  request_body = {
+    "recipient":{
+      "id": sender_psid
+    },
+    "sender_action": action
+  }
+
+  request({
+    "uri": "https://graph.facebook.com/v2.6/me/messages",
+    "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+    "method": "POST",
+    "json": request_body
+  }, (err, res, body) => {
+    if (err) {
+      console.log('error msg action' + err);
+      return reject(err);
+    } else {
+      console.log("Action: " + action);
+      resolve(body)
+    }
+  })
 }
