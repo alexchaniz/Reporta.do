@@ -631,7 +631,7 @@ async function step10(sender_psid, msgText) {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
 
-    create(sender_psid, 2);
+    create(sender_psid, 3);
     response = causeReply;
 
   } else if (msgText = "Información") {
