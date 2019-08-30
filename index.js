@@ -18,12 +18,15 @@ var Schema = mongoose.Schema;
 
 mongoose.set('useFindAndModify', false);
 
+var updates;
 var response;
+
+var aux = 0;
 var responseAux = {
   "text": 'Utilice los botones para responder'
 }
 
-var aux = 0;
+
 
 //setting option and responses
 var grettingsReply = {
@@ -138,7 +141,6 @@ var causeReply = {
   ]
 }
 
-var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
 var humanDamagesReply = {
   "text": "¿Ha sufrido daños o muerto algún miembro de su familia o comunidad?",
   "quick_replies": [
@@ -156,6 +158,7 @@ var humanDamagesReply = {
   ]
 }
 
+var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
 var harmedPeopleReply = {
   "text": "¿Cuantas personas han resultado heridas?",
   "quick_replies": [
@@ -279,11 +282,14 @@ var updateSchema = {
 };
 
 var update_schema = new Schema(updateSchema);
-
 var Update = mongoose.model("Update", update_schema);
+
+
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
+
+
 
 // Creates the endpoint for our webhook 
 app.post('/webhook', (req, res) => {
@@ -357,6 +363,7 @@ app.get('/webhook', (req, res) => {
 
 // Handles messages events
 async function handleMessage(sender_psid, received_message) {
+  //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
     console.log("Handling message: ");
 
@@ -366,14 +373,13 @@ async function handleMessage(sender_psid, received_message) {
     // Check if the user has been more than without updating
     if (step == -1) {
       //in that case creates another entry
-      create(sender_psid);
+      create(sender_psid, 1);
       response = grettingsReply;
 
       // Check if the message contains text
     } else if (received_message.text) {
 
       console.log("Teeeeeeeeeeeeeeext");
-
       console.log(received_message.text)
       // Create the payload for a basic text message
 
@@ -431,16 +437,8 @@ async function handleMessage(sender_psid, received_message) {
         //console.log("the picture is in the link: " + attachment_url)
 
         if (step == 7) {
-          console.log("Steeeeeeep 777777777777777");
-          getImage(attachment_url, function (err, data) {
-            if (err) {
-              throw new Error(err);
-            } else {
-              var image = [data, attachment_url];
-              fillUpdate(sender_psid, "img", image);
-            }
-          });
-          response = locationReply;
+          
+          step7(sender_psid, attachment_url);
 
         } else {
           console.log("wrong step");
@@ -448,17 +446,7 @@ async function handleMessage(sender_psid, received_message) {
         }
       } else if (received_message.attachments[0].type == "location") {
         if (step == 8) {
-          console.log("Steeeeeeep 666666666666");
-          let coordinates = received_message.attachments[0].payload.coordinates;
-          var location = [coordinates.lat, coordinates.long];
-          console.log(coordinates);
-
-          fillUpdate(sender_psid, "location", location);
-          response = observationReply;
-          /*} else if (step == 10) {
-            let coordinates = received_message.attachments[0].payload.coordinates;
-            var location = [coordinates.X, coordinates.Y];
-            fillUpdate(sender_psid, "observations", location);*/
+          step8(sender_psid, received_message)
         } else {
           correctDemand(sender_psid, step);
         }
@@ -591,6 +579,34 @@ async function step6(sender_psid, msgText) {
   }
 }
 
+async function step7(sender_psid, attachment_url){
+  console.log("Steeeeeeep 777777777777777");
+          getImage(attachment_url, function (err, data) {
+            if (err) {
+              throw new Error(err);
+            } else {
+              var image = [data, attachment_url];
+              fillUpdate(sender_psid, "img", image);
+            }
+          });
+          response = locationReply;
+}
+
+async function step8(sender_psid, received_message){
+
+  console.log("Steeeeeeep 666666666666");
+  let coordinates = received_message.attachments[0].payload.coordinates;
+  var location = [coordinates.lat, coordinates.long];
+  console.log(coordinates);
+
+  fillUpdate(sender_psid, "location", location);
+  response = observationReply;
+  /*} else if (step == 10) {
+    let coordinates = received_message.attachments[0].payload.coordinates;
+    var location = [coordinates.X, coordinates.Y];
+    fillUpdate(sender_psid, "observations", location);*/
+}
+
 async function step9(sender_psid, msgText) {
   console.log("Steeeeeeep 99999999999999");
 
@@ -613,22 +629,9 @@ async function step10(sender_psid, msgText) {
     responseAux = {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
+
+    create(sender_psid, 2);
     response = causeReply;
-
-    var newUpdate = new Update;
-    newUpdate.step = 3;
-    newUpdate.sender_id = sender_psid;
-    newUpdate.date = d.getTime() + 1;
-    //newUpdate.damages = updates[0].damages;
-    newUpdate.save(function () {
-      console.log("creado");
-      /*Update.find(function (err, doc) {
-        console.log("guardadoooooooooooooooo")
-        console.log(doc);
-      });*/
-    });
-
-    console.log(response);
 
   } else if (msgText = "Información") {
     getCauseInfo(sender_psid);
@@ -645,7 +648,7 @@ function correctDemand(sender_psid, step) {
 
   switch (step) {
     case -1:
-      create(sender_psid);
+      create(sender_psid, 1);
       response = grettingsReply;
       break;
     case 1:
@@ -706,7 +709,7 @@ async function handlePostback(sender_psid, received_postback) {
 
   // Set the response based on the postback payload
   if (payload === "Greeting") {
-    create(sender_psid);
+    create(sender_psid, 1);
     response = grettingsReply;
 
     // Send the message to acknowledge the postback
@@ -724,13 +727,13 @@ function reset() {
   });
 }
 
-function create(sender_psid) {
+function create(sender_psid, stepNew) {
 
   var d = new Date();
 
-  var update = new Update({
+  updates[0] = new Update({
     sender_id: sender_psid,
-    step: 1,
+    step: stepNew,
     cause: undefined,
     damages: undefined,
     date: d.getTime(),
@@ -752,8 +755,6 @@ function create(sender_psid) {
 }
 
 async function fillUpdate(sender_psid, field, value) {
-
-  var updates = await getUpdate(sender_psid);
 
   updates[0].step += 1;
 
@@ -814,7 +815,7 @@ async function fillUpdate(sender_psid, field, value) {
 }
 
 async function nextStep(sender_psid) {
-  var updates = await getUpdate(sender_psid);
+  updates = await getUpdate(sender_psid);
 
   Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
@@ -836,7 +837,7 @@ function getUpdate(sender_psid) {
 async function getStep(sender_psid) {
   try {
     var d = new Date();
-    var updates = await getUpdate(sender_psid);
+    updates = await getUpdate(sender_psid);
     console.log("tiempo pasado " + (d.getTime() - updates[0].date));
 
     if (updates == []) {
@@ -891,9 +892,11 @@ function getImage(url, callback) {
 
 async function getCauseInfo(sender_psid) {
 
+  console.log("infooooo causeeeeee");
+  console.log(updates[0].cause);
+  
   aux = 1;
-  var update = await getUpdate(sender_psid);  
-  switch (update[0].cause) {
+  switch (updates[0].cause) {
     case cause[1]:
       responseAux = {
         "text": "Información huracán"
