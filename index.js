@@ -640,7 +640,7 @@ async function step8Aux(sender_psid, msgText) {
 
   //Saves any text recibed
   fillUpdate(sender_psid, "address", msgText);
-  response = anotherUpdateReply;
+  response = observationReply;
 }
 
 async function step9(sender_psid, msgText) {
