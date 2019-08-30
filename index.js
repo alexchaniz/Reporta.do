@@ -160,8 +160,8 @@ var humanDamagesReply = {
 
 var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
 var harmedPeopleReply = {
-  "text": "¿Cuantas personas han resultado heridas?",
-  "quick_replies": [
+  "text": "¿Cuantas personas han resultado heridas?"
+  /*"quick_replies": [
     {
       "content_type": "text",
       "title": "1 a 5",
@@ -178,13 +178,13 @@ var harmedPeopleReply = {
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
-  ]
+  ]*/
 }
 
 var deathPeople = ["No hubo muertos", "1 a 5", "5 a 10", "Más de 10"]
 var deathPeopleReply = {
-  "text": "Si hubo muertos, ¿Podría indicarnos cuantos?",
-  "quick_replies": [
+  "text": "Si hubo muertos, ¿Podría indicarnos cuantos?"
+  /*"quick_replies": [
     {
       "content_type": "text",
       "title": "No hubo muertos",
@@ -206,7 +206,7 @@ var deathPeopleReply = {
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
-  ]
+  ]*/
 }
 
 var imageReply = {
@@ -274,6 +274,7 @@ var updateSchema = {
   date: { type: Number },
   X: { type: Number },
   Y: { type: Number },
+  address: { type: String},
   img: { data: Buffer, contentType: String },
   observation: { type: String },
   imgUrl: { type: String },
@@ -435,6 +436,9 @@ async function handleMessage(sender_psid, received_message) {
           case 6:
             step6(sender_psid, msgText);
             break;
+            case 8:
+            step8Aux(sender_psid, msgText);
+            break;
           case 9:
             step9(sender_psid, msgText);
             break;
@@ -579,24 +583,24 @@ async function step5(sender_psid, msgText) {
     response = imageReply;
   } else if (msgText == "Si") {
     response = harmedPeopleReply;
-  } else if (harmedPeople.includes(msgText)) {
+  }  else {
+fillUpdate(sender_psid, "humansHarmed", msgText)
+    response = deathPeopleReply;
+  }
+  /*else if (harmedPeople.includes(msgText)) {
     fillUpdate(sender_psid, "humansHarmed", msgText);
     response = deathPeopleReply;
-  } else {
-    aux = 1;
-    response = humanDamagesReply;
-  }
+  }*/
 }
 
 async function step6(sender_psid, msgText) {
   console.log("Steeeeeeep 666666666666");
-  if (deathPeople.includes(msgText)) {
-    fillUpdate(sender_psid, "humansDeath", msgText);
-    response = imageReply;
-  } else {
+  fillUpdate(sender_psid, "humansDeath", msgText)
+  response = imageReply;
+  /*} else {
     aux = 1;
     response = deathPeopleReply;
-  }
+  }*/
 }
 
 async function step7(sender_psid, attachment_url) {
@@ -629,6 +633,14 @@ async function step8(sender_psid, received_message) {
     let coordinates = received_message.attachments[0].payload.coordinates;
     var location = [coordinates.X, coordinates.Y];
     fillUpdate(sender_psid, "observations", location);*/
+}
+
+async function step8Aux(sender_psid, msgText) {
+  console.log("Steeeeeeep 99999999999999");
+
+  //Saves any text recibed
+  fillUpdate(sender_psid, "address", msgText);
+  response = anotherUpdateReply;
 }
 
 async function step9(sender_psid, msgText) {
@@ -779,8 +791,9 @@ function create(sender_psid, stepNew) {
     damages: undefined,
     date: d.getTime(),
     observation: ".",
-    X: undefined,
-    Y: undefined,
+    X: 0,
+    Y: 0,
+    address: undefined,
     img: undefined,
     tomarControl: false,
     formatedDate: d.toLocaleString() + " " + d.toTimeString()
@@ -827,6 +840,9 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].X = value[0];
       updates[0].Y = value[1];
       break;
+      case "address":
+          updates[0].address = value;
+          break;
     case "observation":
       updates[0].observation += value + "--";
       if (!updates[0].tomarControl) {
@@ -1049,6 +1065,7 @@ function sendUpdateToArcGis(update) {
       "date": update.date,
       "X": update.X,
       "Y": update.Y,
+      "address" : update.address,
       //"img1": update.img.data,
       //"img": { "data": update.img.data, "Type": update.img.contentType },
       "observation": update.observation,
@@ -1077,6 +1094,7 @@ function sendUpdateToArcGis(update) {
     console.log(Http.responseText);
   }
 }
+
 
 async function messagingActions(sender_psid, action) {
 
