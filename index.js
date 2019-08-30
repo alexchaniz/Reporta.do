@@ -477,7 +477,7 @@ async function handleMessage(sender_psid, received_message) {
       correctDemand(sender_psid);
     }
 
-    messagingActions(sender_psid, "typing_off", async function(){
+    await messagingActions(sender_psid, "typing_off").then(async function(){
 
     // Sends the response message
     if (aux == 1) {
@@ -1060,7 +1060,7 @@ function sendUpdateToArcGis(update) {
   }
 }
 
-function messagingActions(sender_psid, action){
+async function messagingActions(sender_psid, action){
 
   let request_body
 
@@ -1075,16 +1075,20 @@ function messagingActions(sender_psid, action){
   console.log("Action: " + action);
   
 
-  request({
-    "uri": "https://graph.facebook.com/v2.6/me/messages",
-    "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
-    "method": "POST",
-    "json": request_body
-  }, (err, res, body) => {
-    if (err) {
-      console.log('error msg action' + err);
-    } else {
-      console.log("Action: " + action);
-    }
-  })
+  return new Promise(function (resolve, reject) {
+    request({
+      "uri": "https://graph.facebook.com/v2.6/me/messages",
+      "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+      "method": "POST",
+      "json": request_body
+    }, (err, res, body) => {
+      if (err) {
+        console.log('error sending' + err);
+        return reject(err);
+      } else {
+        console.log("Message sent");
+        resolve(body)
+      }
+    })
+  });
 }
