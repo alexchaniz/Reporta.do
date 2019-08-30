@@ -745,7 +745,7 @@ function create(sender_psid, stepNew) {
     formatedDate: d.toLocaleString() + " " + d.toTimeString()
   });
 
-  update.save(function () {
+  updates[0].save(function () {
     console.log("creado");
     Update.find(function (err, doc) {
       console.log("guardadoooooooooooooooo")
