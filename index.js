@@ -385,12 +385,10 @@ async function handleMessage(sender_psid, received_message) {
 
       var msgText = received_message.text;
       /*     */
-      if (updates[0].tomarControl) {
-        fillUpdate(sender_psid, "observation", msgText)
-      } else if (msgText == "borrartodo") {
+       if (msgText == "borrartodo") {
         reset();
       } else if (msgText = "Asistencia 123") {
-        fillUpdate(sender_psid, "control", true);
+        fillUpdate(sender_psid, "tomarControl", true);
         response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
         }
@@ -401,6 +399,9 @@ async function handleMessage(sender_psid, received_message) {
         response = anotherUpdateReply
       } else if (step) {
         switch (step) {
+          case -2:
+              fillUpdate(sender_psid, "observation", msgText)
+          break;
           case 1:
             step1(sender_psid, msgText);
             break;
@@ -429,12 +430,7 @@ async function handleMessage(sender_psid, received_message) {
             correctDemand(sender_psid, step);
             break;
         }
-        /*} else if (step == 10) {
-          fillUpdate(sender_psid, "observation", msgText);
-          console.log("no controla el bot");
-          
-          return;*/
-      }
+       }
 
     } else if (received_message.attachments) {
 
@@ -453,7 +449,8 @@ async function handleMessage(sender_psid, received_message) {
           correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
-        if (step == 8) {
+        if ((updates[0].tomarControl) || (step == 8)) {
+
           step8(sender_psid, received_message)
         } else {
           correctDemand(sender_psid, step);
@@ -801,7 +798,7 @@ async function fillUpdate(sender_psid, field, value) {
         sendUpdateToArcGis(updates[0]);
       }
       break;
-    case "control":
+    case "tomarControl":
       updates[0].tomarControl = value;
       break;
     case "step":
@@ -853,12 +850,10 @@ async function getStep(sender_psid) {
     if (updates == []) {
       console.log("updates is empty");
       return -1;
-      /*} else if (updates[0].tomarControl) {
-        return 10;*/
-
-      //Check the case there is a wrong step saves
-      //Also checks if the conversation has expired
-    } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
+    } else if (updates[0].tomarControl){
+      console.log("Control tomado");
+      return -2;
+  }else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
