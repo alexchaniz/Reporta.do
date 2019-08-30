@@ -219,8 +219,8 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Envienos su ubicación. ",
-        "subtitle": "Utilice el boton indicado en la foto y pulse el boton 'Enviar' en la esqiuna superior",
+        "title": "Envienos su ubicación usando el icono señalado",
+        "subtitle": "Una vez pulsado el icono pulse 'Enviar'. En otro caso escribanos su dirección",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location1.jpg"
         //  "buttons": [{}]
       }]
@@ -274,7 +274,7 @@ var updateSchema = {
   date: { type: Number },
   X: { type: Number },
   Y: { type: Number },
-  address: { type: String},
+  address: { type: String },
   img: { data: Buffer, contentType: String },
   observation: { type: String },
   imgUrl: { type: String },
@@ -369,7 +369,7 @@ async function handleMessage(sender_psid, received_message) {
   if (!received_message.is_echo) {
     messagingActions(sender_psid, "mark_seen")
     messagingActions(sender_psid, "typing_on")
-    
+
 
     console.log("Handling message: ");
 
@@ -436,7 +436,7 @@ async function handleMessage(sender_psid, received_message) {
           case 6:
             step6(sender_psid, msgText);
             break;
-            case 8:
+          case 8:
             step8Aux(sender_psid, msgText);
             break;
           case 9:
@@ -583,8 +583,8 @@ async function step5(sender_psid, msgText) {
     response = imageReply;
   } else if (msgText == "Si") {
     response = harmedPeopleReply;
-  }  else {
-fillUpdate(sender_psid, "humansHarmed", msgText)
+  } else {
+    fillUpdate(sender_psid, "humansHarmed", msgText)
     response = deathPeopleReply;
   }
   /*else if (harmedPeople.includes(msgText)) {
@@ -757,14 +757,14 @@ async function handlePostback(sender_psid, received_postback) {
     if (payload === "stepback") {
       if (step == 10) {
         fillUpdate(sender_psid, "step", 1)
-      response=grettingsReply;
-      } else{
-      fillUpdate(sender_psid, "step", step - 1)
-      correctDemand(sender_psid, step-1);
+        response = grettingsReply;
+      } else {
+        fillUpdate(sender_psid, "step", step - 1)
+        correctDemand(sender_psid, step - 1);
       }
     } else if (payload == "restart") {
       fillUpdate(sender_psid, "step", 1)
-      response=grettingsReply;
+      response = grettingsReply;
     } else {
       correctDemand(sender_psid, step);
     }
@@ -840,9 +840,9 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].X = value[0];
       updates[0].Y = value[1];
       break;
-      case "address":
-          updates[0].address = value;
-          break;
+    case "address":
+      updates[0].address = value;
+      break;
     case "observation":
       updates[0].observation += value + "--";
       if (!updates[0].tomarControl) {
@@ -1065,7 +1065,7 @@ function sendUpdateToArcGis(update) {
       "date": update.date,
       "X": update.X,
       "Y": update.Y,
-      "address" : update.address,
+      "address": update.address,
       //"img1": update.img.data,
       //"img": { "data": update.img.data, "Type": update.img.contentType },
       "observation": update.observation,
