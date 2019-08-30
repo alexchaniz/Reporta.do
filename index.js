@@ -476,6 +476,8 @@ async function handleMessage(sender_psid, received_message) {
     } else {
       correctDemand(sender_psid);
     }
+    
+    messagingActions(sender_psid, "typing_off")
 
     // Sends the response message
     if (aux == 1) {
@@ -959,8 +961,6 @@ async function getCauseInfo(sender_psid) {
 async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
-
-  messagingActions(sender_psid, "typing_off")
 
   console.log(JSON.stringify(response));
 
