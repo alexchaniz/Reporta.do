@@ -405,6 +405,7 @@ async function handleMessage(sender_psid, received_message) {
       } else if (step) {
         switch (step) {
           case -2:
+            response={}
               fillUpdate(sender_psid, "observation", msgText)
           break;
           case 1:
