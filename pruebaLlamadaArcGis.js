@@ -175,21 +175,21 @@ jsonObject = JSON.stringify({
   httpGet(jsonObject);
 
   */
+/*
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
- var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-
- jsonObject = JSON.stringify([{
-  "attributes" : {
-    "sender_id" : 23,
-    "cause" : "lalalong",
-    "damages" : "https://scontent.xx.fbcdn.net/v/t1.15752-9/69231118_507861743377147_7014946539546083328_n.jpg?_nc_cat=109&_nc_oc=AQkNvASlHO9Zbs2xyAbr6nNbomaYwQN0Xt9_560Aa4NSMgnqewB1UFO-kg6pfheCS4V1t_aOL4uod2Zrp9gSsCfO&_nc_ad=z-m&_nc_cid=0&_nc_zor=9&_nc_ht=scontent.xx&oh=31bb71b5e58219877b7051ae1d441acc&oe=5DCE2D04",
-    "lat" : 33,
-    "longitud" : 36
-  },
-  "geometry" : {
-    "x" : 0,
-    "y" : 0
-  }
+jsonObject = JSON.stringify([{
+"attributes" : {
+  "sender_id" : 23,
+  "cause" : "lalalong",
+  "damages" : "https://scontent.xx.fbcdn.net/v/t1.15752-9/69231118_507861743377147_7014946539546083328_n.jpg?_nc_cat=109&_nc_oc=AQkNvASlHO9Zbs2xyAbr6nNbomaYwQN0Xt9_560Aa4NSMgnqewB1UFO-kg6pfheCS4V1t_aOL4uod2Zrp9gSsCfO&_nc_ad=z-m&_nc_cid=0&_nc_zor=9&_nc_ht=scontent.xx&oh=31bb71b5e58219877b7051ae1d441acc&oe=5DCE2D04",
+  "lat" : 33,
+  "longitud" : 36
+},
+"geometry" : {
+  "x" : 0,
+  "y" : 0
+}
 }])
 
 const Http = new XMLHttpRequest();
@@ -198,5 +198,56 @@ Http.open("POST", url);
 Http.send();
 
 Http.onreadystatechange = (e) => {
-  console.log(Http.responseText)
+console.log(Http.responseText)
 }
+*/
+
+const request = require('request');
+
+
+let request_body;
+
+
+request_body = {
+  "persistent_menu": [
+    {
+      "locale": "default",
+      "composer_input_disabled": false,
+      "call_to_actions": [
+        {
+          "type": "postback",
+          "title": "Volver al paso anterior",
+          "payload": "stepback"
+        },
+        {
+          "type": "postback",
+          "title": "Comenzar de nuevo",
+          "payload": "restart"
+        },
+        {
+          "type": "web_url",
+          "title": "Comparte nuestro trabajo",
+          "url": "https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/",
+          "webview_height_ratio": "full"
+        }]
+    }]
+}
+
+var access_token = "EAAFrsb5cwRoBAORZAREANRBqCmj2RC1ooy3l8Nu3hinzIaHnZCIBNxV8wg2GORnEIbLoLwIztQJ5tBMznE2kAbjzJLSSLTms8cN7DrzJ7i2PXENqvAf39vXioOlNbWVHsRmlSQou9skixZAD2O6vTNUKjlIpmJaRPqRsrPr0wZDZD";
+
+request({
+  "uri": "https://graph.facebook.com/v4.0/me/messenger_profile",
+  "qs": { "access_token": access_token},
+  "method": "POST",
+  "json": request_body
+}, (err, res, body) => {
+  if (err) {
+    console.log('error sending' + err);
+  } else {
+    console.log("Message sent");
+    console.log(res);
+    console.log(body);
+
+
+  }
+})

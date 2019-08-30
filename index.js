@@ -321,8 +321,9 @@ app.post('/webhook', (req, res) => {
       }
 
       messagingActions(sender_psid, "mark_seen")
-      messagingActions(sender_psid, "typing_on")
+      await messagingActions(sender_psid, "typing_on").then(async function(){
       messagingActions(sender_psid, "typing_off")
+      })
 
     });
 
