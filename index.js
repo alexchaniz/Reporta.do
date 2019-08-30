@@ -109,7 +109,7 @@ var causeReply = {
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "Huracán o tormenta tropical",
+      "title": "Huracán",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
@@ -119,7 +119,7 @@ var causeReply = {
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Deslizamiento de tierras",
+      "title": "Deslizamiento",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
@@ -491,7 +491,7 @@ async function step1(sender_psid, msgText) {
     }
     response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    nextStep(sender_psid);
+    nextStep();
     response = safePlaceReply;
   } else if (msgText == "No") {
     response = {
@@ -511,7 +511,7 @@ async function step2(sender_psid, msgText) {
       "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
     }
   } else if (msgText == "Si") {
-    nextStep(sender_psid);
+    nextStep();
     aux = 1;
     responseAux = {
       "text": "Ok, continuemos"
@@ -617,11 +617,12 @@ async function step9(sender_psid, msgText) {
 
 async function step10(sender_psid, msgText) {
   console.log("Steeeeeeep 100000000000000");
-  var d = new Date()
+
   if (msgText == "No") {
     response = {
       "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
+    nextStep();
   } else if (msgText == "Reportar") {
 
     console.log("Step 111 siiiiiiii");
@@ -814,8 +815,7 @@ async function fillUpdate(sender_psid, field, value) {
   })
 }
 
-async function nextStep(sender_psid) {
-  updates = await getUpdate(sender_psid);
+async function nextStep() {
 
   Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
