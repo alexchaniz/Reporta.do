@@ -731,6 +731,8 @@ async function handlePostback(sender_psid, received_postback) {
 
   // Get the payload for the postback
   let payload = received_postback.payload;
+  messagingActions(sender_psid, "typing_on")
+
 
   // Set the response based on the postback payload
   if (payload === "Greeting") {
@@ -741,11 +743,11 @@ async function handlePostback(sender_psid, received_postback) {
     var step = await getStep(sender_psid);
 
     if (payload === "stepback") {
-      fillUpdate(sender_psid, "step", step - 2)
+      fillUpdate(sender_psid, "step", step - 3)
       correctDemand(sender_psid, step);
-    } else if (payload == restart) {
+    } else if (payload == "restart") {
       fillUpdate(sender_psid, "step", 1)
-      correctDemand(sender_psid, step);
+      response=grettingsReply;
     } else {
       correctDemand(sender_psid, step);
     }
