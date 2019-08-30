@@ -897,22 +897,22 @@ async function getCauseInfo(sender_psid) {
   
   aux = 1;
   switch (updates[0].cause) {
-    case cause[1]:
+    case cause[0]:
       responseAux = {
         "text": "Información huracán"
       }
       break;
-    case cause[2]:
+    case cause[1]:
       responseAux = {
         "text": "Información lluvias torrenciales"
       }
       break;
-    case cause[3]:
+    case cause[2]:
       responseAux = {
         "text": "Información deslizamiento de tierras"
       }
       break;
-    case cause[4]:
+    case cause[3]:
       responseAux = {
         "text": "Información terremoto"
       }
