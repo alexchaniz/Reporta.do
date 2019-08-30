@@ -384,13 +384,21 @@ async function handleMessage(sender_psid, received_message) {
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
-      /*     if (msgText = "Asistencia personalizada 123") {
-             fillUpdate(sender_psid, "control", true);
-           } else if (msgText = "Cerrar asistencia 123") {
-             fillUpdate(sender_psid, "step", 8);
-             fillUpdate(Getsteeeeeeeep7, "control", false);*/
-      if (msgText == "borrartodo") {
+      /*     */
+      if (updates[0].tomarControl) {
+        fillUpdate(sender_psid, "observation", msgText)
+      } else if (msgText == "borrartodo") {
         reset();
+      } else if (msgText = "Asistencia 123") {
+        fillUpdate(sender_psid, "control", true);
+        response = {
+          "text": "Uno de nuestros operarios ha tomado el control de la conversación."
+        }
+      } else if (msgText = "Asistencia 321") {
+        fillUpdate(sender_psid, "step", 10);
+        fillUpdate(sender_psid, "tomarControl", false);
+        fillUpdate(sender_psid, "observation", ". Acabo la toma de control.")
+        response = anotherUpdateReply
       } else if (step) {
         switch (step) {
           case 1:
@@ -436,8 +444,8 @@ async function handleMessage(sender_psid, received_message) {
         let attachment_url = received_message.attachments[0].payload.url;
         //console.log("the picture is in the link: " + attachment_url)
 
-        if (step == 7) {
-          
+        if ((updates[0].tomarControl) || (step == 7)) {
+
           step7(sender_psid, attachment_url);
 
         } else {
@@ -579,20 +587,20 @@ async function step6(sender_psid, msgText) {
   }
 }
 
-async function step7(sender_psid, attachment_url){
+async function step7(sender_psid, attachment_url) {
   console.log("Steeeeeeep 777777777777777");
-          getImage(attachment_url, function (err, data) {
-            if (err) {
-              throw new Error(err);
-            } else {
-              var image = [data, attachment_url];
-              fillUpdate(sender_psid, "img", image);
-            }
-          });
-          response = locationReply;
+  getImage(attachment_url, function (err, data) {
+    if (err) {
+      throw new Error(err);
+    } else {
+      var image = [data, attachment_url];
+      fillUpdate(sender_psid, "img", image);
+    }
+  });
+  response = locationReply;
 }
 
-async function step8(sender_psid, received_message){
+async function step8(sender_psid, received_message) {
 
   console.log("Steeeeeeep 666666666666");
   let coordinates = received_message.attachments[0].payload.coordinates;
@@ -773,10 +781,10 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].humansDeath = value;
       break;
     case "noHumansHarmed":
-        updates[0].humansHarmed = value;
-        updates[0].humansDeath = value;
-        updates[0].step += 1;
-  
+      updates[0].humansHarmed = value;
+      updates[0].humansDeath = value;
+      updates[0].step += 1;
+
       break;
     case "img":
       updates[0].img.data = value[0];
@@ -789,7 +797,9 @@ async function fillUpdate(sender_psid, field, value) {
       break;
     case "observation":
       updates[0].observation += value;
-      sendUpdateToArcGis(updates[0]);
+      if (!updates[0].tomarControl) {
+        sendUpdateToArcGis(updates[0]);
+      }
       break;
     case "control":
       updates[0].tomarControl = value;
@@ -894,7 +904,7 @@ async function getCauseInfo(sender_psid) {
 
   console.log("infooooo causeeeeee");
   console.log(updates[0].cause);
-  
+
   aux = 1;
   switch (updates[0].cause) {
     case cause[0]:
@@ -925,17 +935,17 @@ async function getCauseInfo(sender_psid) {
     default:
       break;
   }
-  
+
   Update.findByIdAndUpdate(update[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     if (err) {
       console.log(err);
-      
-    } else{
-    console.log("nexesteeeeeeeped");
-    Update.find(function (err, docx) {
-      console.log(docx);
-    });
-  }
+
+    } else {
+      console.log("nexesteeeeeeeped");
+      Update.find(function (err, docx) {
+        console.log(docx);
+      });
+    }
   });
 
 }
