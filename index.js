@@ -320,11 +320,6 @@ app.post('/webhook', (req, res) => {
         handlePostback(sender_psid, webhook_event.postback);
       }
 
-      messagingActions(sender_psid, "mark_seen")
-      await messagingActions(sender_psid, "typing_on").then(async function () {
-        messagingActions(sender_psid, "typing_off")
-      })
-
     });
 
     // Returns a '200 OK' response to all requests
@@ -371,6 +366,10 @@ app.get('/webhook', (req, res) => {
 async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
+    messagingActions(sender_psid, "mark_seen")
+    messagingActions(sender_psid, "typing_on")
+    
+
     console.log("Handling message: ");
 
     var step = await getStep(sender_psid);
@@ -971,6 +970,9 @@ async function getCauseInfo(sender_psid) {
 async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
+
+  messagingActions(sender_psid, "typing_off")
+
 
   console.log(JSON.stringify(response));
 
