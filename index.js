@@ -2,7 +2,6 @@
 
 const request = require('request');
 
-// page acces token> EAAHxOF5ZBsSoBAMCneBZBRZBhac2ZCsYNVRLMS5aLuyjwGe0ayZB6ZCptcPmLs6AQ0qOeV4ZAJjHDOi2fOCMBJU2kR7wItickH6hJn4Y7Ki1iIFEC2dWTXdigF54QOLZBiflYy773P1JRH6t8HCEPvEer9q8TG46Csi2ZCdKTnUM3kAZDZD 
 //Imports dependencies and set up http server
 const
   express = require('express'),
@@ -13,22 +12,49 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const Http = new XMLHttpRequest();
 
 var https = require('https');
+
+
+
+//Setting mongo server collections and connections
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 mongoose.set('useFindAndModify', false);
-
 var updates = [];
-var response;
 
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+
+var updateSchema = {
+  sender_id: { type: Number },
+  step: { type: Number },
+  cause: { type: String },
+  homeDamages: { type: String },
+  humansHarmed: { type: String },
+  humansDeath: { type: String },
+  date: { type: Number },
+  X: { type: Number },
+  Y: { type: Number },
+  address: { type: String },
+  img: { data: Buffer, contentType: String },
+  observation: { type: String },
+  imgUrl: { type: String },
+  tomarControl: { type: Boolean },
+  formatedDate: { type: String }
+};
+
+var update_schema = new Schema(updateSchema);
+var Update = mongoose.model("Update", update_schema);
+
+
+//
+//setting option and responses
+//
+var response;
 var aux = 0;
 var responseAux = {
   "text": 'Utilice los botones para responder'
 }
 
-
-
-//setting option and responses
 var grettingsReply = {
   "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
   "quick_replies": [
@@ -264,34 +290,9 @@ var anotherUpdateReply = {
   ]
 }
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
-
-var updateSchema = {
-  sender_id: { type: Number },
-  step: { type: Number },
-  cause: { type: String },
-  homeDamages: { type: String },
-  humansHarmed: { type: String },
-  humansDeath: { type: String },
-  date: { type: Number },
-  X: { type: Number },
-  Y: { type: Number },
-  address: { type: String },
-  img: { data: Buffer, contentType: String },
-  observation: { type: String },
-  imgUrl: { type: String },
-  tomarControl: { type: Boolean },
-  formatedDate: { type: String }
-};
-
-var update_schema = new Schema(updateSchema);
-var Update = mongoose.model("Update", update_schema);
-
-
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
-
 
 
 // Creates the endpoint for our webhook 
@@ -369,16 +370,21 @@ app.get('/webhook', (req, res) => {
 async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
+
+    //Set message state to recived and actives the typing icon
+    //on the conversation
     messagingActions(sender_psid, "mark_seen")
     messagingActions(sender_psid, "typing_on")
 
 
     console.log("Handling message: ");
 
+    //Get the step the conversation is
     var step = await getStep(sender_psid);
     console.log("Getsteeeeeeeep" + step);
 
-    // Check if the user has been more than without updating
+    // Expired conversation, new conversation or completed survey
+    //Creayes a new conversation, a new update
     if (step == -1) {
       //in that case creates another entry
       create(sender_psid, 1);
@@ -392,7 +398,9 @@ async function handleMessage(sender_psid, received_message) {
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
-      /*     */
+      /*   
+      checks if message is one of the preconfigured special messages
+      */
       if (msgText == "borrartodo") {
         response = {
           "text": "Base de datos mongodb reiniciada correctamente"
@@ -414,8 +422,12 @@ async function handleMessage(sender_psid, received_message) {
           "text": "El operario dejó de tener el control"
         }
         response = anotherUpdateReply
+
       } else if (step) {
+
+        //Activate the function asociated to the step
         switch (step) {
+          //if the control was took from the operator
           case -2:
             response = {}
             fillUpdate(sender_psid, "observation", msgText)
@@ -455,13 +467,16 @@ async function handleMessage(sender_psid, received_message) {
             step11(sender_psid, msgText);
             break;
           default:
+            //Asks for the cooect question to return as no action coud be tooken
             correctDemand(sender_psid, step);
             break;
         }
       }
 
+      //Check if message has attached elements
     } else if (received_message.attachments) {
 
+//if image or video
       if ((received_message.attachments[0].type == "image")||(received_message.attachments[0].type="video")) {
 
         if ((updates[0].tomarControl) || (step == 7)) {
@@ -494,15 +509,11 @@ async function handleMessage(sender_psid, received_message) {
     await messagingActions(sender_psid, "typing_off").then(async function () {
 
       // Sends the response message
+      //In case aux=1 send auxiliar response
       if (aux == 1) {
         await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
           await callSendAPI(sender_psid, response);
           console.log("Se envia mensaje previo de alcaración");
-
-          responseAux = {
-            "text": 'Utilice los botones para responder'
-          }
-          aux = 0;
         })
       } else {
         console.log("No hay mensaje previo de alcaración");
@@ -618,6 +629,8 @@ async function step7(sender_psid, attachment_url, type) {
   console.log("Steeeeeeep 777777777777777");
 
   if(type=="image"){
+
+    //save the image as buffer
   getImage(attachment_url, function (err, data) {
     if (err) {
       throw new Error(err);
@@ -698,6 +711,7 @@ async function step11(sender_psid, msgText) {
   console.log(response);
 }
 
+//Look for the correct reply as no action could be took
 function correctDemand(sender_psid, step) {
   console.log("correct demand");
 
@@ -705,6 +719,13 @@ function correctDemand(sender_psid, step) {
     case -1:
       create(sender_psid, 1);
       response = grettingsReply;
+      break;
+    case 7:
+      aux = 1;
+      responseAux = {
+        "text": 'Una foto es de mucha ayuda para ubicar los daños.'
+      }
+      response = imageReply;
       break;
     case 1:
       response = grettingsReply;
@@ -723,13 +744,6 @@ function correctDemand(sender_psid, step) {
       break;
     case 6:
       response = deathPeopleReply;
-      break;
-    case 7:
-      aux = 1;
-      responseAux = {
-        "text": 'Una foto es de mucha ayuda para ubicar los daños.'
-      }
-      response = imageReply;
       break;
     case 8, 9:
       aux = 1;
@@ -752,7 +766,6 @@ function correctDemand(sender_psid, step) {
       response = grettingsReply;
       fillUpdate(sender_psid, "step", 1);
       break;
-
   }
 }
 
@@ -772,7 +785,10 @@ async function handlePostback(sender_psid, received_postback) {
   } else {
     var step = await getStep(sender_psid);
 
+    //checks if interaction with static menu was received
     if (payload === "stepback") {
+
+      //if conversation is already in last step
       if (step == 11) {
         fillUpdate(sender_psid, "step", 1)
         response = grettingsReply;
@@ -792,12 +808,14 @@ async function handlePostback(sender_psid, received_postback) {
   await callSendAPI(sender_psid, response);
 }
 
+//resets mongo db collection
 function reset() {
   Update.deleteMany({}, function (err, doc) {
     console.log("removeeeeeeeeeeeeeeeeeeeeeed");
   });
 }
 
+//create new update onject in db
 function create(sender_psid, stepNew) {
 
   var d = new Date();
@@ -826,6 +844,7 @@ function create(sender_psid, stepNew) {
   });
 }
 
+//Fills the indicates fill with the indicated values
 async function fillUpdate(sender_psid, field, value) {
 
   updates[0].step += 1;
@@ -893,6 +912,7 @@ async function fillUpdate(sender_psid, field, value) {
   })
 }
 
+//Set the nex step. Sums 1
 async function nextStep() {
 
   Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
@@ -903,6 +923,7 @@ async function nextStep() {
   });
 }
 
+//Get the last created update element in the db associated to the sender
 function getUpdate(sender_psid) {
   return new Promise((resolve, reject) => {
     Update.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
@@ -912,6 +933,7 @@ function getUpdate(sender_psid) {
   });
 }
 
+//Get the step of the user`s last conversation
 async function getStep(sender_psid) {
   try {
     var d = new Date();
@@ -966,6 +988,7 @@ function getImage(url, callback) {
     .on('error', callback);
 }
 
+//Get the info that corresponds to the cause of the damages that the user indicated
 async function getCauseInfo(sender_psid) {
 
   console.log("infooooo causeeeeee");
@@ -1042,7 +1065,7 @@ async function callSendAPI(sender_psid, response) {
   });
 }
 
-
+//Sends the collected data to arcgis
 function sendUpdateToArcGis(update) {
 
   var xhr = new XMLHttpRequest();
@@ -1071,7 +1094,12 @@ function sendUpdateToArcGis(update) {
   // var imgg = new Blob(update.img.data, {type : update.img,type})
 
   var urlImgAux = update.imgUrl;
+
+  //Replace the & for the string 'aspersan' as the other is bad interpretes
+  // int the reques, as it may signal a new parameter when its part of one of them
   var res = urlImgAux.replace(/&/g, "aspersan");
+
+  //Constructs the object witht he data to update
   var object = [{
     "attributes": {
       "MongoId": update._id,
@@ -1095,13 +1123,15 @@ function sendUpdateToArcGis(update) {
     }
   }];
 
-
+//Hace string los parametro para añadirlos a la url
   var stringObject = JSON.stringify(object);
   console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
 
   console.log(stringObject);
 
-  var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
+  //The url with the parameters indicated in the addFeature
+  //rest service for updating data to an arcgis layer
+  var url = process.env.ARCGIS_LAYER_ADDFEATURE + '/addFeatures?f=JSON&features=' + JSON.stringify(object);;
   console.log(url);
 
 
@@ -1112,7 +1142,7 @@ function sendUpdateToArcGis(update) {
   }
 }
 
-
+//Activate the messaging actions
 async function messagingActions(sender_psid, action) {
 
   let request_body
