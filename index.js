@@ -375,11 +375,6 @@ async function handleMessage(sender_psid, received_message) {
 
     console.log("Handling message: ");
 
-    console.log(received_message);
-    console.log(received_message.attachments[0].type)
-    console.log(received_message.attachments[0])
-    
-
     var step = await getStep(sender_psid);
     console.log("Getsteeeeeeeep" + step);
 
