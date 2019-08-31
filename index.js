@@ -468,7 +468,7 @@ async function handleMessage(sender_psid, received_message) {
 
           // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
-        step7(sender_psid, attachment_url);
+        step7(sender_psid, attachment_url, received_message.attachments[0].type);
 
         } else {
           console.log("wrong step");
@@ -614,10 +614,10 @@ async function step6(sender_psid, msgText) {
   }*/
 }
 
-async function step7(sender_psid, attachment_url) {
+async function step7(sender_psid, attachment_url, type) {
   console.log("Steeeeeeep 777777777777777");
 
-  if(received_message.attachments[0].type=="image"){
+  if(type=="image"){
   getImage(attachment_url, function (err, data) {
     if (err) {
       throw new Error(err);
@@ -629,6 +629,7 @@ async function step7(sender_psid, attachment_url) {
 } else {
   fillUpdate(sender_psid, "video", attachment_url);
 }
+
   response = locationReply;
 }
 
