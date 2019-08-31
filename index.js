@@ -219,8 +219,8 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Envienos su ubicación usando el botón de la imagen",
-        "subtitle": "Una vez localizado pulse 'Enviar'. En otro caso escribanos su dirección",
+        "title": "Envienos su ubicación",
+        "subtitle": "Para ello utilice el botón que aparece en la imagen y pulse 'Enviar'.",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location1.jpg"
         //  "buttons": [{}]
       }]
@@ -437,13 +437,20 @@ async function handleMessage(sender_psid, received_message) {
             step6(sender_psid, msgText);
             break;
           case 8:
-            step8Aux(sender_psid, msgText);
-            break;
+            nextStep();
+            aux=1;
+            responseAux = {
+              "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
+            }
+            break; 
           case 9:
-            step9(sender_psid, msgText);
+            step8Aux(sender_psid, msgText);
             break;
           case 10:
             step10(sender_psid, msgText);
+            break;
+          case 11:
+            step11(sender_psid, msgText);
             break;
           default:
             correctDemand(sender_psid, step);
@@ -468,7 +475,7 @@ async function handleMessage(sender_psid, received_message) {
           correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
-        if ((updates[0].tomarControl) || (step == 8)) {
+        if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
           step8(sender_psid, received_message)
         } else {
@@ -618,11 +625,12 @@ async function step7(sender_psid, attachment_url) {
 
 async function step8(sender_psid, received_message) {
 
-  console.log("Steeeeeeep 666666666666");
+  console.log("Steeeeeeep 88888888");
   let coordinates = received_message.attachments[0].payload.coordinates;
   var location = [coordinates.lat, coordinates.long];
   console.log(coordinates);
 
+  update.step +=1;
   fillUpdate(sender_psid, "location", location);
   if (!updates[0].tomarControl) {
     response = observationReply;
@@ -643,7 +651,7 @@ async function step8Aux(sender_psid, msgText) {
   response = observationReply;
 }
 
-async function step9(sender_psid, msgText) {
+async function step10(sender_psid, msgText) {
   console.log("Steeeeeeep 99999999999999");
 
   //Saves any text recibed
@@ -651,7 +659,7 @@ async function step9(sender_psid, msgText) {
   response = anotherUpdateReply;
 }
 
-async function step10(sender_psid, msgText) {
+async function step11(sender_psid, msgText) {
   console.log("Steeeeeeep 100000000000000");
 
   if (msgText == "No") {
@@ -713,17 +721,17 @@ function correctDemand(sender_psid, step) {
       }
       response = imageReply;
       break;
-    case 8:
+    case 8, 9:
       aux = 1;
       responseAux = {
         "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
       }
       response = locationReply;
       break;
-    case 9:
+    case 10:
       response = observationReply;
       break;
-    case 10:
+    case 11:
       response = anotherUpdateReply;
       break;
     default:
@@ -755,7 +763,7 @@ async function handlePostback(sender_psid, received_postback) {
     var step = await getStep(sender_psid);
 
     if (payload === "stepback") {
-      if (step == 10) {
+      if (step == 11) {
         fillUpdate(sender_psid, "step", 1)
         response = grettingsReply;
       } else {
@@ -904,7 +912,7 @@ async function getStep(sender_psid) {
     } else if (updates[0].tomarControl) {
       console.log("Control tomado");
       return -2;
-    } else if ((updates[0].step > 10) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 11) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
