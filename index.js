@@ -630,7 +630,7 @@ async function step8(sender_psid, received_message) {
   var location = [coordinates.lat, coordinates.long];
   console.log(coordinates);
 
-  update.step =9;
+  updates[0].step =9;
   fillUpdate(sender_psid, "location", location);
   if (!updates[0].tomarControl) {
     response = observationReply;
