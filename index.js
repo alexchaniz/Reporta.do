@@ -467,15 +467,13 @@ async function handleMessage(sender_psid, received_message) {
 
     } else if (received_message.attachments) {
 
-      if (received_message.attachments[0].type == "image") {
-
-        // Get the URL of the message attachment
-        let attachment_url = received_message.attachments[0].payload.url;
-        //console.log("the picture is in the link: " + attachment_url)
+      if ((received_message.attachments[0].type == "image")||(received_message.attachments[0].type="video")) {
 
         if ((updates[0].tomarControl) || (step == 7)) {
 
-          step7(sender_psid, attachment_url);
+          // Get the URL of the message attachment
+        let attachment_url = received_message.attachments[0].payload.url;
+        step7(sender_psid, attachment_url);
 
         } else {
           console.log("wrong step");
@@ -623,6 +621,8 @@ async function step6(sender_psid, msgText) {
 
 async function step7(sender_psid, attachment_url) {
   console.log("Steeeeeeep 777777777777777");
+
+  if(received_message.attachments[0].type=="image"){
   getImage(attachment_url, function (err, data) {
     if (err) {
       throw new Error(err);
@@ -631,6 +631,9 @@ async function step7(sender_psid, attachment_url) {
       fillUpdate(sender_psid, "img", image);
     }
   });
+} else {
+  fillUpdate(sender_psid, "video", attachment_url);
+}
   response = locationReply;
 }
 
@@ -855,6 +858,8 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].img.contentType = 'image/png';
       updates[0].imgUrl = value[1];
       break;
+    case "video":
+      updates[0].imgUrl= value;
     case "location":
       updates[0].X = value[0];
       updates[0].Y = value[1];
