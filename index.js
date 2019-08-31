@@ -490,6 +490,9 @@ async function handleMessage(sender_psid, received_message) {
       correctDemand(sender_psid);
     }
 
+
+    await messagingActions(sender_psid, "typing_off").then(async function(){
+
     // Sends the response message
     if (aux == 1) {
       await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
@@ -507,6 +510,7 @@ async function handleMessage(sender_psid, received_message) {
       console.log(response);
       await callSendAPI(sender_psid, response);
     }
+  });
   }
 }
 
@@ -1001,9 +1005,6 @@ async function getCauseInfo(sender_psid) {
 async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
-
-  messagingActions(sender_psid, "typing_off")
-
 
   console.log(JSON.stringify(response));
 
