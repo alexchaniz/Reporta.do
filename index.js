@@ -160,14 +160,15 @@ var humanDamagesReply = {
 
 var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
 var harmedPeopleReply = {
-  "text": "¿Cuantas personas han resultado heridas?"
-  /*"quick_replies": [
+  "text": "¿Cuantas personas han resultado heridas?",
+  "quick_replies": [
     {
       "content_type": "text",
-      "title": "1 a 5",
+      "title": "No hubo heridos",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
-    }, {
+    }
+    /* {
       "content_type": "text",
       "title": "5 a 10",
       "payload": "<POSTBACK_PAYLOAD>",
@@ -177,20 +178,21 @@ var harmedPeopleReply = {
       "title": "Más de 10",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
-    }
-  ]*/
+    }*/
+  ]
 }
 
 var deathPeople = ["No hubo muertos", "1 a 5", "5 a 10", "Más de 10"]
 var deathPeopleReply = {
-  "text": "Si hubo muertos, ¿Podría indicarnos cuantos?"
-  /*"quick_replies": [
+  "text": "Si hubo muertos, ¿Podría escribirnos cuantos?",
+  "quick_replies": [
     {
       "content_type": "text",
       "title": "No hubo muertos",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
-    }, {
+    }
+    /*, {
       "content_type": "text",
       "title": "1 a 5",
       "payload": "<POSTBACK_PAYLOAD>",
@@ -205,8 +207,8 @@ var deathPeopleReply = {
       "title": "Más de 10",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
-    }
-  ]*/
+    }*/
+  ]
 }
 
 var imageReply = {
@@ -373,6 +375,11 @@ async function handleMessage(sender_psid, received_message) {
 
     console.log("Handling message: ");
 
+    console.log(received_message);
+    console.log(received_message.attachments[0].type)
+    console.log(received_message.attachments[0])
+    
+
     var step = await getStep(sender_psid);
     console.log("Getsteeeeeeeep" + step);
 
@@ -438,11 +445,11 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 8:
             nextStep();
-            aux=1;
+            aux = 1;
             responseAux = {
               "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
             }
-            break; 
+            break;
           case 9:
             step8Aux(sender_psid, msgText);
             break;
@@ -491,26 +498,26 @@ async function handleMessage(sender_psid, received_message) {
     }
 
 
-    await messagingActions(sender_psid, "typing_off").then(async function(){
+    await messagingActions(sender_psid, "typing_off").then(async function () {
 
-    // Sends the response message
-    if (aux == 1) {
-      await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
+      // Sends the response message
+      if (aux == 1) {
+        await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
+          await callSendAPI(sender_psid, response);
+          console.log("Se envia mensaje previo de alcaración");
+
+          responseAux = {
+            "text": 'Utilice los botones para responder'
+          }
+          aux = 0;
+        })
+      } else {
+        console.log("No hay mensaje previo de alcaración");
+
+        console.log(response);
         await callSendAPI(sender_psid, response);
-        console.log("Se envia mensaje previo de alcaración");
-
-        responseAux = {
-          "text": 'Utilice los botones para responder'
-        }
-        aux = 0;
-      })
-    } else {
-      console.log("No hay mensaje previo de alcaración");
-
-      console.log(response);
-      await callSendAPI(sender_psid, response);
-    }
-  });
+      }
+    });
   }
 }
 
@@ -634,7 +641,7 @@ async function step8(sender_psid, received_message) {
   var location = [coordinates.lat, coordinates.long];
   console.log(coordinates);
 
-  updates[0].step =9;
+  updates[0].step = 9;
   fillUpdate(sender_psid, "location", location);
   if (!updates[0].tomarControl) {
     response = observationReply;
