@@ -521,7 +521,7 @@ async function handleMessage(sender_psid, received_message) {
       responsesArray= correctDemand(sender_psid);
     }
 
-    responsesArray.then(function(responsesArray){
+    responsesArray.then(async function(responsesArray){
     aux = responsesArray[2];
     responseAux = responsesArray[1];
     response = responsesArray[0];
