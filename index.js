@@ -46,6 +46,15 @@ var update_schema = new Schema(updateSchema);
 var Update = mongoose.model("Update", update_schema);
 
 
+//
+//setting option and responses
+//
+var response;
+var aux = 0;
+var responseAux = {
+  "text": 'Utilice los botones para responder'
+}
+
 var grettingsReply = {
   "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
   "quick_replies": [
@@ -362,15 +371,6 @@ async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
 
-    //
-    //setting option and responses
-    //
-    var response;
-    var aux = 0;
-    var responseAux = {
-      "text": 'Utilice los botones para responder'
-    }
-
     //Set message state to recived and actives the typing icon
     //on the conversation
     messagingActions(sender_psid, "mark_seen")
@@ -433,22 +433,22 @@ async function handleMessage(sender_psid, received_message) {
             fillUpdate(sender_psid, "observation", msgText)
             break;
           case 1:
-            step1(sender_psid, msgText, response, aux, responseAux);
+            step1(sender_psid, msgText);
             break;
           case 2:
-            step2(sender_psid, msgText, response, aux, responseAux);
+            step2(sender_psid, msgText);
             break;
           case 3:
-            step3(sender_psid, msgText, response, aux, responseAux);
+            step3(sender_psid, msgText);
             break;
           case 4:
-            step4(sender_psid, msgText, response, aux, responseAux);
+            step4(sender_psid, msgText);
             break;
           case 5:
-            step5(sender_psid, msgText, response, aux, responseAux);
+            step5(sender_psid, msgText);
             break;
           case 6:
-            step6(sender_psid, msgText, response, aux, responseAux);
+            step6(sender_psid, msgText);
             break;
           case 8:
             nextStep();
@@ -456,20 +456,19 @@ async function handleMessage(sender_psid, received_message) {
             responseAux = {
               "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
             }
-            response = locationReply;
             break;
           case 9:
-            step8Aux(sender_psid, msgText, response, aux, responseAux);
+            step8Aux(sender_psid, msgText);
             break;
           case 10:
-            step10(sender_psid, msgText, response, aux, responseAux);
+            step10(sender_psid, msgText);
             break;
           case 11:
-            step11(sender_psid, msgText, response, aux, responseAux);
+            step11(sender_psid, msgText);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
-            correctDemand(sender_psid, step, response, aux, responseAux);
+            correctDemand(sender_psid, step);
             break;
         }
       }
@@ -477,33 +476,33 @@ async function handleMessage(sender_psid, received_message) {
       //Check if message has attached elements
     } else if (received_message.attachments) {
 
-      //if image or video
-      if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type = "video")) {
+//if image or video
+      if ((received_message.attachments[0].type == "image")||(received_message.attachments[0].type="video")) {
 
         if ((updates[0].tomarControl) || (step == 7)) {
 
           // Get the URL of the message attachment
-          let attachment_url = received_message.attachments[0].payload.url;
-          step7(sender_psid, attachment_url, received_message.attachments[0].type, response, aux, responseAux);
+        let attachment_url = received_message.attachments[0].payload.url;
+        step7(sender_psid, attachment_url, received_message.attachments[0].type);
 
         } else {
           console.log("wrong step");
-          correctDemand(sender_psid, step, response, aux, responseAux);
+          correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
         if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
-          step8(sender_psid, received_message, response, aux, responseAux)
+          step8(sender_psid, received_message)
         } else {
-          correctDemand(sender_psid, step, response, aux, responseAux);
+          correctDemand(sender_psid, step);
         }
         /*} else if (step == 10) {
           fillUpdate(sender_psid, "observations", msgText);*/
       } else {
-        correctDemand(sender_psid, step, response, aux, responseAux);
+        correctDemand(sender_psid, step);
       }
     } else {
-      correctDemand(sender_psid, response, aux, responseAux);
+      correctDemand(sender_psid);
     }
 
 
@@ -523,8 +522,8 @@ async function handleMessage(sender_psid, received_message) {
         await callSendAPI(sender_psid, response);
       }
 
-      aux = 0;
-      responseAux = {
+      aux=0;
+      responseAux={
         "text": 'Utilice los botones para responder'
       }
     });
@@ -634,20 +633,20 @@ async function step6(sender_psid, msgText) {
 async function step7(sender_psid, attachment_url, type) {
   console.log("Steeeeeeep 777777777777777");
 
-  if (type == "image") {
+  if(type=="image"){
 
     //save the image as buffer
-    getImage(attachment_url, function (err, data) {
-      if (err) {
-        throw new Error(err);
-      } else {
-        var image = [data, attachment_url];
-        fillUpdate(sender_psid, "img", image);
-      }
-    });
-  } else {
-    fillUpdate(sender_psid, "video", attachment_url);
-  }
+  getImage(attachment_url, function (err, data) {
+    if (err) {
+      throw new Error(err);
+    } else {
+      var image = [data, attachment_url];
+      fillUpdate(sender_psid, "img", image);
+    }
+  });
+} else {
+  fillUpdate(sender_psid, "video", attachment_url);
+}
 
   response = locationReply;
 }
@@ -880,7 +879,7 @@ async function fillUpdate(sender_psid, field, value) {
       updates[0].imgUrl = value[1];
       break;
     case "video":
-      updates[0].imgUrl = value;
+      updates[0].imgUrl= value;
     case "location":
       updates[0].X = value[0];
       updates[0].Y = value[1];
@@ -1129,7 +1128,7 @@ function sendUpdateToArcGis(update) {
     }
   }];
 
-  //Hace string los parametro para añadirlos a la url
+//Hace string los parametro para añadirlos a la url
   var stringObject = JSON.stringify(object);
   console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
 
