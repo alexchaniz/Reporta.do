@@ -520,6 +520,8 @@ async function handleMessage(sender_psid, received_message) {
        responseAux = responsesArray[1];
        response = responsesArray[0];
 
+       console.log(responsesArray);
+       
       // Sends the response message
       //In case aux=1 send auxiliar response
       if (aux == 1) {
