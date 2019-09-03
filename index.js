@@ -521,9 +521,9 @@ async function handleMessage(sender_psid, received_message) {
       responsesArray= correctDemand(sender_psid);
     }
     
-    aux = responsesArray[0][2];
-    responseAux = responsesArray[0][1];
-    response = responsesArray[0][0];
+    aux = responsesArray[2];
+    responseAux = responsesArray[1];
+    response = responsesArray[0];
 
     console.log(responsesArray);
     console.log(responsesArray[0]);
