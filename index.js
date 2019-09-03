@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 var updateSchema = {
   sender_id: { type: Number },
   step: { type: Number },
-  response: { type: any },
+  response: { type: {} },
   responseAux: { type: any },
   responseAuxIndicator: { type: number },
   cause: { type: String },
@@ -380,7 +380,7 @@ async function handleMessage(sender_psid, received_message) {
     var response;
     var responseAux;
     var aux;
-    var updates;
+    var updates= [];
     var step;
 
     try {
