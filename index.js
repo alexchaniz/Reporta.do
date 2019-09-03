@@ -560,7 +560,7 @@ async function step1(sender_psid, msgText, updates) {
     }
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    updates = nextStep(updates);
+    updates = await nextStep(updates);
     updates[0].response = safePlaceReply;
   } else if (msgText == "No") {
     updates[0].response = {
@@ -982,16 +982,22 @@ async function fillUpdate(sender_psid, field, value, updates) {
 }
 
 //Set the nex step. Sums 1
-async function nextStep(updates) {
+ function nextStep(updates) {
 
-  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
-    console.log("nexesteeeeeeeped");
-    Update.find(function (err, docx) {
-      console.log(docx);
-    });
+  return new Promise((resolve, reject) => {
+  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }),then(
+    data => {
+      console.log("nexesteeeeeeeped");
+      Update.find(function (err, docx) {
+        console.log(docx);
+      });
+      resolve(data);
+    },
+    error => {
+      reject(error);
+    })
+    
   });
-
-  return updates[0].step += 1;
 }
 
 //Get the last created update element in the db associated to the sender
