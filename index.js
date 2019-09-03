@@ -29,7 +29,7 @@ var updateSchema = {
   step: { type: Number },
   response: { type: {} },
   responseAux: { type: {} },
-  responseAuxIndicator: { type: number },
+  responseAuxIndicator: { type: Number },
   cause: { type: String },
   homeDamages: { type: String },
   humansHarmed: { type: String },
