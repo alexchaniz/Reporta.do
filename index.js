@@ -521,15 +521,15 @@ async function handleMessage(sender_psid, received_message) {
       responsesArray= correctDemand(sender_psid);
     }
 
+    responsesArray.then(function(responsesArray){
+    aux = responsesArray[2];
+    responseAux = responsesArray[1];
+    response = responsesArray[0];
+
+    console.log(responsesArray);
+    console.log(responsesArray[0]);
 
     await messagingActions(sender_psid, "typing_off").then(async function () {
-
-       aux = responsesArray[2];
-       responseAux = responsesArray[1];
-       response = responsesArray[0];
-
-       console.log(responsesArray);
-       console.log(responsesArray[0]);
        
        
       // Sends the response message
@@ -548,6 +548,7 @@ async function handleMessage(sender_psid, received_message) {
         await callSendAPI(sender_psid, response);
       }
 
+    });
     });
   }
 }
