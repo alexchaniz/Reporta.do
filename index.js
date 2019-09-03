@@ -520,11 +520,10 @@ async function handleMessage(sender_psid, received_message) {
     } else {
       responsesArray= correctDemand(sender_psid);
     }
-
-    responsesArray.then(async function(responsesArray){
-    aux = responsesArray[2];
-    responseAux = responsesArray[1];
-    response = responsesArray[0];
+    
+    aux = responsesArray(0)[2];
+    responseAux = responsesArray(0)[1];
+    response = responsesArray(0)[0];
 
     console.log(responsesArray);
     console.log(responsesArray[0]);
@@ -548,7 +547,6 @@ async function handleMessage(sender_psid, received_message) {
         await callSendAPI(sender_psid, response);
       }
 
-    });
     });
   }
 }
