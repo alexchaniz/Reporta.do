@@ -396,6 +396,8 @@ async function handleMessage(sender_psid, received_message) {
       create(sender_psid, 1);
       response = grettingsReply;
 
+      responsesArray = [response, {}, 0];
+
       // Check if the message contains text
     } else if (received_message.text) {
 
@@ -412,6 +414,8 @@ async function handleMessage(sender_psid, received_message) {
           "text": "Base de datos mongodb reiniciada correctamente"
         }
         reset();
+        responsesArray = [response, {}, 0];
+
       } else if (msgText == "Asistencia 123") {
         console.log("controlando porqueeee");
 
@@ -419,6 +423,8 @@ async function handleMessage(sender_psid, received_message) {
         response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
         }
+        responsesArray = [response, {}, 0];
+
       } else if (msgText == "Asistencia 321") {
         fillUpdate(sender_psid, "step", 9);
         fillUpdate(sender_psid, "tomarControl", false);
@@ -429,13 +435,15 @@ async function handleMessage(sender_psid, received_message) {
         }
         response = anotherUpdateReply
 
+        responsesArray = [response, responseAux, aux];
+
       } else if (step) {
 
         //Activate the function asociated to the step
         switch (step) {
           //if the control was took from the operator
           case -2:
-            response = {}
+            responsesArray = [{}, {}, 0]
             fillUpdate(sender_psid, "observation", msgText)
             break;
           case 1:
