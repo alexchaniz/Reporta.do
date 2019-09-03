@@ -377,6 +377,8 @@ async function handleMessage(sender_psid, received_message) {
     var response;
     var responseAux;
     var aux;
+var updates;
+
     //Set message state to recived and actives the typing icon
     //on the conversation
     messagingActions(sender_psid, "mark_seen")
@@ -386,14 +388,14 @@ async function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
 
     //Get the step the conversation is
-    var step = await getStep(sender_psid);
+    var step = await getStep(sender_psid, updates);
     console.log("Getsteeeeeeeep" + step);
 
     // Expired conversation, new conversation or completed survey
     //Creayes a new conversation, a new update
     if (step == -1) {
       //in that case creates another entry
-      create(sender_psid, 1);
+      updates = create(sender_psid, 1);
       response = grettingsReply;
 
       responsesArray = [response, {}, 0];
@@ -419,16 +421,16 @@ async function handleMessage(sender_psid, received_message) {
       } else if (msgText == "Asistencia 123") {
         console.log("controlando porqueeee");
 
-        fillUpdate(sender_psid, "tomarControl", true);
+        fillUpdate(sender_psid, "tomarControl", true, updates);
         response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
         }
         responsesArray = [response, {}, 0];
 
       } else if (msgText == "Asistencia 321") {
-        fillUpdate(sender_psid, "step", 9);
-        fillUpdate(sender_psid, "tomarControl", false);
-        fillUpdate(sender_psid, "observation", ". Acabo la toma de control.")
+        fillUpdate(sender_psid, "step", 9, updates);
+        fillUpdate(sender_psid, "tomarControl", false, updates);
+        fillUpdate(sender_psid, "observation", ". Acabo la toma de control.", updates)
         aux = 1;
         responseAux = {
           "text": "El operario dejó de tener el control"
@@ -444,28 +446,28 @@ async function handleMessage(sender_psid, received_message) {
           //if the control was took from the operator
           case -2:
             responsesArray = [{}, {}, 0]
-            fillUpdate(sender_psid, "observation", msgText)
+            fillUpdate(sender_psid, "observation", msgText, updates)
             break;
           case 1:
-    responsesArray= await step1(sender_psid, msgText);
+    responsesArray= await step1(sender_psid, msgText, updates);
             break;
           case 2:
-            responsesArray= await step2(sender_psid, msgText);
+            responsesArray= await step2(sender_psid, msgText, updates);
             break;
           case 3:
-            responsesArray= await step3(sender_psid, msgText);
+            responsesArray= await step3(sender_psid, msgText, updates);
             break;
           case 4:
-            responsesArray= await step4(sender_psid, msgText);
+            responsesArray= await step4(sender_psid, msgText, updates);
             break;
           case 5:
-            responsesArray= await step5(sender_psid, msgText);
+            responsesArray= await step5(sender_psid, msgText, updates);
             break;
           case 6:
-            responsesArray= await step6(sender_psid, msgText);
+            responsesArray= await step6(sender_psid, msgText, updates);
             break;
           case 8:
-            nextStep();
+            nextStep(updates);
             aux = 1;
             responseAux = {
               "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
@@ -474,13 +476,13 @@ async function handleMessage(sender_psid, received_message) {
             responsesArray= [response, responseAux, aux]
             break;
           case 9:
-            responsesArray= await step8Aux(sender_psid, msgText);
+            responsesArray= await step8Aux(sender_psid, msgText, updates);
             break;
           case 10:
-            responsesArray= await step10(sender_psid, msgText);
+            responsesArray= await step10(sender_psid, msgText, updates);
             break;
           case 11:
-            responsesArray= await step11(sender_psid, msgText);
+            responsesArray= await step11(sender_psid, msgText, updates);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
@@ -499,7 +501,7 @@ async function handleMessage(sender_psid, received_message) {
 
           // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
-        responsesArray= await step7(sender_psid, attachment_url, received_message.attachments[0].type);
+        responsesArray= await step7(sender_psid, attachment_url, received_message.attachments[0].type, updates);
 
         } else {
           console.log("wrong step");
@@ -508,7 +510,7 @@ async function handleMessage(sender_psid, received_message) {
       } else if (received_message.attachments[0].type == "location") {
         if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
-          responsesArray= await step8(sender_psid, received_message)
+          responsesArray= await step8(sender_psid, received_message, updates)
         } else {
           responsesArray= await correctDemand(sender_psid, step);
         }
@@ -552,7 +554,7 @@ async function handleMessage(sender_psid, received_message) {
 }
 
 //Steps of the conversantion as ordered
-async function step1(sender_psid, msgText) {
+async function step1(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 1111111111111111");
   var response;
   let responseAux = {
@@ -568,7 +570,7 @@ async function step1(sender_psid, msgText) {
     }
     response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    nextStep();
+    nextStep(updates);
     response = safePlaceReply;
   } else if (msgText == "No") {
     response = {
@@ -582,7 +584,7 @@ async function step1(sender_psid, msgText) {
   return [response, responseAux, aux];
 }
 
-async function step2(sender_psid, msgText) {
+async function step2(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 22222222222222222222222");
 
   var response;
@@ -596,7 +598,7 @@ async function step2(sender_psid, msgText) {
       "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
     }
   } else if (msgText == "Si") {
-    nextStep();
+    nextStep(updates);
     aux = 1;
     responseAux = {
       "text": "Ok, continuemos"
@@ -610,7 +612,7 @@ async function step2(sender_psid, msgText) {
   return [response, responseAux, aux];
 }
 
-async function step3(sender_psid, msgText) {
+async function step3(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 33333333333333333333333333");
 
   var response;
@@ -625,18 +627,18 @@ async function step3(sender_psid, msgText) {
         "text": 'Escriba la causa del problema'
       }
     } else {
-      fillUpdate(sender_psid, "cause", msgText);
+      fillUpdate(sender_psid, "cause", msgText, updates);
       response = homeDamagesReply;
     }
   } else {
-    fillUpdate(sender_psid, "cause", msgText);
+    fillUpdate(sender_psid, "cause", msgText, updates);
     response = homeDamagesReply;
   }
 
   return [response, responseAux, aux];
 }
 
-async function step4(sender_psid, msgText) {
+async function step4(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 44444444444444444");
 
   var response;
@@ -646,7 +648,7 @@ async function step4(sender_psid, msgText) {
   let aux=0;
 
   if (homeDamages.includes(msgText)) {
-    fillUpdate(sender_psid, "homeDamages", msgText);
+    fillUpdate(sender_psid, "homeDamages", msgText, updates);
     response = humanDamagesReply;
   } else {
     aux = 1;
@@ -656,7 +658,7 @@ async function step4(sender_psid, msgText) {
   return [response, responseAux, aux];
 }
 
-async function step5(sender_psid, msgText) {
+async function step5(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 5555555555555");
 
   var response;
@@ -666,12 +668,12 @@ async function step5(sender_psid, msgText) {
   let aux=0;
 
   if (msgText == "No") {
-    fillUpdate(sender_psid, "noHumansHarmed", msgText)
+    fillUpdate(sender_psid, "noHumansHarmed", msgText, updates)
     response = imageReply;
   } else if (msgText == "Si") {
     response = harmedPeopleReply;
   } else {
-    fillUpdate(sender_psid, "humansHarmed", msgText)
+    fillUpdate(sender_psid, "humansHarmed", msgText, updates)
     response = deathPeopleReply;
   }
   /*else if (harmedPeople.includes(msgText)) {
@@ -682,7 +684,7 @@ async function step5(sender_psid, msgText) {
   return [response, responseAux, aux];
 }
 
-async function step6(sender_psid, msgText) {
+async function step6(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 666666666666");
 
   var response;
@@ -691,7 +693,7 @@ async function step6(sender_psid, msgText) {
   };
   let aux=0;
 
-  fillUpdate(sender_psid, "humansDeath", msgText)
+  fillUpdate(sender_psid, "humansDeath", msgText, updates)
   response = imageReply;
   /*} else {
     aux = 1;
@@ -701,7 +703,7 @@ async function step6(sender_psid, msgText) {
   return [response, responseAux, aux];
 }
 
-async function step7(sender_psid, attachment_url, type) {
+async function step7(sender_psid, attachment_url, type, updates) {
   console.log("Steeeeeeep 777777777777777");
 
   var response;
@@ -718,18 +720,18 @@ async function step7(sender_psid, attachment_url, type) {
       throw new Error(err);
     } else {
       var image = [data, attachment_url];
-      fillUpdate(sender_psid, "img", image);
+      fillUpdate(sender_psid, "img", image, updates);
     }
   });
 } else {
-  fillUpdate(sender_psid, "video", attachment_url);
+  fillUpdate(sender_psid, "video", attachment_url, updates);
 }
 
   response = locationReply;
   return [response, responseAux, aux];
 }
 
-async function step8(sender_psid, received_message) {
+async function step8(sender_psid, received_message, updates) {
   console.log("Steeeeeeep 88888888");
 
   var response;
@@ -743,7 +745,7 @@ async function step8(sender_psid, received_message) {
   console.log(coordinates);
 
   updates[0].step = 9;
-  fillUpdate(sender_psid, "location", location);
+  fillUpdate(sender_psid, "location", location, updates);
   if (!updates[0].tomarControl) {
     response = observationReply;
   } else {
@@ -757,7 +759,7 @@ async function step8(sender_psid, received_message) {
     return [response, responseAux, aux];
 }
 
-async function step8Aux(sender_psid, msgText) {
+async function step8Aux(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
 
   var response;
@@ -767,13 +769,13 @@ async function step8Aux(sender_psid, msgText) {
   let aux=0;
 
   //Saves any text recibed
-  fillUpdate(sender_psid, "address", msgText);
+  fillUpdate(sender_psid, "address", msgText, updates);
   response = observationReply;
 
   return [response, responseAux, aux];
 }
 
-async function step10(sender_psid, msgText) {
+async function step10(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
 
   var response;
@@ -783,13 +785,13 @@ async function step10(sender_psid, msgText) {
   let aux=0;
 
   //Saves any text recibed
-  fillUpdate(sender_psid, "observation", msgText);
+  fillUpdate(sender_psid, "observation", msgText, updates);
   response = anotherUpdateReply;
 
   return [response, responseAux, aux];
 }
 
-async function step11(sender_psid, msgText) {
+async function step11(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 100000000000000");
 
   var response;
@@ -802,7 +804,7 @@ async function step11(sender_psid, msgText) {
     response = {
       "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
-    nextStep();
+    nextStep(updates);
   } else if (msgText == "Reportar") {
 
     console.log("Step 111 siiiiiiii");
@@ -811,11 +813,11 @@ async function step11(sender_psid, msgText) {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
 
-    create(sender_psid, 3);
+   updates = create(sender_psid, 3);
     response = causeReply;
 
   } else if (msgText = "Información") {
-    responseAux = getCauseInfo(sender_psid);
+    responseAux = getCauseInfo(sender_psid, updates);
     response = anotherUpdateReply;
   } else {
     aux = 1
@@ -827,7 +829,7 @@ async function step11(sender_psid, msgText) {
 }
 
 //Look for the correct reply as no action could be took
-function correctDemand(sender_psid, step) {
+function correctDemand(sender_psid, step, updates) {
   console.log("correct demand");
 
   var response;
@@ -838,7 +840,7 @@ function correctDemand(sender_psid, step) {
 
   switch (step) {
     case -1:
-      create(sender_psid, 1);
+      updates = create(sender_psid, 1);
       response = grettingsReply;
       break;
     case 7:
@@ -885,7 +887,7 @@ function correctDemand(sender_psid, step) {
         "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
       }
       response = grettingsReply;
-      fillUpdate(sender_psid, "step", 1);
+      fillUpdate(sender_psid, "step", 1, updates);
       break;
   }
 
@@ -897,11 +899,12 @@ async function handlePostback(sender_psid, received_postback) {
 
 
   var response;
-  let responseAux= {
+  var responseAux= {
     "text": 'Una foto es de mucha ayuda para ubicar los daños.'
   };
-  let aux=0;
+  var aux=0;
   var responsesArray= {};
+  var updates;
 
   // Get the payload for the postback
   let payload = received_postback.payload;
@@ -914,25 +917,25 @@ async function handlePostback(sender_psid, received_postback) {
     response = grettingsReply;
 
   } else {
-    var step = await getStep(sender_psid);
+    var step = await getStep(sender_psid, updates);
 
     //checks if interaction with static menu was received
     if (payload === "stepback") {
 
       //if conversation is already in last step
       if (step == 11) {
-        fillUpdate(sender_psid, "step", 1)
+        fillUpdate(sender_psid, "step", 1, updates)
         response = grettingsReply;
       } else {
-        fillUpdate(sender_psid, "step", step - 1)
-        responsesArray = await correctDemand(sender_psid, step - 1);
+        fillUpdate(sender_psid, "step", step - 1, updates)
+        responsesArray = await correctDemand(sender_psid, step - 1, updates);
         response = responsesArray[0];
       }
     } else if (payload == "restart") {
-      fillUpdate(sender_psid, "step", 1)
+      fillUpdate(sender_psid, "step", 1, updates)
       response = grettingsReply;
     } else {
-      responsesArray = await correctDemand(sender_psid, step);
+      responsesArray = await correctDemand(sender_psid, step, updates);
     response= responsesArray[0];
     }
   }
@@ -975,10 +978,12 @@ function create(sender_psid, stepNew) {
       console.log(doc);
     });
   });
+
+  return updates;
 }
 
 //Fills the indicates fill with the indicated values
-async function fillUpdate(sender_psid, field, value) {
+async function fillUpdate(sender_psid, field, value, updates) {
 
   updates[0].step += 1;
 
@@ -1046,7 +1051,7 @@ async function fillUpdate(sender_psid, field, value) {
 }
 
 //Set the nex step. Sums 1
-async function nextStep() {
+async function nextStep(updates) {
 
   Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
@@ -1067,7 +1072,7 @@ function getUpdate(sender_psid) {
 }
 
 //Get the step of the user`s last conversation
-async function getStep(sender_psid) {
+async function getStep(sender_psid, updates) {
   try {
     var d = new Date();
     updates = await getUpdate(sender_psid);
@@ -1122,7 +1127,7 @@ function getImage(url, callback) {
 }
 
 //Get the info that corresponds to the cause of the damages that the user indicated
-async function getCauseInfo(sender_psid) {
+async function getCauseInfo(sender_psid, updates) {
 
   console.log("infooooo causeeeeee");
   console.log(updates[0].cause);
