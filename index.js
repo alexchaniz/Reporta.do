@@ -28,7 +28,7 @@ var updateSchema = {
   sender_id: { type: Number },
   step: { type: Number },
   response: { type: {} },
-  responseAux: { type: any },
+  responseAux: { type: {} },
   responseAuxIndicator: { type: number },
   cause: { type: String },
   homeDamages: { type: String },
