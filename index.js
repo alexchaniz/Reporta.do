@@ -585,7 +585,7 @@ async function step2(sender_psid, msgText, updates) {
       "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
     }
   } else if (msgText == "Si") {
-    updates = nextStep(updates);
+    updates = await nextStep(updates);
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": "Ok, continuemos"
