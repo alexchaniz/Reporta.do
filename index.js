@@ -447,22 +447,22 @@ async function handleMessage(sender_psid, received_message) {
             fillUpdate(sender_psid, "observation", msgText)
             break;
           case 1:
-    responsesArray= step1(sender_psid, msgText);
+    responsesArray= await step1(sender_psid, msgText);
             break;
           case 2:
-            responsesArray= step2(sender_psid, msgText);
+            responsesArray= await step2(sender_psid, msgText);
             break;
           case 3:
-            responsesArray= step3(sender_psid, msgText);
+            responsesArray= await step3(sender_psid, msgText);
             break;
           case 4:
-            responsesArray= step4(sender_psid, msgText);
+            responsesArray= await step4(sender_psid, msgText);
             break;
           case 5:
-            responsesArray= step5(sender_psid, msgText);
+            responsesArray= await step5(sender_psid, msgText);
             break;
           case 6:
-            responsesArray= step6(sender_psid, msgText);
+            responsesArray= await step6(sender_psid, msgText);
             break;
           case 8:
             nextStep();
@@ -474,17 +474,17 @@ async function handleMessage(sender_psid, received_message) {
             responsesArray= [response, responseAux, aux]
             break;
           case 9:
-            responsesArray= step8Aux(sender_psid, msgText);
+            responsesArray= await step8Aux(sender_psid, msgText);
             break;
           case 10:
-            responsesArray= step10(sender_psid, msgText);
+            responsesArray= await step10(sender_psid, msgText);
             break;
           case 11:
-            responsesArray= step11(sender_psid, msgText);
+            responsesArray= await step11(sender_psid, msgText);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
-            responsesArray= correctDemand(sender_psid, step);
+            responsesArray= await correctDemand(sender_psid, step);
             break;
         }
       }
@@ -499,26 +499,26 @@ async function handleMessage(sender_psid, received_message) {
 
           // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
-        responsesArray= step7(sender_psid, attachment_url, received_message.attachments[0].type);
+        responsesArray= await step7(sender_psid, attachment_url, received_message.attachments[0].type);
 
         } else {
           console.log("wrong step");
-          responsesArray= correctDemand(sender_psid, step);
+          responsesArray= await correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
         if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
-          responsesArray= step8(sender_psid, received_message)
+          responsesArray= await step8(sender_psid, received_message)
         } else {
-          responsesArray= correctDemand(sender_psid, step);
+          responsesArray= await correctDemand(sender_psid, step);
         }
         /*} else if (step == 10) {
           fillUpdate(sender_psid, "observations", msgText);*/
       } else {
-        responsesArray= correctDemand(sender_psid, step);
+        responsesArray= await correctDemand(sender_psid, step);
       }
     } else {
-      responsesArray= correctDemand(sender_psid);
+      responsesArray = await correctDemand(sender_psid);
     }
     
     aux = responsesArray[2];
@@ -925,14 +925,15 @@ async function handlePostback(sender_psid, received_postback) {
         response = grettingsReply;
       } else {
         fillUpdate(sender_psid, "step", step - 1)
-        responsesArray = correctDemand(sender_psid, step - 1);
+        responsesArray = await correctDemand(sender_psid, step - 1);
         response = responsesArray[0];
       }
     } else if (payload == "restart") {
       fillUpdate(sender_psid, "step", 1)
       response = grettingsReply;
     } else {
-      correctDemand(sender_psid, step);
+      responsesArray = await correctDemand(sender_psid, step);
+    response= responsesArray[0];
     }
   }
 
