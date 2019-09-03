@@ -516,9 +516,9 @@ async function handleMessage(sender_psid, received_message) {
 
     await messagingActions(sender_psid, "typing_off").then(async function () {
 
-       aux = responsesArray(2);
-       responseAux = responsesArray(1);
-       response = responsesArray(0)
+       aux = responsesArray[2];
+       responseAux = responsesArray[1];
+       response = responsesArray[0];
 
       // Sends the response message
       //In case aux=1 send auxiliar response
@@ -917,7 +917,7 @@ async function handlePostback(sender_psid, received_postback) {
       } else {
         fillUpdate(sender_psid, "step", step - 1)
         responsesArray = correctDemand(sender_psid, step - 1);
-        response = responsesArray(0);
+        response = responsesArray[0];
       }
     } else if (payload == "restart") {
       fillUpdate(sender_psid, "step", 1)
