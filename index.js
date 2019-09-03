@@ -49,11 +49,13 @@ var Update = mongoose.model("Update", update_schema);
 //
 //setting option and responses
 //
+/*
 var response;
 var aux = 0;
 var responseAux = {
   "text": 'Utilice los botones para responder'
 }
+*/
 
 var grettingsReply = {
   "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
@@ -371,6 +373,10 @@ async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
 
+    var responsesArray;
+    var response;
+    var responseAux;
+    var aux;
     //Set message state to recived and actives the typing icon
     //on the conversation
     messagingActions(sender_psid, "mark_seen")
@@ -433,22 +439,22 @@ async function handleMessage(sender_psid, received_message) {
             fillUpdate(sender_psid, "observation", msgText)
             break;
           case 1:
-            step1(sender_psid, msgText);
+    responsesArray= step1(sender_psid, msgText);
             break;
           case 2:
-            step2(sender_psid, msgText);
+            responsesArray= step2(sender_psid, msgText);
             break;
           case 3:
-            step3(sender_psid, msgText);
+            responsesArray= step3(sender_psid, msgText);
             break;
           case 4:
-            step4(sender_psid, msgText);
+            responsesArray= step4(sender_psid, msgText);
             break;
           case 5:
-            step5(sender_psid, msgText);
+            responsesArray= step5(sender_psid, msgText);
             break;
           case 6:
-            step6(sender_psid, msgText);
+            responsesArray= step6(sender_psid, msgText);
             break;
           case 8:
             nextStep();
@@ -456,19 +462,21 @@ async function handleMessage(sender_psid, received_message) {
             responseAux = {
               "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
             }
+            response = locationReply;
+            responsesArray= [response, responseAux, aux]
             break;
           case 9:
-            step8Aux(sender_psid, msgText);
+            responsesArray= step8Aux(sender_psid, msgText);
             break;
           case 10:
-            step10(sender_psid, msgText);
+            responsesArray= step10(sender_psid, msgText);
             break;
           case 11:
-            step11(sender_psid, msgText);
+            responsesArray= step11(sender_psid, msgText);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
-            correctDemand(sender_psid, step);
+            responsesArray= correctDemand(sender_psid, step);
             break;
         }
       }
@@ -483,30 +491,34 @@ async function handleMessage(sender_psid, received_message) {
 
           // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
-        step7(sender_psid, attachment_url, received_message.attachments[0].type);
+        responsesArray= step7(sender_psid, attachment_url, received_message.attachments[0].type);
 
         } else {
           console.log("wrong step");
-          correctDemand(sender_psid, step);
+          responsesArray= correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
         if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
-          step8(sender_psid, received_message)
+          responsesArray= step8(sender_psid, received_message)
         } else {
-          correctDemand(sender_psid, step);
+          responsesArray= correctDemand(sender_psid, step);
         }
         /*} else if (step == 10) {
           fillUpdate(sender_psid, "observations", msgText);*/
       } else {
-        correctDemand(sender_psid, step);
+        responsesArray= correctDemand(sender_psid, step);
       }
     } else {
-      correctDemand(sender_psid);
+      responsesArray= correctDemand(sender_psid);
     }
 
 
     await messagingActions(sender_psid, "typing_off").then(async function () {
+
+       aux = responsesArray(2);
+       responseAux = responsesArray(1);
+       response = responsesArray(0)
 
       // Sends the response message
       //In case aux=1 send auxiliar response
@@ -533,6 +545,11 @@ async function handleMessage(sender_psid, received_message) {
 //Steps of the conversantion as ordered
 async function step1(sender_psid, msgText) {
   console.log("Steeeeeeep 1111111111111111");
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
 
   //Check if we recibe the text from the Quick Replys
   if (msgText == "Información") {
@@ -552,10 +569,18 @@ async function step1(sender_psid, msgText) {
     aux = 1;
     response = grettingsReply;
   }
+
+  return [response, responseAux, aux];
 }
 
 async function step2(sender_psid, msgText) {
   console.log("Steeeeeeep 22222222222222222222222");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
 
   if (msgText == "No") {
     response = {
@@ -572,10 +597,19 @@ async function step2(sender_psid, msgText) {
     aux = 1;
     response = safePlaceReply;
   }
+
+  return [response, responseAux, aux];
 }
 
 async function step3(sender_psid, msgText) {
   console.log("Steeeeeeep 33333333333333333333333333");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
+
   if (cause.includes(msgText)) {
     if (msgText == "Otro") {
       response = {
@@ -589,10 +623,19 @@ async function step3(sender_psid, msgText) {
     fillUpdate(sender_psid, "cause", msgText);
     response = homeDamagesReply;
   }
+
+  return [response, responseAux, aux];
 }
 
 async function step4(sender_psid, msgText) {
   console.log("Steeeeeeep 44444444444444444");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
+
   if (homeDamages.includes(msgText)) {
     fillUpdate(sender_psid, "homeDamages", msgText);
     response = humanDamagesReply;
@@ -600,10 +643,18 @@ async function step4(sender_psid, msgText) {
     aux = 1;
     response = homeDamagesReply;
   }
+
+  return [response, responseAux, aux];
 }
 
 async function step5(sender_psid, msgText) {
   console.log("Steeeeeeep 5555555555555");
+
+  var response;
+  let responseAux= {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
 
   if (msgText == "No") {
     fillUpdate(sender_psid, "noHumansHarmed", msgText)
@@ -618,20 +669,37 @@ async function step5(sender_psid, msgText) {
     fillUpdate(sender_psid, "humansHarmed", msgText);
     response = deathPeopleReply;
   }*/
+
+  return [response, responseAux, aux];
 }
 
 async function step6(sender_psid, msgText) {
   console.log("Steeeeeeep 666666666666");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
+
   fillUpdate(sender_psid, "humansDeath", msgText)
   response = imageReply;
   /*} else {
     aux = 1;
     response = deathPeopleReply;
   }*/
+
+  return [response, responseAux, aux];
 }
 
 async function step7(sender_psid, attachment_url, type) {
   console.log("Steeeeeeep 777777777777777");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
 
   if(type=="image"){
 
@@ -649,11 +717,18 @@ async function step7(sender_psid, attachment_url, type) {
 }
 
   response = locationReply;
+  return [response, responseAux, aux];
 }
 
 async function step8(sender_psid, received_message) {
-
   console.log("Steeeeeeep 88888888");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
+
   let coordinates = received_message.attachments[0].payload.coordinates;
   var location = [coordinates.lat, coordinates.long];
   console.log(coordinates);
@@ -669,26 +744,50 @@ async function step8(sender_psid, received_message) {
     let coordinates = received_message.attachments[0].payload.coordinates;
     var location = [coordinates.X, coordinates.Y];
     fillUpdate(sender_psid, "observations", location);*/
+
+    return [response, responseAux, aux];
 }
 
 async function step8Aux(sender_psid, msgText) {
   console.log("Steeeeeeep 99999999999999");
 
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
+
   //Saves any text recibed
   fillUpdate(sender_psid, "address", msgText);
   response = observationReply;
+
+  return [response, responseAux, aux];
 }
 
 async function step10(sender_psid, msgText) {
   console.log("Steeeeeeep 99999999999999");
 
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
+
   //Saves any text recibed
   fillUpdate(sender_psid, "observation", msgText);
   response = anotherUpdateReply;
+
+  return [response, responseAux, aux];
 }
 
 async function step11(sender_psid, msgText) {
   console.log("Steeeeeeep 100000000000000");
+
+  var response;
+  let responseAux= {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
 
   if (msgText == "No") {
     response = {
@@ -707,18 +806,26 @@ async function step11(sender_psid, msgText) {
     response = causeReply;
 
   } else if (msgText = "Información") {
-    getCauseInfo(sender_psid);
+    responseAux = getCauseInfo(sender_psid);
     response = anotherUpdateReply;
   } else {
     aux = 1
     response = anotherUpdateReply;
   }
   console.log(response);
+
+  return [response, responseAux, aux];
 }
 
 //Look for the correct reply as no action could be took
 function correctDemand(sender_psid, step) {
   console.log("correct demand");
+
+  var response;
+  let responseAux = {
+    "text": 'Utilice los botones para responder'
+  };
+  let aux=0;
 
   switch (step) {
     case -1:
@@ -772,10 +879,20 @@ function correctDemand(sender_psid, step) {
       fillUpdate(sender_psid, "step", 1);
       break;
   }
+
+  return [response, responseAux, aux];
 }
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
+
+
+  var response;
+  let responseAux= {
+    "text": 'Una foto es de mucha ayuda para ubicar los daños.'
+  };
+  let aux=0;
+  var responsesArray= {};
 
   // Get the payload for the postback
   let payload = received_postback.payload;
@@ -799,7 +916,8 @@ async function handlePostback(sender_psid, received_postback) {
         response = grettingsReply;
       } else {
         fillUpdate(sender_psid, "step", step - 1)
-        correctDemand(sender_psid, step - 1);
+        responsesArray = correctDemand(sender_psid, step - 1);
+        response = responsesArray(0);
       }
     } else if (payload == "restart") {
       fillUpdate(sender_psid, "step", 1)
@@ -999,6 +1117,8 @@ async function getCauseInfo(sender_psid) {
   console.log("infooooo causeeeeee");
   console.log(updates[0].cause);
 
+  var responseAux;
+
   aux = 1;
   switch (updates[0].cause) {
     case cause[0]:
@@ -1032,9 +1152,9 @@ async function getCauseInfo(sender_psid) {
       }
       break;
   }
-
   nextStep;
 
+  return responseAux;
 }
 
 // Sends response messages via the Send API
