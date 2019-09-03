@@ -985,7 +985,7 @@ async function fillUpdate(sender_psid, field, value, updates) {
  function nextStep(updates) {
 
   return new Promise((resolve, reject) => {
-  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }),then(
+  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }).then(
     data => {
       console.log("nexesteeeeeeeped");
       Update.find(function (err, docx) {
