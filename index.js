@@ -299,6 +299,7 @@ async function handleMessage(sender_psid, received_message) {
     } else if (received_message.attachments) {
 
       if (received_message.attachments[0].type == "image") {
+console.log(received_message.attachments[0] );
 
         // Get the URL of the message attachment
         let attachment_url = received_message.attachments[0].payload.url;
@@ -331,6 +332,8 @@ async function handleMessage(sender_psid, received_message) {
           correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
+        console.log(received_message.attachments[0] );
+
         if (step == 5) {
           console.log("Steeeeeeep 55555555555555");
           let coordinates = received_message.attachments[0].payload.coordinates;
