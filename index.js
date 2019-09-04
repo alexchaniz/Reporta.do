@@ -590,6 +590,9 @@ async function step2(sender_psid, msgText, updates) {
     }
   } else if (msgText == "Si") {
     updates = nextStep(updates);
+
+    console.log("updatesssss");
+    console.log(updates);
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": "Ok, continuemos"
