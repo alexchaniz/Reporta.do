@@ -383,10 +383,6 @@ async function handleMessage(sender_psid, received_message) {
     var updates= [];
     var step;
 
-    try {
-      updates[0].responseAuxIndicator = 0;
-    } catch{ }
-
     //Set message state to recived and actives the typing icon
     //on the conversation
     messagingActions(sender_psid, "mark_seen")
@@ -400,6 +396,11 @@ async function handleMessage(sender_psid, received_message) {
     step = stepAux[0];
     updates = stepAux[1];
     console.log("Getsteeeeeeeep" + step);
+
+    
+    try {
+      updates[0].responseAuxIndicator = 0;
+    } catch{ }
 
     // Expired conversation, new conversation or completed survey
     //Creayes a new conversation, a new update
