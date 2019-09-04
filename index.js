@@ -498,7 +498,7 @@ async function handleMessage(sender_psid, received_message) {
     } else if (received_message.attachments) {
 
       //if image or video
-      if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type = "video")) {
+      if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type == "video")) {
 console.log("Received message is an image");
 console.log(received_message.attachments[0] );
 
