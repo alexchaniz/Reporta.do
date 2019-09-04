@@ -375,8 +375,6 @@ async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
 
-    console.log(received_message.attachments[0] );
-
     var updates= [];
     var step;
 
