@@ -509,7 +509,7 @@ console.log(received_message.attachments[0] );
 
         } else {
           console.log("wrong step");
-          updates = await correctDemand(sender_psid, step, updates);
+          updates = correctDemand(sender_psid, step, updates);
         }
       } else if (received_message.attachments[0].type == "location") {
         console.log("Received message is a location");
@@ -518,15 +518,15 @@ console.log(received_message.attachments[0] );
 
           updates = await step8(sender_psid, received_message, updates)
         } else {
-          updates = await correctDemand(sender_psid, step, updates);
+          updates = correctDemand(sender_psid, step, updates);
         }
         /*} else if (step == 10) {
           fillUpdate(sender_psid, "observations", msgText);*/
       } else {
-        updates = await correctDemand(sender_psid, step, updates);
+        updates = correctDemand(sender_psid, step, updates);
       }
     } else {
-      updates = await correctDemand(sender_psid, step, updates);
+      updates = correctDemand(sender_psid, step, updates);
     }
 
     await messagingActions(sender_psid, "typing_off").then(async function () {
@@ -858,14 +858,14 @@ async function handlePostback(sender_psid, received_postback) {
         updates[0].response = grettingsReply;
       } else {
         updates = fillUpdate(sender_psid, "step", step - 1, updates)
-        updates = await correctDemand(sender_psid, step - 1, updates);
+        updates = correctDemand(sender_psid, step - 1, updates);
         updates[0].response = responsesArray[0];
       }
     } else if (payload == "restart") {
       updates = fillUpdate(sender_psid, "step", 1, updates)
       updates[0].response = grettingsReply;
     } else {
-      updates = await correctDemand(sender_psid, step, updates);
+      updates = correctDemand(sender_psid, step, updates);
       updates[0].response = responsesArray[0];
     }
   }
