@@ -560,7 +560,7 @@ async function step1(sender_psid, msgText, updates) {
     }
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    updates = await nextStep(updates);
+    updates = nextStep(updates);
     console.log("updatesssss");
     console.log(updates);
     
@@ -591,7 +591,7 @@ async function step2(sender_psid, msgText, updates) {
   } else if (msgText == "Si") {
     updates = nextStep(updates);
 
-    console.log("updatesssss");
+     console.log("updatesssss");
     console.log(updates);
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
@@ -920,7 +920,7 @@ function create(sender_psid, stepNew) {
 }
 
 //Fills the indicates fill with the indicated values
-async function fillUpdate(sender_psid, field, value, updates) {
+ function fillUpdate(sender_psid, field, value, updates) {
 
   updates[0].step += 1;
 
@@ -989,7 +989,7 @@ async function fillUpdate(sender_psid, field, value, updates) {
 }
 
 //Set the nex step. Sums 1
-async function nextStep(updates) {
+function nextStep(updates) {
 
   Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
