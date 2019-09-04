@@ -919,7 +919,7 @@ function create(sender_psid, stepNew) {
     X: 0,
     Y: 0,
     address: undefined,
-    img: undefined,
+    img: "",
     tomarControl: false,
     formatedDate: d.toLocaleString() + " " + d.toTimeString()
   });
@@ -928,7 +928,6 @@ function create(sender_psid, stepNew) {
     console.log("creado");
     Update.find(function (err, doc) {
       console.log("guardadoooooooooooooooo")
-      console.log(doc);
     });
   });
 
