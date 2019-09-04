@@ -317,7 +317,6 @@ app.post('/webhook', (req, res) => {
 
       // Get the sender PSID
       let sender_psid = webhook_event.sender.id;
-      //   console.log(JSON.stringify(webhook_event))
 
       // Check if the event is a message or postback and
       // pass the event to the appropriate handler function
@@ -545,7 +544,6 @@ console.log(received_message.attachments[0] );
 
         console.log("response");
 
-        console.log(updates[0].response);
         await callSendAPI(sender_psid, updates[0].response);
       }
 
@@ -565,10 +563,7 @@ async function step1(sender_psid, msgText, updates) {
     }
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    updates = nextStep(updates);
-    console.log("updatesssss");
-    console.log(updates);
-    
+    updates = nextStep(updates); 
     
     updates[0].response = safePlaceReply;
   } else if (msgText == "No") {
@@ -596,8 +591,6 @@ async function step2(sender_psid, msgText, updates) {
   } else if (msgText == "Si") {
     updates = nextStep(updates);
 
-     console.log("updatesssss");
-    console.log(updates);
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": "Ok, continuemos"
@@ -735,7 +728,7 @@ async function step8Aux(sender_psid, msgText, updates) {
 }
 
 async function step10(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 99999999999999");
+  console.log("Steeeeeeep 1000000000000000");
 
   //Saves any text recibed
   updates = fillUpdate(sender_psid, "observation", msgText, updates);
@@ -745,7 +738,7 @@ async function step10(sender_psid, msgText, updates) {
 }
 
 async function step11(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 100000000000000");
+  console.log("Steeeeeeep 11 111 11 11 11");
 
   if (msgText == "No") {
     updates[0].response = {
@@ -770,7 +763,6 @@ async function step11(sender_psid, msgText, updates) {
     updates[0].responseAuxIndicator = 1
     updates[0].response = anotherUpdateReply;
   }
-  console.log(response);
 
   return updates;
 }
@@ -1123,8 +1115,6 @@ async function getCauseInfo(sender_psid, updates) {
 async function callSendAPI(sender_psid, response) {
   // Construct the message body
   let request_body
-
-  console.log(JSON.stringify(response));
 
   request_body = {
     "recipient": {
