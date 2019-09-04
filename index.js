@@ -433,9 +433,8 @@ async function handleMessage(sender_psid, received_message) {
         }
 
       } else if (msgText == "Asistencia 321") {
-        updates = fillUpdate(sender_psid, "step", 9, updates);
-        updates = fillUpdate(sender_psid, "tomarControl", false, updates);
-        updates = fillUpdate(sender_psid, "observation", ". Acabo la toma de control.", updates)
+        var closeAsistanceAux = [11, false,"--Acabó la toma de control"]
+        updates = fillUpdate(sender_psid, "closeAsistance", closeAsistanceAux, updates);
         updates[0].responseAuxIndicator = 1;
         updates[0].responseAux = {
           "text": "El operario dejó de tener el control"
@@ -967,6 +966,11 @@ function fillUpdate(sender_psid, field, value, updates) {
     case "step":
       updates[0].step = value;
       break;
+      case "closeAsistance":
+        updates[0].step= value[0];
+        updates[0].tomarControl= value[1];
+        updates[0].observation += value[2];
+        sendUpdateToArcGis(updates[0]);
     default:
       updates[0].step = updates[0].step - 1;
       return err;
