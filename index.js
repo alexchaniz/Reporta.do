@@ -678,6 +678,7 @@ async function step6(sender_psid, msgText, updates) {
 
   if (msgText=="No hubo muertos"){
     updates = fillUpdate(sender_psid, "humansDeath", 0, updates)
+    updates[0].response = imageReply;
   } else if (isNaN(msgText)) {
     updates[0].response = {
       "text": "Señale el numero de muertes utilizando numeros"
