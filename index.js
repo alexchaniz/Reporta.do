@@ -1004,7 +1004,6 @@ function fillUpdate(sender_psid, field, value, updates) {
         console.log(err);
       } else {
         console.log("guardadoooooooooooooooo")
-        console.log(doc);
       }
     });
   })
