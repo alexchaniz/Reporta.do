@@ -447,6 +447,7 @@ async function handleMessage(sender_psid, received_message) {
         switch (step) {
           //if the control was took from the operator
           case -2:
+              messagingActions(sender_psid, "typing_off")
             updates = fillUpdate(sender_psid, "observation", msgText, updates)
             break;
           case 1:
@@ -938,7 +939,6 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].humansHarmed = value;
       updates[0].humansDeath = value;
       updates[0].step += 1;
-
       break;
     case "img":
       updates[0].img.data = value[0];
