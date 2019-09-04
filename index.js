@@ -1244,7 +1244,12 @@ try {
   console.log(url);
 
   Http.open("POST", url);
-  Http.send();
+  try {
+    Http.send();
+  } catch (error) {
+    console.log("Error in the sending to arcgis");
+    console.log(error);
+  }
 
   Http.onreadystatechange = (e) => {
     console.log("arcgiiiiisssssssssssssssssssssssssss");
