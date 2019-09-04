@@ -322,6 +322,7 @@ app.post('/webhook', (req, res) => {
       // pass the event to the appropriate handler function
       if (webhook_event.message) {
         console.log("1---------------------------------------------");
+        console.log(webhook_event.message.attachments[0] );
         handleMessage(sender_psid, webhook_event.message);
       } else if (webhook_event.postback) {
         console.log("2---------------------------------------------");
@@ -374,6 +375,8 @@ app.get('/webhook', (req, res) => {
 async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
+
+    console.log(received_message.attachments[0] );
 
     var updates= [];
     var step;
