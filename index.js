@@ -859,14 +859,12 @@ async function handlePostback(sender_psid, received_postback) {
       } else {
         updates = fillUpdate(sender_psid, "step", step - 1, updates)
         updates = correctDemand(sender_psid, step - 1, updates);
-        updates[0].response = responsesArray[0];
       }
     } else if (payload == "restart") {
       updates = fillUpdate(sender_psid, "step", 1, updates)
       updates[0].response = grettingsReply;
     } else {
       updates = correctDemand(sender_psid, step, updates);
-      updates[0].response = responsesArray[0];
     }
   }
 
