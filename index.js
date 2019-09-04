@@ -2,6 +2,7 @@
 
 const request = require('request');
 
+// page acces token> EAAHxOF5ZBsSoBAMCneBZBRZBhac2ZCsYNVRLMS5aLuyjwGe0ayZB6ZCptcPmLs6AQ0qOeV4ZAJjHDOi2fOCMBJU2kR7wItickH6hJn4Y7Ki1iIFEC2dWTXdigF54QOLZBiflYy773P1JRH6t8HCEPvEer9q8TG46Csi2ZCdKTnUM3kAZDZD 
 //Imports dependencies and set up http server
 const
   express = require('express'),
@@ -12,73 +13,21 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const Http = new XMLHttpRequest();
 
 var https = require('https');
-
-
-
-//Setting mongo server collections and connections
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 mongoose.set('useFindAndModify', false);
-var updates = [];
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
-
-var updateSchema = {
-  sender_id: { type: Number },
-  step: { type: Number },
-  response: { type: {} },
-  responseAux: { type: {} },
-  responseAuxIndicator: { type: Number },
-  cause: { type: String },
-  homeDamages: { type: String },
-  humansHarmed: { type: String },
-  humansDeath: { type: String },
-  date: { type: Number },
-  X: { type: Number },
-  Y: { type: Number },
-  address: { type: String },
-  img: { data: Buffer, contentType: String },
-  observation: { type: String },
-  imgUrl: { type: String },
-  tomarControl: { type: Boolean },
-  formatedDate: { type: String }
-};
-
-var update_schema = new Schema(updateSchema);
-var Update = mongoose.model("Update", update_schema);
-
-
-//
-//setting option and responses
-//
-/*
 var response;
-var aux = 0;
 var responseAux = {
   "text": 'Utilice los botones para responder'
 }
-*/
 
+var aux = 0;
+
+//setting option and responses
 var grettingsReply = {
-  "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
-  "quick_replies": [
-    {
-      "content_type": "text",
-      "title": "Reportar daños",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Información",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }
-  ]
-}
-
-var grettingsInfoReply = {
-  "text": "¿Quiere reportar algún daño?",
+  "text": "Hola, es el asistente de daños de república dominicana. Ha tenido lugar algún daño en su zona",
   "quick_replies": [
     {
       "content_type": "text",
@@ -94,73 +43,23 @@ var grettingsInfoReply = {
   ]
 }
 
-var safePlaceReply = {
-  "text": "¿Está en un lugar seguro?",
-  "quick_replies": [
-    {
-      "content_type": "text",
-      "title": "Si",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "No",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }
-  ]
-}
-
-var homeDamages = ["Daños graves", "Daños leves", "No"]
-var homeDamagesReply = {
-  "text": "¿Ha sufrido daños su vivienda?",
-  "quick_replies": [
-    {
-      "content_type": "text",
-      "title": "No",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Daños leves",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Daños graves",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }
-  ]
-}
-
-var cause = ["Huracán", "Lluvias intensas", "Deslizamiento", "Terremoto", "Explosión o incendio", "Otro"]
+var cause = ["Terremoto", "Huracan", "Vaguada", "Otro"]
 var causeReply = {
-  "text": "Me podría decir la causa de los daños",
+  "text": "Me podría decir la causa de este",
   "quick_replies": [
     {
-      "content_type": "text",
-      "title": "Huracán",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Lluvias intensas",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Deslizamiento",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
       "content_type": "text",
       "title": "Terremoto",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Explosión o incendio",
+      "title": "Huracan",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Vaguada",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
@@ -172,78 +71,31 @@ var causeReply = {
   ]
 }
 
-var humanDamagesReply = {
-  "text": "¿Ha sufrido daños o muerto algún miembro de su familia o comunidad?",
+var damages = ["No hubo danos", "Si, hay gente herida", "Si, gente ha fallecido"]
+var damagesReply = {
+  "text": "¿Hay persons heridas?",
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "Si",
+      "title": "No hubo danos",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "No",
+      "title": "Si, hay gente herida",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Si, gente ha fallecido",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
-  ]
-}
-
-var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
-var harmedPeopleReply = {
-  "text": "¿Cuantas personas han resultado heridas?",
-  "quick_replies": [
-    {
-      "content_type": "text",
-      "title": "No hubo heridos",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }
-    /* {
-      "content_type": "text",
-      "title": "5 a 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Más de 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }*/
-  ]
-}
-
-var deathPeople = ["No hubo muertos", "1 a 5", "5 a 10", "Más de 10"]
-var deathPeopleReply = {
-  "text": "Si hubo muertos, ¿Podría escribirnos cuantos?",
-  "quick_replies": [
-    {
-      "content_type": "text",
-      "title": "No hubo muertos",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }
-    /*, {
-      "content_type": "text",
-      "title": "1 a 5",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "5 a 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Más de 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }*/
   ]
 }
 
 var imageReply = {
-  "text": 'Envienos una foto'
+  "text": 'Envienos una imagen de los daños sufridos'
 }
 
 var locationReply = {
@@ -252,8 +104,8 @@ var locationReply = {
     "payload": {
       "template_type": "generic",
       "elements": [{
-        "title": "Envienos su ubicación",
-        "subtitle": "Para ello utilice el botón que aparece en la imagen y pulse 'Enviar'.",
+        "title": "Envienos la ubicación en que tuvo lugar",
+        "subtitle": "Utilice el botón que aparece en la foto",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location1.jpg"
         //  "buttons": [{}]
       }]
@@ -274,31 +126,45 @@ var observationReply = {
 }
 
 var anotherUpdateReply = {
-  "text": "¿Quiere información sobre como actuar o reportar otro daño?",
+  "text": "¿Quiere reportar otro daño?",
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "No",
+      "title": "Si",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Reportar",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Información",
+      "title": "No.",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
   ]
 }
 
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
+
+var updateSchema = {
+  sender_id: { type: Number },
+  step: { type: Number },
+  cause: { type: String },
+  damages: { type: String },
+  date: { type: Number },
+  X: { type: Number },
+  Y: { type: Number },
+  img: { data: Buffer, contentType: String },
+  observation: { type: String },
+  imgUrl: { type: String },
+  tomarControl: { type: Boolean },
+  formatedDate: { type: String }
+};
+
+var update_schema = new Schema(updateSchema);
+
+var Update = mongoose.model("Update", update_schema);
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
-
 
 // Creates the endpoint for our webhook 
 app.post('/webhook', (req, res) => {
@@ -328,7 +194,6 @@ app.post('/webhook', (req, res) => {
         console.log("2---------------------------------------------");
         handlePostback(sender_psid, webhook_event.postback);
       }
-
     });
 
     // Returns a '200 OK' response to all requests
@@ -370,605 +235,354 @@ app.get('/webhook', (req, res) => {
   }
 });
 
+/*app.get('/getUpdate', (req, res) => {
+  var senderAuxId = req.body.senderId;
+  console.log(senderAuxId);
+  
+  res.status(200).send({
+    success: 'true',
+    message: 'todos retrieved successfully',
+    sender_Id: senderAuxId
+  })
+});
+*/
+
 
 // Handles messages events
 async function handleMessage(sender_psid, received_message) {
-  //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
-
-    var updates= [];
-    var step;
-
-    //Set message state to recived and actives the typing icon
-    //on the conversation
-    messagingActions(sender_psid, "mark_seen")
-    messagingActions(sender_psid, "typing_on")
-
-
     console.log("Handling message: ");
 
-    //Get the step the conversation is
-    var stepAux = await getStep(sender_psid, updates);
-    step = stepAux[0];
-    updates = stepAux[1];
+    var step = await getStep(sender_psid);
     console.log("Getsteeeeeeeep" + step);
 
-    
-    try {
-      updates[0].responseAuxIndicator = 0;
-    } catch{ }
-
-    // Expired conversation, new conversation or completed survey
-    //Creayes a new conversation, a new update
+    // Check if the user has been more than without updating
     if (step == -1) {
       //in that case creates another entry
-      updates = create(sender_psid, 1);
-      updates[0].response = grettingsReply;
+      create(sender_psid);
+      response = grettingsReply;
 
       // Check if the message contains text
     } else if (received_message.text) {
 
-      console.log("Received message is a text");
-
-
       console.log("Teeeeeeeeeeeeeeext");
+
       console.log(received_message.text)
       // Create the payload for a basic text message
 
       var msgText = received_message.text;
-      /*   
-      checks if message is one of the preconfigured special messages
-      */
+      /*     if (msgText = "Asistencia personalizada 123") {
+             fillUpdate(sender_psid, "control", true);
+           } else if (msgText = "Cerrar asistencia 123") {
+             fillUpdate(sender_psid, "step", 8);
+             fillUpdate(sender_psid, "control", false);*/
       if (msgText == "borrartodo") {
-        updates[0].response = {
-          "text": "Base de datos mongodb reiniciada correctamente"
-        }
         reset();
-
-      } else if (msgText == "Asistencia 123") {
-        console.log("controlando porqueeee");
-
-        updates = fillUpdate(sender_psid, "tomarControl", true, updates);
-        updates[0].response = {
-          "text": "Uno de nuestros operarios ha tomado el control de la conversación."
-        }
-
-      } else if (msgText == "Asistencia 321") {
-        updates = fillUpdate(sender_psid, "step", 9, updates);
-        updates = fillUpdate(sender_psid, "tomarControl", false, updates);
-        updates = fillUpdate(sender_psid, "observation", ". Acabo la toma de control.", updates)
-        updates[0].responseAuxIndicator = 1;
-        updates[0].responseAux = {
-          "text": "El operario dejó de tener el control"
-        }
-        updates[0].response = anotherUpdateReply
-
-      } else if (step) {
-
-        //Activate the function asociated to the step
-        switch (step) {
-          //if the control was took from the operator
-          case -2:
-            updates = fillUpdate(sender_psid, "observation", msgText, updates)
-            break;
-          case 1:
-            updates = await step1(sender_psid, msgText, updates);
-            break;
-          case 2:
-            updates = await step2(sender_psid, msgText, updates);
-            break;
-          case 3:
-            updates = await step3(sender_psid, msgText, updates);
-            break;
-          case 4:
-            updates = await step4(sender_psid, msgText, updates);
-            break;
-          case 5:
-            updates = await step5(sender_psid, msgText, updates);
-            break;
-          case 6:
-            updates = await step6(sender_psid, msgText, updates);
-            break;
-          case 8:
-            updates = nextStep(updates);
-            updates[0].responseAuxIndicator = 1;
-            updates[0].responseAux = {
-              "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
-            }
-            updates[0].response = locationReply;
-            break;
-          case 9:
-            updates = await step8Aux(sender_psid, msgText, updates);
-            break;
-          case 10:
-            updates = await step10(sender_psid, msgText, updates);
-            break;
-          case 11:
-            updates = await step11(sender_psid, msgText, updates);
-            break;
-          default:
-            //Asks for the cooect question to return as no action coud be tooken
-            updates = await correctDemand(sender_psid, step, updates);
-            break;
-        }
+      } else if (step == 1) {
+        step1(sender_psid, msgText);
+      } else if (step == 2) {
+        step2(sender_psid, msgText)
+      } else if (step == 3) {
+        step3(sender_psid, msgText)
+      } else if (step == 6) {
+        step6(sender_psid, msgText)
+      } else if (step == 7) {
+        step7(sender_psid, msgText)
+        /*} else if (step == 10) {
+          fillUpdate(sender_psid, "observation", msgText);
+          console.log("no controla el bot");
+          
+          return;*/
+      } else {
+        correctDemand(sender_psid, step);
       }
-
-      //Check if message has attached elements
     } else if (received_message.attachments) {
 
-      //if image or video
-      if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type = "video")) {
-console.log("Received message is an image");
-console.log(received_message.attachments[0] );
+      if (received_message.attachments[0].type == "image") {
 
+        // Get the URL of the message attachment
+        let attachment_url = received_message.attachments[0].payload.url;
+        //console.log("the picture is in the link: " + attachment_url)
 
-        if ((updates[0].tomarControl) || (step == 7)) {
-
-          // Get the URL of the message attachment
-          let attachment_url = received_message.attachments[0].payload.url;
-          updates = await step7(sender_psid, attachment_url, received_message.attachments[0].type, updates);
-
+        if (step == 4) {
+          console.log("Steeeeeeep 4444444444444444444");
+          getImage(attachment_url, function (err, data) {
+            if (err) {
+              throw new Error(err);
+            } else {
+              var image = [data, attachment_url];
+              fillUpdate(sender_psid, "img", image);
+            }
+          });
+          response = locationReply;
+          /*} else if (step == 10) {
+            getImage(attachment_url, function (err, data) {
+              if (err) {
+                throw new Error(err);
+              } else {
+                var image = [data, attachment_url];
+                fillUpdate(sender_psid, "img", image);
+              }
+            });
+            fillUpdate(sender_psid, "img", msgText);
+            return;*/
         } else {
           console.log("wrong step");
-          updates = await correctDemand(sender_psid, step, updates);
+          correctDemand(sender_psid, step);
         }
       } else if (received_message.attachments[0].type == "location") {
-        console.log("Received message is a location");
-        
-        if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
+        if (step == 5) {
+          console.log("Steeeeeeep 55555555555555");
+          let coordinates = received_message.attachments[0].payload.coordinates;
+          var location = [coordinates.lat, coordinates.long];
+          console.log(coordinates);
+          
 
-          updates = await step8(sender_psid, received_message, updates)
+          fillUpdate(sender_psid, "location", location);
+          response = observationReply;
+          /*} else if (step == 10) {
+            let coordinates = received_message.attachments[0].payload.coordinates;
+            var location = [coordinates.X, coordinates.Y];
+            fillUpdate(sender_psid, "observations", location);*/
         } else {
-          updates = await correctDemand(sender_psid, step, updates);
+          correctDemand(sender_psid, step);
         }
         /*} else if (step == 10) {
           fillUpdate(sender_psid, "observations", msgText);*/
       } else {
-        updates = await correctDemand(sender_psid, step, updates);
+        correctDemand(sender_psid, step);
       }
-    } else {
-      updates = await correctDemand(sender_psid, step, updates);
     }
+    // Sends the response message
+    if (aux == 1) {
+      await callSendAPI(sender_psid, responseAux).then(async function (err, data) {
+        await callSendAPI(sender_psid, response);
+        console.log("Se envia mensaje previo de alcaración");
 
-    await messagingActions(sender_psid, "typing_off").then(async function () {
+        responseAux = {
+          "text": 'Utilice los botones para responder'
+        }
+        aux = 0;
+      })
+    } else {
+      console.log("No hay mensaje previo de alcaración");
 
-
-      // Sends the response message
-      //In case aux=1 send auxiliar response
-      if (updates[0].responseAuxIndicator == 1) {
-        await callSendAPI(sender_psid, updates[0].responseAux).then(async function (err, data) {
-          await callSendAPI(sender_psid, updates[0].response);
-          console.log("Se envia mensaje previo de alcaración");
-        })
-      } else {
-        console.log("No hay mensaje previo de alcaración");
-
-        console.log("response");
-
-        console.log(updates[0].response);
-        await callSendAPI(sender_psid, updates[0].response);
-      }
-
-    });
+      console.log(response);
+      await callSendAPI(sender_psid, response);
+    }
   }
 }
 
-//Steps of the conversantion as ordered
-async function step1(sender_psid, msgText, updates) {
+async function step1(sender_psid, msgText) {
   console.log("Steeeeeeep 1111111111111111");
 
-  //Check if we recibe the text from the Quick Replys
-  if (msgText == "Información") {
-    updates[0].responseAuxIndicator = 1
-    updates[0].responseAux = {
-      "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-    }
-    updates[0].response = grettingsInfoReply;
-  } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    updates = nextStep(updates);
-    console.log("updatesssss");
-    console.log(updates);
-    
-    
-    updates[0].response = safePlaceReply;
-  } else if (msgText == "No") {
-    updates[0].response = {
-      "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
-    };
-  } else {
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
-      "text": 'Utilice los botones para responder'
-    };
-    updates[0].response = grettingsReply;
-  }
-
-  return updates;
-}
-
-async function step2(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 22222222222222222222222");
-
   if (msgText == "No") {
-    updates[0].response = {
-      "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
-    }
-  } else if (msgText == "Si") {
-    updates = nextStep(updates);
+    console.log("llglggliugytxsrersdfjgyukihjlbyrvctedfhgunmk");
 
-     console.log("updatesssss");
-    console.log(updates);
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
-      "text": "Ok, continuemos"
+    response = {
+      "text": 'Pefecto, estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
-    updates[0].response = causeReply;
+  } else if (msgText == "¡Si!") {
+    nextStep(sender_psid);
+    response = causeReply;
   } else {
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
-      "text": 'Utilice los botones para responder'
-    };
-    updates[0].response = safePlaceReply;
+    console.log("Correct steeep1");
+    response = grettingsReply;
+    aux = 1;
   }
-
-  return updates;
 }
 
-async function step3(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 33333333333333333333333333");
-
+async function step2(sender_psid, msgText) {
+  console.log("Steeeeeeep 22222222222222222222222");
   if (cause.includes(msgText)) {
     if (msgText == "Otro") {
-      updates[0].response = {
+      response = {
         "text": 'Escriba la causa del problema'
       }
     } else {
-      updates = fillUpdate(sender_psid, "cause", msgText, updates);
-      updates[0].response = homeDamagesReply;
+      fillUpdate(sender_psid, "cause", msgText);
+      response = damagesReply;
     }
   } else {
-    updates = fillUpdate(sender_psid, "cause", msgText, updates);
-    updates[0].response = homeDamagesReply;
+    fillUpdate(sender_psid, "cause", msgText);
+    response = damagesReply;
   }
-
-  return updates;
 }
 
-async function step4(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 44444444444444444");
-
-  if (homeDamages.includes(msgText)) {
-    updates = fillUpdate(sender_psid, "homeDamages", msgText, updates);
-    updates[0].response = humanDamagesReply;
+async function step3(sender_psid, msgText) {
+  console.log("Steeeeeeep 333333333333333333");
+  if (damages.includes(msgText)) {
+    fillUpdate(sender_psid, "damages", msgText);
+    response = imageReply;
   } else {
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
-      "text": 'Utilice los botones para responder'
-    };
-    updates[0].response = homeDamagesReply;
+    aux = 1;
+    response = damagesReply;
   }
-
-  return updates;
 }
 
-async function step5(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 5555555555555");
+async function step6(sender_psid, msgText) {
+  console.log("Steeeeeeep 66666666666666");
+  fillUpdate(sender_psid, "observation", msgText);
+  response = anotherUpdateReply;
+}
 
-  if (msgText == "No") {
-    updates = fillUpdate(sender_psid, "noHumansHarmed", msgText, updates)
-    updates[0].response = imageReply;
+async function step7(sender_psid, msgText) {
+  console.log("Steeeeeeep 77777777777777");
+  var d = new Date()
+  if (msgText == "No.") {
+    response = {
+      "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para nosotros.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+    }
   } else if (msgText == "Si") {
-    updates[0].response = harmedPeopleReply;
-  } else {
-    updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates)
-    updates[0].response = deathPeopleReply;
-  }
-  /*else if (harmedPeople.includes(msgText)) {
-    fillUpdate(sender_psid, "humansHarmed", msgText);
-    response = deathPeopleReply;
-  }*/
 
-  return updates;
-}
-
-async function step6(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 666666666666");
-
-  updates = fillUpdate(sender_psid, "humansDeath", msgText, updates)
-  updates[0].response = imageReply;
-
-  return updates;
-}
-
-async function step7(sender_psid, attachment_url, type, updates) {
-  console.log("Steeeeeeep 777777777777777");
-
-  if (type == "image") {
-
-    //save the image as buffer
-    getImage(attachment_url, function (err, data) {
-      if (err) {
-        throw new Error(err);
-      } else {
-        var image = [data, attachment_url];
-        updates = fillUpdate(sender_psid, "img", image, updates);
-      }
-    });
-  } else {
-    updates = fillUpdate(sender_psid, "video", attachment_url, updates);
-  }
-
-  updates[0].response = locationReply;
-  return updates;
-}
-
-async function step8(sender_psid, received_message, updates) {
-  console.log("Steeeeeeep 88888888");
-
-  let coordinates = received_message.attachments[0].payload.coordinates;
-  var location = [coordinates.lat, coordinates.long];
-  console.log(coordinates);
-
-  updates[0].step = 9;
-  updates = fillUpdate(sender_psid, "location", location, updates);
-  if (!updates[0].tomarControl) {
-    updates[0].response = observationReply;
-  } else {
-    updates[0].response = {}
-  }
-  /*} else if (step == 10) {
-    let coordinates = received_message.attachments[0].payload.coordinates;
-    var location = [coordinates.X, coordinates.Y];
-    fillUpdate(sender_psid, "observations", location);*/
-
-  return updates;
-}
-
-async function step8Aux(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 99999999999999");
-
-  //Saves any text recibed
-  updates = fillUpdate(sender_psid, "address", msgText, updates);
-  updates[0].response = observationReply;
-
-  return updates;
-}
-
-async function step10(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 99999999999999");
-
-  //Saves any text recibed
-  updates = fillUpdate(sender_psid, "observation", msgText, updates);
-  updates[0].response = anotherUpdateReply;
-
-  return updates;
-}
-
-async function step11(sender_psid, msgText, updates) {
-  console.log("Steeeeeeep 100000000000000");
-
-  if (msgText == "No") {
-    updates[0].response = {
-      "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-    }
-    updates = nextStep(updates);
-  } else if (msgText == "Reportar") {
-
-    console.log("Step 111 siiiiiiii");
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
+    console.log("Step 7 siiiiiiii");
+    aux = 1;
+    responseAux = {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
+    response = causeReply
+    var updates = await getUpdate(sender_psid);
+    var newUpdate = new Update;
+    newUpdate.step = 2;
+    newUpdate.sender_id = updates[0].sender_id;
+    newUpdate.date = d.getTime() + 1;
+    //newUpdate.damages = updates[0].damages;
+    newUpdate.save(function () {
+      console.log("creado");
+      /*Update.find(function (err, doc) {
+        console.log("guardadoooooooooooooooo")
+        console.log(doc);
+      });*/
+    });
 
-    updates = create(sender_psid, 3);
-    updates[0].response = causeReply;
+    console.log(response);
 
-  } else if (msgText = "Información") {
-    updates = getCauseInfo(sender_psid, updates);
-    updates[0].response = anotherUpdateReply;
+    nextStep(sender_psid);
   } else {
-    updates[0].responseAuxIndicator = 1
-    updates[0].response = anotherUpdateReply;
+    aux = 1
+    response = anotherUpdateReply;
   }
   console.log(response);
-
-  return updates;
 }
 
-//Look for the correct reply as no action could be took
-function correctDemand(sender_psid, step, updates) {
+function correctDemand(sender_psid, step) {
   console.log("correct demand");
 
   switch (step) {
     case -1:
-      updates = create(sender_psid, 1);
-      updates[0].response = grettingsReply;
-      break;
-    case 7:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
-        "text": 'Una foto es de mucha ayuda para ubicar los daños.'
-      }
-      updates[0].response = imageReply;
+      create(sender_psid);
+      response = grettingsReply;
       break;
     case 1:
-      updates[0].response = grettingsReply;
+      response = grettingsReply;
       break;
     case 2:
-      updates[0].response = safePlaceReply;
+      response = causeReply;
       break;
     case 3:
-      updates[0].response = causeReply;
+      response = damagesReply;
       break;
     case 4:
-      updates[0].response = homeDamagesReply;
+      response = imageReply;
       break;
     case 5:
-      updates[0].response = humanDamagesReply;
+      aux = 1;
+      responseAux = {
+        "text": 'Es importante que nos envie su ubicación pata ayudarle'
+      }
+      response = locationReply;
       break;
     case 6:
-      updates[0].response = deathPeopleReply;
+      response = observationReply;
       break;
-    case 8, 9:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
-        "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
-      }
-      updates[0].response = locationReply;
-      break;
-    case 10:
-      updates[0].response = observationReply;
-      break;
-    case 11:
-      updates[0].response = anotherUpdateReply;
+    case 7:
+      response = anotherUpdateReply;
       break;
     default:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
-        "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
-      }
-      updates[0].response = grettingsReply;
-      updates = fillUpdate(sender_psid, "step", 1, updates);
-      break;
+      return "Step";
   }
-
-  return updates;
 }
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
 
-  var updates = [];
-  try {
-    updates[0].responseAuxIndicator = 0;
-  } catch{ }
   // Get the payload for the postback
   let payload = received_postback.payload;
-  messagingActions(sender_psid, "typing_on")
-
 
   // Set the response based on the postback payload
   if (payload === "Greeting") {
-    updates = create(sender_psid, 1);
-    updates[0].response = grettingsReply;
+    create(sender_psid);
+    response = grettingsReply;
 
+    // Send the message to acknowledge the postback
+    await callSendAPI(sender_psid, response);
   } else {
-    var stepAux = await getStep(sender_psid, updates);
-    var step = stepAux[0];
-    updates = stepAux[1];
-
-    //checks if interaction with static menu was received
-    if (payload === "stepback") {
-
-      //if conversation is already in last step
-      if (step == 11) {
-        updates = fillUpdate(sender_psid, "step", 1, updates)
-        updates[0].response = grettingsReply;
-      } else {
-        updates = fillUpdate(sender_psid, "step", step - 1, updates)
-        updates = await correctDemand(sender_psid, step - 1, updates);
-        updates[0].response = responsesArray[0];
-      }
-    } else if (payload == "restart") {
-      updates = fillUpdate(sender_psid, "step", 1, updates)
-      updates[0].response = grettingsReply;
-    } else {
-      updates = await correctDemand(sender_psid, step, updates);
-      updates[0].response = responsesArray[0];
-    }
+    correctDemand(sender_psid, step, function (err, dat) {
+      if (err) console.log();
+    });
   }
-
-  // Send the message to acknowledge the postback
-  await callSendAPI(sender_psid, updates[0].response);
 }
 
-//resets mongo db collection
 function reset() {
   Update.deleteMany({}, function (err, doc) {
     console.log("removeeeeeeeeeeeeeeeeeeeeeed");
   });
 }
 
-//create new update onject in db
-function create(sender_psid, stepNew) {
+function create(sender_psid) {
 
-  var updates = [];
   var d = new Date();
 
-  updates[0] = new Update({
+  var update = new Update({
     sender_id: sender_psid,
-    step: stepNew,
-    response: {},
-    responseAux: { "text": "Responda utilizando los botones por favor." },
-    responseAuxIndicator: 0,
+    step: 1,
     cause: undefined,
     damages: undefined,
     date: d.getTime(),
     observation: ".",
-    X: 0,
-    Y: 0,
-    address: undefined,
+    X: undefined,
+    Y: undefined,
     img: undefined,
     tomarControl: false,
     formatedDate: d.toLocaleString() + " " + d.toTimeString()
   });
 
-  updates[0].save(function () {
+  update.save(function () {
     console.log("creado");
     Update.find(function (err, doc) {
       console.log("guardadoooooooooooooooo")
       console.log(doc);
     });
   });
-
-  return updates;
 }
 
-//Fills the indicates fill with the indicated values
- function fillUpdate(sender_psid, field, value, updates) {
+async function fillUpdate(sender_psid, field, value) {
 
-  updates[0].step += 1;
+  var updates = await getUpdate(sender_psid);
+
+  updates[0].step = updates[0].step + 1;
 
   switch (field) {
     case "cause":
       updates[0].cause = value;
       break;
-    case "homeDamages":
-      updates[0].homeDamages = value;
-      break;
-    case "humansHarmed":
-      updates[0].humansHarmed = value;
-      break;
-    case "humansDeath":
-      updates[0].humansDeath = value;
-      break;
-    case "noHumansHarmed":
-      updates[0].humansHarmed = value;
-      updates[0].humansDeath = value;
-      updates[0].step += 1;
-
+    case "damages":
+      updates[0].damages = value;
       break;
     case "img":
       updates[0].img.data = value[0];
       updates[0].img.contentType = 'image/png';
       updates[0].imgUrl = value[1];
       break;
-    case "video":
-      updates[0].imgUrl = value;
     case "location":
       updates[0].X = value[0];
       updates[0].Y = value[1];
       break;
-    case "address":
-      updates[0].address = value;
-      break;
     case "observation":
-      updates[0].observation += value + "--";
-      if (!updates[0].tomarControl) {
-        sendUpdateToArcGis(updates[0]);
-      }
+      updates[0].observation += value;
+      sendToArcGis(updates[0]);
       break;
-    case "tomarControl":
+    case "control":
       updates[0].tomarControl = value;
       break;
     case "step":
@@ -982,19 +596,14 @@ function create(sender_psid, stepNew) {
   Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
     console.log("field : " + field + "-------saved")
     Update.find(function (err, doc) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("guardadoooooooooooooooo")
-        console.log(doc);
-      }
+      console.log("guardadoooooooooooooooo")
+      console.log(doc);
     });
   })
-  return updates;
 }
 
-//Set the nex step. Sums 1
-function nextStep(updates) {
+async function nextStep(sender_psid) {
+  var updates = await getUpdate(sender_psid);
 
   Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
@@ -1002,13 +611,8 @@ function nextStep(updates) {
       console.log(docx);
     });
   });
-
-  updates[0].step += 1;
-
-  return updates;
 }
 
-//Get the last created update element in the db associated to the sender
 function getUpdate(sender_psid) {
   return new Promise((resolve, reject) => {
     Update.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
@@ -1018,40 +622,35 @@ function getUpdate(sender_psid) {
   });
 }
 
-//Get the step of the user`s last conversation
 async function getStep(sender_psid) {
   try {
     var d = new Date();
-    var step;
     var updates = await getUpdate(sender_psid);
     console.log("tiempo pasado " + (d.getTime() - updates[0].date));
 
     if (updates == []) {
-      console.log("updates is empty");
-      step = -1;
-    } else if (updates[0].tomarControl) {
-      console.log("Control tomado");
-      step = -2;
-    } else if ((updates[0].step > 11) || (d.getTime() - updates[0].date > 900000)) {
-      console.log("Updates recibió el paso" + updates[0].step);
+      console.log("updates estavacio");
+      return -1;
+      /*} else if (updates[0].tomarControl) {
+        return 10;*/
+    } else if ((updates[0].step == 8) || (d.getTime() - updates[0].date > 900000)) {
+      //si el reistro guardado no tiene una localizaci´n asociada ala imagen, o menos información, es eliminado
+      console.log("Updates recibio el paso" + updates[0].step);
       console.log();
 
       if (updates[0].step < 6) {
         updates[0].remove();
       }
-      step = -1;
-    } else {
-      step = updates[0].step;
-      console.log("steeeeeeeeeeep " + step);
+      return -1;
     }
-
-    return [step, updates];
+    var step = updates[0].step;
+    console.log("steeeeeeeeeeep " + step);
+    return step;
   } catch (e) {
-    return [-1, {}];
+    return -1;
   }
 }
 
-//This converts de image to bin
 function getImage(url, callback) {
   https.get(url, res => {
     // Initialise an array
@@ -1073,50 +672,6 @@ function getImage(url, callback) {
   })
     // Inform the callback of the error.
     .on('error', callback);
-}
-
-//Get the info that corresponds to the cause of the damages that the user indicated
-async function getCauseInfo(sender_psid, updates) {
-
-  console.log("infooooo causeeeeee");
-  console.log(updates[0].cause);
-
-  updates[0].responseAuxIndicator = 1;
-  switch (updates[0].cause) {
-    case cause[0]:
-      updates[0].responseAux = {
-        "text": "Información huracán"
-      }
-      break;
-    case cause[1]:
-      updates[0].responseAux = {
-        "text": "Información lluvias torrenciales"
-      }
-      break;
-    case cause[2]:
-      updates[0].responseAux = {
-        "text": "Información deslizamiento de tierras"
-      }
-      break;
-    case cause[3]:
-      updates[0].responseAux = {
-        "text": "Información terremoto"
-      }
-      break;
-    case cause[4]:
-      updates[0].responseAux = {
-        "text": "Información fuego o explosión"
-      }
-      break;
-    default:
-      updates[0].responseAux = {
-        "text": "Hubo un error, no le podemos ayudar con información sobre la causa"
-      }
-      break;
-  }
-  updates = nextStep(updates);
-
-  return updates;
 }
 
 // Sends response messages via the Send API
@@ -1145,120 +700,80 @@ async function callSendAPI(sender_psid, response) {
         console.log('error sending' + err);
         return reject(err);
       } else {
-        console.log("Message sent");
+        console.error("Message sent");
         resolve(body)
       }
     })
   });
 }
 
-//Sends the collected data to arcgis
-function sendUpdateToArcGis(update) {
+
+function sendToArcGis(update) {
 
   var xhr = new XMLHttpRequest();
   var blob;
 
-  // Use JSFiddle logo as a sample image to avoid complicating
-  // this example with cross-domain issues.
-  xhr.open("GET", update.imgUrl, true);
+// Use JSFiddle logo as a sample image to avoid complicating
+// this example with cross-domain issues.
+xhr.open( "GET", update.imgUrl, true );
 
-  // Ask for the result as an ArrayBuffer.
-  xhr.responseType = "arraybuffer";
+// Ask for the result as an ArrayBuffer.
+xhr.responseType = "arraybuffer";
 
-  xhr.onload = function (e) {
+xhr.onload = function( e ) {
     // Obtain a blob: URL for the image data.
-    var arrayBufferView = new Uint8Array(this.response);
+    var arrayBufferView = new Uint8Array( this.response );
     console.log("aaaaaaaaaaaaarrrrrrrrrraaaaaaybuffer");
-
+    
     console.log(arrayBufferView);
-
-    blob = new Blob([arrayBufferView], { type: update.img.contentType });
-  }
-  console.log("blooooooooooooooooooooooooob");
-
-  console.log(blob);
-
-  // var imgg = new Blob(update.img.data, {type : update.img,type})
-
-  var urlImgAux = update.imgUrl;
-
-  //Replace the & for the string 'aspersan' as the other is bad interpretes
-  // int the reques, as it may signal a new parameter when its part of one of them
-  var res = urlImgAux.replace(/&/g, "aspersan");
-
-  //Constructs the object witht he data to update
-  var object = [{
-    "attributes": {
-      "MongoId": update._id,
-      "cause": update.cause,
-      "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed,
-      "humansDeath": update.humansDeath,
-      "date": update.date,
-      "X": update.X,
-      "Y": update.Y,
-      "address": update.address,
-      //"img1": update.img.data,
-      //"img": { "data": update.img.data, "Type": update.img.contentType },
-      "observation": update.observation,
-      "imgUrl1": res,
-      "formatedDate": update.formatedDate
-    },
-    "geometry": {
-      "x": update.X,
-      "y": update.Y
-    }
-  }];
-
-  //Hace string los parametro para añadirlos a la url
-  var stringObject = JSON.stringify(object);
-  console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
-
-  console.log(stringObject);
-
-  //The url with the parameters indicated in the addFeature
-  //rest service for updating data to an arcgis layer
-  var url = process.env.ARCGIS_LAYER_ADDFEATURE + '/addFeatures?f=JSON&features=' + JSON.stringify(object);;
-  console.log(url);
-
-
-  Http.onreadystatechange = (e) => {
-    console.log("arcgiiiiisssssssssssssssssssssssssss");
-
-    console.log(Http.responseText);
-  }
+    
+    blob = new Blob( [ arrayBufferView ], { type: update.img.contentType } );
 }
+console.log("blooooooooooooooooooooooooob");
 
-//Activate the messaging actions
-async function messagingActions(sender_psid, action) {
+console.log(blob);
 
-  let request_body
+ // var imgg = new Blob(update.img.data, {type : update.img,type})
 
-
-  request_body = {
-    "recipient": {
-      "id": sender_psid
-    },
-    "sender_action": action
-  }
-
-  console.log("Action: " + action);
-
-
-  return new Promise(function (resolve, reject) {
-    request({
-      "uri": "https://graph.facebook.com/v2.6/me/messages",
-      "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
-      "method": "POST",
-      "json": request_body
-    }, (err, res, body) => {
-      if (err) {
-        console.log('error sending' + err);
-        return reject(err);
-      } else {
-        console.log("Message sent");
-        resolve(body)
+ var urlImgAux = update.imgUrl;
+ var res = urlImgAux.replace(/&/g, "aspersan");
+var object = [
+    {
+      "attributes": {
+        "MongoId": update._id,
+        "cause": update.cause,
+        "damages": update.damages,
+        "date": update.date,
+        "X": update.X,
+        "Y": update.Y,
+        //"img1": update.img.data,
+        //"img": { "data": update.img.data, "Type": update.img.contentType },
+        "observation": update.observation,
+        "imgUrl1": res ,
+        "formatedDate": update.formatedDate
+      },
+      "geometry": {
+        "x": update.X,
+        "y": update.Y
       }
-    })
-  });
+    }
+  ];
+
+
+var stringObject = JSON.stringify(object);
+console.log("SSSSSSSSSSSSSSStrrrrrrrrrrrrrrrrriiiiiiiiiiinnngggg");
+
+console.log(stringObject);
+
+    var url = 'https://services1.arcgis.com/C4QnL6lJusCeBpYO/arcgis/rest/services/PruebaPuntos/FeatureServer/0/addFeatures?f=JSON&features=' + JSON.stringify(object);;
+   console.log(url);
+   
+    Http.open("POST", url);
+    Http.send();
+
+    Http.onreadystatechange = (e) => {
+      console.log("arcgiiiiisssssssssssssssssssssssssss");
+
+      console.log(Http.responseText);
+    }
 }
