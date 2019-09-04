@@ -561,9 +561,9 @@ async function step1(sender_psid, msgText, updates) {
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = await nextStep(updates);
-    console.log("updateeeeessss");
-    
+    console.log("updatesssss");
     console.log(updates);
+    
     
     updates[0].response = safePlaceReply;
   } else if (msgText == "No") {
@@ -589,7 +589,7 @@ async function step2(sender_psid, msgText, updates) {
       "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
     }
   } else if (msgText == "Si") {
-    updates = await nextStep(updates);
+    updates = nextStep(updates);
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": "Ok, continuemos"
@@ -619,7 +619,7 @@ async function step3(sender_psid, msgText, updates) {
       updates[0].response = homeDamagesReply;
     }
   } else {
-    updates = await fillUpdate(sender_psid, "cause", msgText, updates);
+    updates = fillUpdate(sender_psid, "cause", msgText, updates);
     updates[0].response = homeDamagesReply;
   }
 
@@ -921,7 +921,6 @@ async function fillUpdate(sender_psid, field, value, updates) {
 
   updates[0].step += 1;
 
-  
   switch (field) {
     case "cause":
       updates[0].cause = value;
@@ -987,22 +986,18 @@ async function fillUpdate(sender_psid, field, value, updates) {
 }
 
 //Set the nex step. Sums 1
- function nextStep(updates) {
+async function nextStep(updates) {
 
-  return new Promise((resolve, reject) => {
-  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }).then(
-    data => {
-      console.log("nexesteeeeeeeped");
-      Update.find(function (err, docx) {
-        console.log(docx);
-      });
-      resolve(data);
-    },
-    error => {
-      reject(error);
-    })
-    
+  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+    console.log("nexesteeeeeeeped");
+    Update.find(function (err, docx) {
+      console.log(docx);
+    });
   });
+
+  updates[0].step += 1;
+
+  return updates;
 }
 
 //Get the last created update element in the db associated to the sender
