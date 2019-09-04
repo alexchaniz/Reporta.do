@@ -778,7 +778,7 @@ async function step11(sender_psid, msgText, updates) {
     updates = getCauseInfo(sender_psid, updates);
     updates[0].response = anotherUpdateReply;
   } else {
-    updates[0].responseAuxIndicator = 1
+    updates[0].responseAuxIndicator = 0,
     updates[0].response = anotherUpdateReply;
   }
 
@@ -991,9 +991,10 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].tomarControl = value[1];
       updates[0].observation += value[2];
       sendUpdateToArcGis(updates[0]);
+      break;
     default:
       updates[0].step = updates[0].step - 1;
-      return err;
+      return ;
   }
 
   Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
@@ -1200,10 +1201,14 @@ function sendUpdateToArcGis(update) {
 
   console.log(urlImgAux);
   
-
-  //Replace the & for the string 'aspersan' as the other is bad interpretes
+try {
+    //Replace the & for the string 'aspersan' as the other is bad interpretes
   // int the reques, as it may signal a new parameter when its part of one of them
   var res = urlImgAux.replace(/&/g, "aspersan");
+} catch (error) {
+  console.log("No se subio ninguna imgen");
+  
+}
 
   //Constructs the object witht he data to update
   var object = [{
