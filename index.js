@@ -376,10 +376,6 @@ async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
 
-    var responsesArray;
-    var response;
-    var responseAux;
-    var aux;
     var updates= [];
     var step;
 
@@ -499,6 +495,7 @@ async function handleMessage(sender_psid, received_message) {
 
       //if image or video
       if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type = "video")) {
+console.log("Received message is an image");
 
         if ((updates[0].tomarControl) || (step == 7)) {
 
@@ -511,6 +508,8 @@ async function handleMessage(sender_psid, received_message) {
           updates = await correctDemand(sender_psid, step, updates);
         }
       } else if (received_message.attachments[0].type == "location") {
+        console.log("Received message is a location");
+        
         if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
           updates = await step8(sender_psid, received_message, updates)
