@@ -433,7 +433,7 @@ async function handleMessage(sender_psid, received_message) {
         }
 
       } else if (msgText == "Asistencia 321") {
-        var closeAsistanceAux = [11, false,"--Acabó la toma de control"]
+        var closeAsistanceAux = [11, false, "--Acabó la toma de control"]
         updates = fillUpdate(sender_psid, "closeAsistance", closeAsistanceAux, updates);
         updates[0].responseAuxIndicator = 1;
         updates[0].responseAux = {
@@ -447,7 +447,7 @@ async function handleMessage(sender_psid, received_message) {
         switch (step) {
           //if the control was took from the operator
           case -2:
-              messagingActions(sender_psid, "typing_off")
+            messagingActions(sender_psid, "typing_off")
             updates = fillUpdate(sender_psid, "observation", msgText, updates)
             break;
           case 1:
@@ -653,8 +653,14 @@ async function step5(sender_psid, msgText, updates) {
   } else if (msgText == "Si") {
     updates[0].response = harmedPeopleReply;
   } else {
-    updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates)
-    updates[0].response = deathPeopleReply;
+    if (isNaN(msgText)) {
+      updates[0].response = {
+        "text": "Señale el numero de muertes utilizando numeros"
+      };
+    } else {
+      updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates)
+      updates[0].response = deathPeopleReply;
+    }
   }
   /*else if (harmedPeople.includes(msgText)) {
     fillUpdate(sender_psid, "humansHarmed", msgText);
@@ -667,8 +673,14 @@ async function step5(sender_psid, msgText, updates) {
 async function step6(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 666666666666");
 
-  updates = fillUpdate(sender_psid, "humansDeath", msgText, updates)
-  updates[0].response = imageReply;
+  if (isNaN(msgText)) {
+    updates[0].response = {
+      "text": "Señale el numero de muertes utilizando numeros"
+    };
+  } else {
+    updates = fillUpdate(sender_psid, "humansDeath", msgText, updates)
+    updates[0].response = imageReply;
+  }
 
   return updates;
 }
@@ -959,7 +971,7 @@ function fillUpdate(sender_psid, field, value, updates) {
       if (!updates[0].tomarControl) {
         sendUpdateToArcGis(updates[0]);
       } else {
-        updates[0].response= {};
+        updates[0].response = {};
       }
       break;
     case "tomarControl":
@@ -968,11 +980,11 @@ function fillUpdate(sender_psid, field, value, updates) {
     case "step":
       updates[0].step = value;
       break;
-      case "closeAsistance":
-        updates[0].step= value[0];
-        updates[0].tomarControl= value[1];
-        updates[0].observation += value[2];
-        sendUpdateToArcGis(updates[0]);
+    case "closeAsistance":
+      updates[0].step = value[0];
+      updates[0].tomarControl = value[1];
+      updates[0].observation += value[2];
+      sendUpdateToArcGis(updates[0]);
     default:
       updates[0].step = updates[0].step - 1;
       return err;
@@ -1151,32 +1163,32 @@ async function callSendAPI(sender_psid, response) {
 
 //Sends the collected data to arcgis
 function sendUpdateToArcGis(update) {
-/*
-  var xhr = new XMLHttpRequest();
-  var blob;
-
-  // Use JSFiddle logo as a sample image to avoid complicating
-  // this example with cross-domain issues.
-  xhr.open("GET", update.imgUrl, true);
-
-  // Ask for the result as an ArrayBuffer.
-  xhr.responseType = "arraybuffer";
-
-  xhr.onload = function (e) {
-    // Obtain a blob: URL for the image data.
-    var arrayBufferView = new Uint8Array(this.response);
-    console.log("aaaaaaaaaaaaarrrrrrrrrraaaaaaybuffer");
-
-    console.log(arrayBufferView);
-
-    blob = new Blob([arrayBufferView], { type: update.img.contentType });
-  }
-  console.log("blooooooooooooooooooooooooob");
-
-  console.log(blob);
-
-  // var imgg = new Blob(update.img.data, {type : update.img,type})
-*/
+  /*
+    var xhr = new XMLHttpRequest();
+    var blob;
+  
+    // Use JSFiddle logo as a sample image to avoid complicating
+    // this example with cross-domain issues.
+    xhr.open("GET", update.imgUrl, true);
+  
+    // Ask for the result as an ArrayBuffer.
+    xhr.responseType = "arraybuffer";
+  
+    xhr.onload = function (e) {
+      // Obtain a blob: URL for the image data.
+      var arrayBufferView = new Uint8Array(this.response);
+      console.log("aaaaaaaaaaaaarrrrrrrrrraaaaaaybuffer");
+  
+      console.log(arrayBufferView);
+  
+      blob = new Blob([arrayBufferView], { type: update.img.contentType });
+    }
+    console.log("blooooooooooooooooooooooooob");
+  
+    console.log(blob);
+  
+    // var imgg = new Blob(update.img.data, {type : update.img,type})
+  */
 
   var urlImgAux = update.imgUrl;
 
