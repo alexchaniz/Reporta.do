@@ -962,6 +962,7 @@ function fillUpdate(sender_psid, field, value, updates) {
       break;
     case "tomarControl":
       updates[0].tomarControl = value;
+      updates[0].response= {}
       break;
     case "step":
       updates[0].step = value;
