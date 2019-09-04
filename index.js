@@ -322,7 +322,6 @@ app.post('/webhook', (req, res) => {
       // pass the event to the appropriate handler function
       if (webhook_event.message) {
         console.log("1---------------------------------------------");
-        console.log(webhook_event.message.attachments[0] );
         handleMessage(sender_psid, webhook_event.message);
       } else if (webhook_event.postback) {
         console.log("2---------------------------------------------");
