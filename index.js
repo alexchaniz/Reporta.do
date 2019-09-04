@@ -408,6 +408,9 @@ async function handleMessage(sender_psid, received_message) {
       // Check if the message contains text
     } else if (received_message.text) {
 
+      console.log("Received message is a text");
+
+
       console.log("Teeeeeeeeeeeeeeext");
       console.log(received_message.text)
       // Create the payload for a basic text message
@@ -496,6 +499,8 @@ async function handleMessage(sender_psid, received_message) {
       //if image or video
       if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type = "video")) {
 console.log("Received message is an image");
+console.log(received_message.attachments[0] );
+
 
         if ((updates[0].tomarControl) || (step == 7)) {
 
