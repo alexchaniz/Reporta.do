@@ -1176,9 +1176,10 @@ function sendUpdateToArcGis(update) {
   console.log(blob);
 
   // var imgg = new Blob(update.img.data, {type : update.img,type})
+*/
 
   var urlImgAux = update.imgUrl;
-*/
+
   //Replace the & for the string 'aspersan' as the other is bad interpretes
   // int the reques, as it may signal a new parameter when its part of one of them
   var res = urlImgAux.replace(/&/g, "aspersan");
