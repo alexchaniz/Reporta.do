@@ -760,8 +760,8 @@ async function step11(sender_psid, msgText, updates) {
   if (msgText == "No") {
     updates[0].response = {
       "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-    }
-    updates = nextStep(updates);
+    } 
+    //updates = nextStep(updates);
   } else if (msgText == "Reportar") {
 
     console.log("Step 111 siiiiiiii");
