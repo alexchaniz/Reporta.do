@@ -1068,7 +1068,7 @@ function getImage(url, callback) {
 }
 
 //Get the info that corresponds to the cause of the damages that the user indicated
-async function getCauseInfo(sender_psid, updates) {
+function getCauseInfo(sender_psid, updates) {
 
   console.log("infooooo causeeeeee");
   console.log(updates[0].cause);
