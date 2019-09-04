@@ -958,11 +958,12 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].observation += value + "--";
       if (!updates[0].tomarControl) {
         sendUpdateToArcGis(updates[0]);
+      } else {
+        updates[0].response= {};
       }
       break;
     case "tomarControl":
       updates[0].tomarControl = value;
-      updates[0].response= {}
       break;
     case "step":
       updates[0].step = value;
