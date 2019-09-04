@@ -676,7 +676,9 @@ async function step5(sender_psid, msgText, updates) {
 async function step6(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 666666666666");
 
-  if (isNaN(msgText)) {
+  if (msgText=="No hubo muertos"){
+    updates = fillUpdate(sender_psid, "humansDeath", 0, updates)
+  } else if (isNaN(msgText)) {
     updates[0].response = {
       "text": "Señale el numero de muertes utilizando numeros"
     };
@@ -1194,6 +1196,9 @@ function sendUpdateToArcGis(update) {
   */
 
   var urlImgAux = update.imgUrl;
+
+  console.log(urlImgAux);
+  
 
   //Replace the & for the string 'aspersan' as the other is bad interpretes
   // int the reques, as it may signal a new parameter when its part of one of them
