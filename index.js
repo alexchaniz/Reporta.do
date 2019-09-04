@@ -912,14 +912,14 @@ function create(sender_psid, stepNew) {
     response: {},
     responseAux: { "text": "Responda utilizando los botones por favor." },
     responseAuxIndicator: 0,
-    cause: undefined,
-    damages: undefined,
+    cause: "no cause indicated",
+    damages: "no daages indicates",
     date: d.getTime(),
     observation: ".",
     X: 0,
     Y: 0,
-    address: undefined,
-    img: "",
+    address: "addres signaled by the coordinates",
+    img: "no image",
     tomarControl: false,
     formatedDate: d.toLocaleString() + " " + d.toTimeString()
   });
