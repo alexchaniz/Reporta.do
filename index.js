@@ -375,7 +375,7 @@ async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
 
-    var updates= [];
+    var updates = [];
     var step;
 
     //Set message state to recived and actives the typing icon
@@ -392,7 +392,7 @@ async function handleMessage(sender_psid, received_message) {
     updates = stepAux[1];
     console.log("Getsteeeeeeeep" + step);
 
-    
+
     try {
       updates[0].responseAuxIndicator = 0;
     } catch{ }
@@ -497,8 +497,8 @@ async function handleMessage(sender_psid, received_message) {
 
       //if image or video
       if ((received_message.attachments[0].type == "image") || (received_message.attachments[0].type == "video")) {
-console.log("Received message is an image");
-console.log(received_message.attachments[0] );
+        console.log("Received message is an image");
+        console.log(received_message.attachments[0]);
 
 
         if ((updates[0].tomarControl) || (step == 7)) {
@@ -513,7 +513,7 @@ console.log(received_message.attachments[0] );
         }
       } else if (received_message.attachments[0].type == "location") {
         console.log("Received message is a location");
-        
+
         if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
 
           updates = await step8(sender_psid, received_message, updates)
@@ -563,8 +563,8 @@ async function step1(sender_psid, msgText, updates) {
     }
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    updates = nextStep(updates); 
-    
+    updates = nextStep(updates);
+
     updates[0].response = safePlaceReply;
   } else if (msgText == "No") {
     updates[0].response = {
@@ -783,6 +783,14 @@ function correctDemand(sender_psid, step, updates) {
       }
       updates[0].response = imageReply;
       break;
+    case 8:
+    case 9:
+      updates[0].responseAuxIndicator = 1;
+      updates[0].responseAux = {
+        "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
+      }
+      updates[0].response = locationReply;
+      break;
     case 1:
       updates[0].response = grettingsReply;
       break;
@@ -800,13 +808,6 @@ function correctDemand(sender_psid, step, updates) {
       break;
     case 6:
       updates[0].response = deathPeopleReply;
-      break;
-    case 8, 9:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
-        "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
-      }
-      updates[0].response = locationReply;
       break;
     case 10:
       updates[0].response = observationReply;
@@ -867,9 +868,11 @@ async function handlePostback(sender_psid, received_postback) {
       updates = correctDemand(sender_psid, step, updates);
     }
   }
+  await messagingActions(sender_psid, "typing_off").then(async function () {
 
-  // Send the message to acknowledge the postback
-  await callSendAPI(sender_psid, updates[0].response);
+    // Send the message to acknowledge the postback
+    await callSendAPI(sender_psid, updates[0].response);
+  });
 }
 
 //resets mongo db collection
@@ -915,7 +918,7 @@ function create(sender_psid, stepNew) {
 }
 
 //Fills the indicates fill with the indicated values
- function fillUpdate(sender_psid, field, value, updates) {
+function fillUpdate(sender_psid, field, value, updates) {
 
   updates[0].step += 1;
 
