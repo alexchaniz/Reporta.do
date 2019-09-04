@@ -653,7 +653,7 @@ async function step5(sender_psid, msgText, updates) {
   } else if (msgText == "Si") {
     updates[0].response = harmedPeopleReply;
   } else if (msgText == "No hubo heridos") {
-    updates = fillUpdate(sender_psid, "noHumansHarmed", 0, updates)
+    updates = fillUpdate(sender_psid, "humansHarmed", 0, updates)
     updates[0].response = deathPeopleReply;
   } else {
     if (isNaN(msgText)) {
