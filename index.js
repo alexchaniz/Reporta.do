@@ -1131,7 +1131,7 @@ function getCauseInfo(sender_psid, updates) {
       }
       break;
   }
-  updates = nextStep(updates);
+  //updates = nextStep(updates);
 
   return updates;
 }
