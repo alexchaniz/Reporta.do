@@ -561,6 +561,8 @@ async function step1(sender_psid, msgText, updates) {
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = await nextStep(updates);
+    console.log("updateeeeessss");
+    
     console.log(updates);
     
     updates[0].response = safePlaceReply;
