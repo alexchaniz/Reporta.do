@@ -1151,7 +1151,7 @@ async function callSendAPI(sender_psid, response) {
 
 //Sends the collected data to arcgis
 function sendUpdateToArcGis(update) {
-
+/*
   var xhr = new XMLHttpRequest();
   var blob;
 
@@ -1178,7 +1178,7 @@ function sendUpdateToArcGis(update) {
   // var imgg = new Blob(update.img.data, {type : update.img,type})
 
   var urlImgAux = update.imgUrl;
-
+*/
   //Replace the & for the string 'aspersan' as the other is bad interpretes
   // int the reques, as it may signal a new parameter when its part of one of them
   var res = urlImgAux.replace(/&/g, "aspersan");
