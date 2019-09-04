@@ -561,6 +561,8 @@ async function step1(sender_psid, msgText, updates) {
     updates[0].response = grettingsInfoReply;
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = await nextStep(updates);
+    console.log(updates);
+    
     updates[0].response = safePlaceReply;
   } else if (msgText == "No") {
     updates[0].response = {
@@ -615,7 +617,7 @@ async function step3(sender_psid, msgText, updates) {
       updates[0].response = homeDamagesReply;
     }
   } else {
-    updates = fillUpdate(sender_psid, "cause", msgText, updates);
+    updates = await fillUpdate(sender_psid, "cause", msgText, updates);
     updates[0].response = homeDamagesReply;
   }
 
@@ -917,6 +919,7 @@ async function fillUpdate(sender_psid, field, value, updates) {
 
   updates[0].step += 1;
 
+  
   switch (field) {
     case "cause":
       updates[0].cause = value;
