@@ -1219,6 +1219,8 @@ function sendUpdateToArcGis(update) {
   var url = process.env.ARCGIS_LAYER_ADDFEATURE + '/addFeatures?f=JSON&features=' + JSON.stringify(object);;
   console.log(url);
 
+  Http.open("POST", url);
+  Http.send();
 
   Http.onreadystatechange = (e) => {
     console.log("arcgiiiiisssssssssssssssssssssssssss");
