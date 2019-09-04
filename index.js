@@ -32,8 +32,8 @@ var updateSchema = {
   responseAuxIndicator: { type: Number },
   cause: { type: String },
   homeDamages: { type: String },
-  humansHarmed: { type: String },
-  humansDeath: { type: String },
+  humansHarmed: { type: Number },
+  humansDeath: { type: Number },
   date: { type: Number },
   X: { type: Number },
   Y: { type: Number },
@@ -652,6 +652,9 @@ async function step5(sender_psid, msgText, updates) {
     updates[0].response = imageReply;
   } else if (msgText == "Si") {
     updates[0].response = harmedPeopleReply;
+  } else if (msgText == "No hubo heridos") {
+    updates = fillUpdate(sender_psid, "noHumansHarmed", 0, updates)
+    updates[0].response = deathPeopleReply;
   } else {
     if (isNaN(msgText)) {
       updates[0].response = {
