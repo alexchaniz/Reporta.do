@@ -173,7 +173,7 @@ var causeReply = {
 }
 
 var humanDamagesReply = {
-  "text": "¿Ha sufrido daños o muerto algún miembro de su familia o comunidad?",
+  "text": "¿Ha sufrido daños o muerto algún miembro de su familia?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -1253,8 +1253,13 @@ try {
 
   Http.onreadystatechange = (e) => {
     console.log("arcgiiiiisssssssssssssssssssssssssss");
-
     console.log(Http.responseText);
+
+  //  var objectId = Http.responseText.addResults[0].objectId;
+  //  console.log(objectId);
+    
+  //  var formData = new FormData();
+  //  formData.append("attachment", update.imgUrl);  
   }
 }
 
