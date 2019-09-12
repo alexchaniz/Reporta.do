@@ -1212,8 +1212,9 @@ try {
 
   //Constructs the object witht he data to update
   var object = [{
-    "geometry" : {"x":Math.trunc(update.X), "y": 0 - Math.trunc(update.Y) },
+    "geometry" : {"x": 10000* update.X, "y": 10000*update.Y },
     "attributes": {
+      "facebookId": Update.sender_id,
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
       "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath, 
       "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
