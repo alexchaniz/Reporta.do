@@ -20,7 +20,6 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 mongoose.set('useFindAndModify', false);
-var updates = [];
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
@@ -1036,9 +1035,10 @@ function getUpdate(sender_psid) {
 
 //Get the step of the user`s last conversation
 async function getStep(sender_psid) {
+  var d = new Date();
+  var step;
+  
   try {
-    var d = new Date();
-    var step;
     var updates = await getUpdate(sender_psid);
     console.log("tiempo pasado " + (d.getTime() - updates[0].date));
 
@@ -1202,7 +1202,7 @@ function sendUpdateToArcGis(update) {
 try {
     //Replace the & for the string 'aspersan' as the other is bad interpretes
   // int the reques, as it may signal a new parameter when its part of one of them
-  var res = urlImgAux.replace(/&/g, "aspersan");
+  var repImg = urlImgAux.replace(/&/g, "aspersan");
 } catch (error) {
   console.log("No se subio ninguna imgen");
   
@@ -1210,25 +1210,12 @@ try {
 
   //Constructs the object witht he data to update
   var object = [{
+    "geometry": {"x": update.X, "y": update.Y },
     "attributes": {
-      "MongoId": update._id,
-      "cause": update.cause,
-      "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed,
-      "humansDeath": update.humansDeath,
-      "date": update.date,
-      "X": update.X,
-      "Y": update.Y,
-      "address": update.address,
-      //"img1": update.img.data,
-      //"img": { "data": update.img.data, "Type": update.img.contentType },
-      "observation": update.observation,
-      "imgUrl1": res,
-      "formatedDate": update.formatedDate
-    },
-    "geometry": {
-      "x": update.X,
-      "y": update.Y
+      "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
+      "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath, 
+      "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
+      "observation": update.observation, "imgUrl1": repImg, "formatedDate": update.formatedDate
     }
   }];
 
