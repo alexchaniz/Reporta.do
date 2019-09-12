@@ -1214,7 +1214,7 @@ try {
   var object = [{
     "geometry" : {"x": update.X, "y": update.Y, "spatialReference" : {"wkid" : 4326} },
     "attributes": {
-      "facebookId": Update.sender_id,
+      "facebookId": update.sender_id,
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
       "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath, 
       "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
