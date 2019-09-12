@@ -1212,8 +1212,9 @@ try {
 
   //Constructs the object witht he data to update
   var object = [{
-    "geometry": {"x": parseFloat(update.X) , "y": parseFloat(update.Y) },
+    "geometry" : {"x": 0 + update.X , "y": 0 + update.Y },
     "attributes": {
+      
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
       "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath, 
       "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
