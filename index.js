@@ -265,7 +265,7 @@ var observationReply = {
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "No quiero dejar ninguna observación",
+      "title": "No es neceario",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
@@ -717,6 +717,8 @@ async function step8(sender_psid, received_message, updates) {
 
   let coordinates = received_message.attachments[0].payload.coordinates;
   var location = [coordinates.lat, coordinates.long];
+  console.log("cooooooooooooooooooooordinateeeeeeeeeeeeeeeeeeeees");
+  
   console.log(coordinates);
 
   updates[0].step = 9;
@@ -1210,7 +1212,7 @@ try {
 
   //Constructs the object witht he data to update
   var object = [{
-    "geometry": {"x": update.X, "y": update.Y },
+    "geometry": {"x": parseFloat(updates.X) , "y": parseFloat(update.Y) },
     "attributes": {
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
       "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath, 
