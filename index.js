@@ -716,7 +716,7 @@ async function step8(sender_psid, received_message, updates) {
   console.log("Steeeeeeep 88888888");
 
   let coordinates = received_message.attachments[0].payload.coordinates;
-  var location = [coordinates.lat, coordinates.long];
+  var location = [coordinates.long, coordinates.lat];
   console.log("cooooooooooooooooooooordinateeeeeeeeeeeeeeeeeeeees");
   
   console.log(coordinates);
@@ -1212,7 +1212,7 @@ try {
 
   //Constructs the object witht he data to update
   var object = [{
-    "geometry" : {"x": update.Y, "y": update.X, "spatialReference" : {"wkid" : 4326} },
+    "geometry" : {"x": update.X, "y": update.Y, "spatialReference" : {"wkid" : 4326} },
     "attributes": {
       "facebookId": Update.sender_id,
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
