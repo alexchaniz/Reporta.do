@@ -946,14 +946,14 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].homeDamages = value;
       break;
     case "humansHarmed":
-      updates[0].humansHarmed = value;
+      updates[0].humansHarmed = parseInt(value);
       break;
     case "humansDeath":
-      updates[0].humansDeath = value;
+      updates[0].humansDeath = parseInt(value);
       break;
     case "noHumansHarmed":
-      updates[0].humansHarmed = value;
-      updates[0].humansDeath = value;
+      updates[0].humansHarmed = 0;
+      updates[0].humansDeath = 0;
       updates[0].step += 1;
       break;
     case "img":
