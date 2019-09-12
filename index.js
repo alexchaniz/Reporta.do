@@ -1212,7 +1212,7 @@ try {
 
   //Constructs the object witht he data to update
   var object = [{
-    "geometry" : {"x": update.X, "y": update.Y, "spatialReference" : {"wkid" : 3857} },
+    "geometry" : {"x": update.X, "y": update.Y, "spatialReference" : {"wkid" : 4326} },
     "attributes": {
       "facebookId": Update.sender_id,
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
