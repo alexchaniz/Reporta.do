@@ -597,15 +597,15 @@ async function step1(sender_psid, msgText, updates) {
     updates = fillUpdate(sender_psid, "usesButtons", false, updates)
   } else {
 
-    if( updates[0].response == grettingsReply){
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
-      "text": 'Si no le aparecen los botones quiere decir que no esta utilizando la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
-    };
-  }
+    if (updates[0].response == grettingsReply) {
+      updates[0].responseAuxIndicator = 1;
+      updates[0].responseAux = {
+        "text": 'Si no le aparecen los botones quiere decir que no esta utilizando la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
+      };
+    }
     updates[0].response = grettingsReply;
+    updates = fillUpdate(sender_psid, "step", 1, updates)
   }
-  updates = fillUpdate(sender_psid, "step", 1, updates)
 
   return updates;
 }
@@ -1324,7 +1324,7 @@ function sendUpdateToArcGis(update) {
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
       "facebookId": update.sender_id,
-      "MongoId": update._id, "fromApp": update.fromApp ,"cause": update.cause, "homeDamages": update.homeDamages,
+      "MongoId": update._id, "fromApp": update.fromApp, "cause": update.cause, "homeDamages": update.homeDamages,
       "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath,
       "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
       "observation": update.observation, "imgUrl1": repImg, "formatedDate": update.formatedDate
