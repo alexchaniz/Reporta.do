@@ -582,7 +582,7 @@ async function step1(sender_psid, msgText, updates) {
       "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
     updates[0].response = grettingsInfoReply;
-    updates = fillUpdate(sender_psid, "step", 1, fillUpdate);
+    updates = fillUpdate(sender_psid, "step", 1, updates);
 
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = nextStep(updates);
@@ -1351,12 +1351,12 @@ function sendUpdateToArcGis(update) {
   var object = [{
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
-      //"facebookId": update.sender_id,
-      //"MongoId": update._id, 
+      "facebookId": update.sender_id,
+      "MongoId": update._id, 
       "fromApp": update.fromApp, 
       "cause": update.cause, 
       "homeDamages": update.homeDamages,
-      //"humansHarmed": update.humansHarmed, 
+      "humansHarmed": update.humansHarmed, 
       //"humansDeath": update.humansDeath,
       //"date": update.date, 
       //"X": update.X, 
