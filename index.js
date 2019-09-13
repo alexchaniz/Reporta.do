@@ -451,6 +451,7 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 1:
             updates = await step1(sender_psid, msgText, updates);
+            console.log(updates);
             break;
           case 2:
             updates = await step2(sender_psid, msgText, updates);
