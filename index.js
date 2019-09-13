@@ -601,6 +601,8 @@ async function step1(sender_psid, msgText, updates) {
     console.log(updates[0].response == grettingsReply);
 
     if (updates[0].response == grettingsReply) {
+      console.log("LLega aqui");
+      
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
         "text": 'Si no le aparecen los botones quiere decir que no nos escribe desde la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
