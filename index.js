@@ -576,6 +576,7 @@ async function step1(sender_psid, msgText, updates) {
       "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
     updates[0].response = grettingsInfoReply;
+    updates= fillUpdate(sender_psid, "step", 1,fillUpdate);
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = nextStep(updates);
 
@@ -595,7 +596,10 @@ async function step1(sender_psid, msgText, updates) {
     }
     updates = fillUpdate(sender_psid, "usesButtons", false, updates)
   } else {
-
+    console.log("a verrrrrrrrrrrrrrrrrr");
+    
+    console.log(updates[0].response);
+    
     if (updates[0].response == grettingsReply) {
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
