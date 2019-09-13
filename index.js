@@ -570,10 +570,6 @@ async function handleMessage(sender_psid, received_message) {
 async function step1(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 1111111111111111");
 
-  var responseNoProb = {
-    "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
-  };
-
   //Check if we recibe the text from the Quick Replys
   if (msgText == "Información") {
     updates[0].responseAuxIndicator = 1
@@ -586,7 +582,9 @@ async function step1(sender_psid, msgText, updates) {
 
     updates[0].response = safePlaceReply;
   } else if (msgText == "No") {
-    updates[0].response = responseNoProb;
+    updates[0].response = {
+      "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
+    };
     updates = fillUpdate(sender_psid, "step", 1, updates)
   } else if (msgText == "No tengo la app") {
     updates[0].responseAuxIndicator = 1;
@@ -599,7 +597,7 @@ async function step1(sender_psid, msgText, updates) {
     updates = fillUpdate(sender_psid, "usesButtons", false, updates)
   } else {
 
-    if( !updates[0].response == responseNoProb){
+    if( updates[0].response == grettingsReply){
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": 'Si no le aparecen los botones quiere decir que no esta utilizando la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
@@ -608,7 +606,7 @@ async function step1(sender_psid, msgText, updates) {
     updates[0].response = grettingsReply;
   }
   updates = fillUpdate(sender_psid, "step", 1, updates)
-  
+
   return updates;
 }
 
