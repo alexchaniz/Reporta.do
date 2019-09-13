@@ -545,6 +545,8 @@ async function handleMessage(sender_psid, received_message) {
 
     await messagingActions(sender_psid, "typing_off").then(async function () {
 
+      console.log(updates[0]);
+      
 
       // Sends the response message
       //In case aux=1 send auxiliar response
@@ -576,7 +578,7 @@ async function step1(sender_psid, msgText, updates) {
       "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
     updates[0].response = grettingsInfoReply;
-    updates= fillUpdate(sender_psid, "step", 1,fillUpdate);
+    updates = fillUpdate(sender_psid, "step", 1, fillUpdate);
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = nextStep(updates);
 
@@ -597,16 +599,16 @@ async function step1(sender_psid, msgText, updates) {
     updates = fillUpdate(sender_psid, "usesButtons", false, updates)
   } else {
     console.log("a verrrrrrrrrrrrrrrrrr");
-    
+
     console.log(updates[0].response);
     console.log(grettingsReply);
-    
+
     console.log(updates[0].response == grettingsReply);
-    
+
     if (updates[0].response == grettingsReply) {
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
-        "text": 'Si no le aparecen los botones quiere decir que no esta utilizando la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
+        "text": 'Si no le aparecen los botones quiere decir que no nos escribe desde la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
       };
     }
     updates[0].response = grettingsReply;
