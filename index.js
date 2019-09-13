@@ -843,7 +843,7 @@ async function step13(sender_psid, msgText, updates) {
 }
 
 async function step14(sender_psid, msgText, updates) {
-  if (!msgText.isNaN()) {
+  if (!isNaN(msgText)) {
     updates[0].response = {
       "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
     }
@@ -858,7 +858,7 @@ async function step14(sender_psid, msgText, updates) {
 }
 
 async function step15(sender_psid, msgText, updates) {
-  if (!msgText.isNaN()) {
+  if (!isNaN(msgText)) {
     updates[0].response = {
       "text": "Escribanos la dirección del daños que quiera reportar"
     }
