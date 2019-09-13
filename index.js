@@ -402,6 +402,7 @@ async function handleMessage(sender_psid, received_message) {
     if (step == -1) {
       //in that case creates another entry
       updates = create(sender_psid, 1);
+      updates[0].response= grettingsReply;
 
       // Check if the message contains text
     } else if (received_message.text) {
