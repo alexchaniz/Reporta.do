@@ -295,6 +295,10 @@ var anotherUpdateReply = {
   ]
 }
 
+var byeReply= {
+  "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+};
+
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
@@ -499,6 +503,9 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 16:
             updates = await step16(sender_psid, msgText, updates);
+            break;
+            case 17:
+            updates = await step17(sender_psid, msgText, updates);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
@@ -800,9 +807,8 @@ async function step11(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 11 111 11 11 11");
 
   if (msgText == "No") {
-    updates[0].response = {
-      "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-    }
+    updates[0].response = byeReply;
+
     updates = fillUpdate(sender_psid, "step", 17, updates);
   } else if (msgText == "Reportar") {
 
@@ -873,17 +879,13 @@ async function step15(sender_psid, msgText, updates) {
 }
 
 async function step16(sender_psid, msgText, updates) {
-  updates[0].response = {
-    "text": "¿Quiere hacer alguna observación"
-  }
+  updates[0].response = observationReply;
   updates = fillUpdate(sender_psid, "address", msgText, updates);
   return updates;
 }
 
 async function step17(sender_psid, msgText, updates) {
-  updates[0].response = {
-    "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-  }
+  updates[0].response = byeReply;
   updates = fillUpdate(sender_psid, "observation", msgText, updates);
   return updates;
 }
@@ -958,10 +960,11 @@ function correctDemand(sender_psid, step, updates) {
         "text": "Escribanos la dirección del daños que quiera reportar"
       };
       break;
-    case 16:
-      updates[0].response = {
-        "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-      };
+      case 16:
+      updates[0].response = observationReply;
+      break;
+    case 17:
+      updates[0].response = byeReply;
       break;
     default:
       updates[0].responseAuxIndicator = 1;
@@ -1184,7 +1187,7 @@ async function getStep(sender_psid) {
     } else if (updates[0].tomarControl) {
       console.log("Control tomado");
       step = -2;
-    } else if ((updates[0].step > 16) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 17) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
