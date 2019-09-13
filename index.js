@@ -29,6 +29,7 @@ var updateSchema = {
   response: { type: {} },
   responseAux: { type: {} },
   responseAuxIndicator: { type: Number },
+  usesButtons: { type: Boolean },
   cause: { type: String },
   homeDamages: { type: String },
   humansHarmed: { type: Number },
@@ -190,7 +191,7 @@ var humanDamagesReply = {
 
 var harmedPeople = ["1 a 5", "5 a 10", "Más de 10"]
 var harmedPeopleReply = {
-  "text": "¿Cuantas personas han resultado heridas?",
+  "text": "¿Cuantas personas han resultado heridas? Escribanoslo usando números",
   "quick_replies": [
     {
       "content_type": "text",
@@ -484,6 +485,21 @@ async function handleMessage(sender_psid, received_message) {
           case 11:
             updates = await step11(sender_psid, msgText, updates);
             break;
+          case 12:
+            updates = await step12(sender_psid, msgText, updates);
+            break;
+          case 13:
+            updates = await step13(sender_psid, msgText, updates);
+            break;
+          case 14:
+            updates = await step14(sender_psid, msgText, updates);
+            break;
+          case 15:
+            updates = await step15(sender_psid, msgText, updates);
+            break;
+          case 16:
+            updates = await step16(sender_psid, msgText, updates);
+            break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
             updates = await correctDemand(sender_psid, step, updates);
@@ -569,10 +585,19 @@ async function step1(sender_psid, msgText, updates) {
     updates[0].response = {
       "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
     };
+  } else if (msgText == "No tengo la app") {
+    updates[0].responseAuxIndicator = 1;
+    updates[0].responseAux = {
+      "text": "De acuerdo, iniciaremos un reporte sin botones"
+    }
+    updates[0].response = {
+      "text": "¿Cual es la causa de los daños producidos"
+    }
+    updates = fillUpdate(sender_psid, "usesButtons", false, updates)
   } else {
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
-      "text": 'Utilice los botones para responder'
+      "text": 'Si no le aparecueron los botones quiere decir que no estautilizando la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que no la tenga escribanos "No tengo la app"'
     };
     updates[0].response = grettingsReply;
   }
@@ -675,7 +700,7 @@ async function step5(sender_psid, msgText, updates) {
 async function step6(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 666666666666");
 
-  if (msgText=="No hubo muertos"){
+  if (msgText == "No hubo muertos") {
     updates = fillUpdate(sender_psid, "humansDeath", 0, updates)
     updates[0].response = imageReply;
   } else if (isNaN(msgText)) {
@@ -718,7 +743,7 @@ async function step8(sender_psid, received_message, updates) {
   let coordinates = received_message.attachments[0].payload.coordinates;
   var location = [coordinates.long, coordinates.lat];
   console.log("cooooooooooooooooooooordinateeeeeeeeeeeeeeeeeeeees");
-  
+
   console.log(coordinates);
 
   updates[0].step = 9;
@@ -762,8 +787,8 @@ async function step11(sender_psid, msgText, updates) {
   if (msgText == "No") {
     updates[0].response = {
       "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
-    } 
-    //updates = nextStep(updates);
+    }
+    updates = fillUpdate(sender_psid, "step", 17, updates);
   } else if (msgText == "Reportar") {
 
     console.log("Step 111 siiiiiiii");
@@ -780,10 +805,59 @@ async function step11(sender_psid, msgText, updates) {
     updates[0].response = anotherUpdateReply;
   } else {
     updates[0].responseAuxIndicator = 0,
-    updates[0].response = anotherUpdateReply;
+      updates[0].response = anotherUpdateReply;
   }
 
   return updates;
+}
+
+async function step12(sender_psid, msgText, updates) {
+  updates[0].response = {
+    "text": "¿Ha sufrido daños su vivienda? Describalos"
+  }
+  updates = fillUpdate(sender_psid, "cause", msgText, updates);
+}
+
+async function step13(sender_psid, msgText, updates) {
+  updates[0].response = {
+    "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
+  }
+  updates = fillUpdate(sender_psid, "homeDamages", msgText, updates);
+}
+
+async function step14(sender_psid, msgText, updates) {
+  if (!msgText.isNaN()) {
+    updates[0].response = {
+      "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
+    }
+    updates = fillUpdate(sender_psid, "humansDeath", msgText, updates);
+  }
+  else {
+    updates[0].response = {
+      "text": "Indiquenos la cantidad utilizando un número."
+    }
+  }
+}
+
+async function step15(sender_psid, msgText, updates) {
+  if (!msgText.isNaN()) {
+    updates[0].response = {
+      "text": "Escribanos la dirección del daños que quiera reportar"
+    }
+    updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates);
+  }
+  else {
+    updates[0].response = {
+      "text": "Indiquenos la cantidad utilizando un número."
+    }
+  }
+}
+
+async function step16(sender_psid, msgText, updates) {
+  updates[0].response = {
+    "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+  }
+  updates = fillUpdate(sender_psid, "address", msgText, updates);
 }
 
 //Look for the correct reply as no action could be took
@@ -833,6 +907,31 @@ function correctDemand(sender_psid, step, updates) {
       break;
     case 11:
       updates[0].response = anotherUpdateReply;
+      break;
+    case 12:
+      updates[0].response = {
+        "text": "¿Ha sufrido daños su vivienda? Describalos"
+      };
+      break;
+    case 13:
+      updates[0].response = {
+        "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
+      };
+      break;
+    case 14:
+      updates[0].response = {
+        "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
+      };
+      break;
+    case 15:
+      updates[0].response = {
+        "text": "Escribanos la dirección del daños que quiera reportar"
+      };
+      break;
+    case 16:
+      updates[0].response = {
+        "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+      };
       break;
     default:
       updates[0].responseAuxIndicator = 1;
@@ -992,9 +1091,13 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].observation += value[2];
       sendUpdateToArcGis(updates[0]);
       break;
+    case "usesButtons":
+      updates[0].usesButtons = value;
+      updates[0].step = 12;
+      break;
     default:
       updates[0].step = updates[0].step - 1;
-      return ;
+      return;
   }
 
   Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
@@ -1039,7 +1142,7 @@ function getUpdate(sender_psid) {
 async function getStep(sender_psid) {
   var d = new Date();
   var step;
-  
+
   try {
     var updates = await getUpdate(sender_psid);
     console.log("tiempo pasado " + (d.getTime() - updates[0].date));
@@ -1050,7 +1153,7 @@ async function getStep(sender_psid) {
     } else if (updates[0].tomarControl) {
       console.log("Control tomado");
       step = -2;
-    } else if ((updates[0].step > 11) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 16) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
@@ -1128,7 +1231,7 @@ function getCauseInfo(sender_psid, updates) {
       break;
     default:
       updates[0].responseAux = {
-        "text": "Hubo un error, no le podemos ayudar con información sobre la causa"
+        "text": "No marcó una de nuestras causas predeterminadas. No le podemos ayudar con información sobre la causa indicada"
       }
       break;
   }
@@ -1200,23 +1303,23 @@ function sendUpdateToArcGis(update) {
   var urlImgAux = update.imgUrl;
 
   console.log(urlImgAux);
-  
-try {
+
+  try {
     //Replace the & for the string 'aspersan' as the other is bad interpretes
-  // int the reques, as it may signal a new parameter when its part of one of them
-  var repImg = urlImgAux.replace(/&/g, "aspersan");
-} catch (error) {
-  console.log("No se subio ninguna imgen");
-  
-}
+    // int the reques, as it may signal a new parameter when its part of one of them
+    var repImg = urlImgAux.replace(/&/g, "aspersan");
+  } catch (error) {
+    console.log("No se subio ninguna imgen");
+
+  }
 
   //Constructs the object witht he data to update
   var object = [{
-    "geometry" : {"x": update.X, "y": update.Y, "spatialReference" : {"wkid" : 4326} },
+    "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
       "facebookId": update.sender_id,
       "MongoId": update._id, "cause": update.cause, "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath, 
+      "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath,
       "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
       "observation": update.observation, "imgUrl1": repImg, "formatedDate": update.formatedDate
     }
@@ -1245,11 +1348,11 @@ try {
     console.log("arcgiiiiisssssssssssssssssssssssssss");
     console.log(Http.responseText);
 
-  //  var objectId = Http.responseText.addResults[0].objectId;
-  //  console.log(objectId);
-    
-  //  var formData = new FormData();
-  //  formData.append("attachment", update.imgUrl);  
+    //  var objectId = Http.responseText.addResults[0].objectId;
+    //  console.log(objectId);
+
+    //  var formData = new FormData();
+    //  formData.append("attachment", update.imgUrl);  
   }
 }
 
