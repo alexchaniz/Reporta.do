@@ -1351,11 +1351,20 @@ function sendUpdateToArcGis(update) {
   var object = [{
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
-      "facebookId": update.sender_id,
-      "MongoId": update._id, "fromApp": update.fromApp, "cause": update.cause, "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed, "humansDeath": update.humansDeath,
-      "date": update.date, "X": update.X, "Y": update.Y, "address": update.address,
-      "observation": update.observation, "imgUrl1": repImg, "formatedDate": update.formatedDate
+      //"facebookId": update.sender_id,
+      //"MongoId": update._id, 
+      "fromApp": update.fromApp, 
+      "cause": update.cause, 
+      "homeDamages": update.homeDamages,
+      //"humansHarmed": update.humansHarmed, 
+      //"humansDeath": update.humansDeath,
+      //"date": update.date, 
+      //"X": update.X, 
+      //"Y": update.Y, 
+      "address": update.address,
+      "observation": update.observation, 
+      "imgUrl1": repImg, 
+      "formatedDate": update.formatedDate
     }
   }];
 
