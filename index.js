@@ -1005,9 +1005,9 @@ async function handlePostback(sender_psid, received_postback) {
     if (payload === "stepback") {
 
       //if conversation is already in last step
-      if (step == 11) {
-        updates = fillUpdate(sender_psid, "step", 1, updates)
+      if ((step == 11)||(step==12)) {
         updates[0].response = grettingsReply;
+        updates = fillUpdate(sender_psid, "step", 1, updates)
       } else {
         updates = fillUpdate(sender_psid, "step", step - 1, updates)
         updates = correctDemand(sender_psid, step - 1, updates);
@@ -1351,16 +1351,16 @@ function sendUpdateToArcGis(update) {
   var object = [{
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
-      "facebookId": update.sender_id,
-      //"MongoId": update._id, 
+      //"facebookId": update.sender_id,
+      "MongoId": update._id, 
       "fromApp": update.fromApp, 
       "cause": update.cause, 
       "homeDamages": update.homeDamages,
-      //"humansHarmed": update.humansHarmed, 
-      //"humansDeath": update.humansDeath,
-      //"date": update.date, 
-      //"X": update.X, 
-      //"Y": update.Y, 
+      "humansHarmed": update.humansHarmed, 
+      "humansDeath": update.humansDeath,
+      "date": update.date, 
+      "X": update.X, 
+      "Y": update.Y, 
       "address": update.address,
       "observation": update.observation, 
       "imgUrl1": repImg, 
