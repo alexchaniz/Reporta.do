@@ -598,9 +598,11 @@ async function step1(sender_psid, msgText, updates) {
     console.log("a verrrrrrrrrrrrrrrrrr");
 
     console.log(updates[0].response);
-    console.log(updates[0].response == grettingsReply);
+    console.log(grettingsReply );
+    
+    console.log(updates[0].response == "");
 
-    if (updates[0].response == grettingsReply) {
+    if (!updates[0].response == "") {
       console.log("LLega aqui");
       
       updates[0].responseAuxIndicator = 1;
@@ -1019,7 +1021,7 @@ function create(sender_psid, stepNew) {
   updates[0] = new Update({
     sender_id: sender_psid,
     step: stepNew,
-    response: grettingsReply,
+    response: "",
     responseAux: { "text": "Responda utilizando los botones por favor." },
     responseAuxIndicator: 0,
     fromApp: true,
