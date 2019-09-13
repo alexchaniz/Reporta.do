@@ -451,7 +451,6 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 1:
             updates = await step1(sender_psid, msgText, updates);
-            console.log(updates);
             break;
           case 2:
             updates = await step2(sender_psid, msgText, updates);
@@ -544,10 +543,7 @@ async function handleMessage(sender_psid, received_message) {
       updates = correctDemand(sender_psid, step, updates);
     }
 
-    await messagingActions(sender_psid, "typing_off").then(async function () {
-
-      console.log(updates[0]);
-      
+    await messagingActions(sender_psid, "typing_off").then(async function () { 
 
       // Sends the response message
       //In case aux=1 send auxiliar response
@@ -602,8 +598,6 @@ async function step1(sender_psid, msgText, updates) {
     console.log("a verrrrrrrrrrrrrrrrrr");
 
     console.log(updates[0].response);
-    console.log(grettingsReply);
-
     console.log(updates[0].response == grettingsReply);
 
     if (updates[0].response == grettingsReply) {
