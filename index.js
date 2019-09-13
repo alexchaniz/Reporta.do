@@ -402,7 +402,6 @@ async function handleMessage(sender_psid, received_message) {
     if (step == -1) {
       //in that case creates another entry
       updates = create(sender_psid, 1);
-      updates[0].response = grettingsReply;
 
       // Check if the message contains text
     } else if (received_message.text) {
@@ -1014,7 +1013,7 @@ function create(sender_psid, stepNew) {
   updates[0] = new Update({
     sender_id: sender_psid,
     step: stepNew,
-    response: {},
+    response: grettingsReply,
     responseAux: { "text": "Responda utilizando los botones por favor." },
     responseAuxIndicator: 0,
     fromApp: true,
