@@ -560,7 +560,6 @@ async function handleMessage(sender_psid, received_message) {
 
         await callSendAPI(sender_psid, updates[0].response);
       }
-
     });
   }
 }
@@ -577,15 +576,17 @@ async function step1(sender_psid, msgText, updates) {
     }
     updates[0].response = grettingsInfoReply;
     updates = fillUpdate(sender_psid, "step", 1, fillUpdate);
+
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
     updates = nextStep(updates);
-
     updates[0].response = safePlaceReply;
+
   } else if (msgText == "No") {
     updates[0].response = {
       "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
     };
     updates = fillUpdate(sender_psid, "step", 1, updates)
+
   } else if (msgText == "No tengo la app") {
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
@@ -595,6 +596,7 @@ async function step1(sender_psid, msgText, updates) {
       "text": "¿Cual es la causa de los daños producidos"
     }
     updates = fillUpdate(sender_psid, "usesButtons", false, updates)
+
   } else {
     console.log("a verrrrrrrrrrrrrrrrrr");
 
@@ -829,6 +831,7 @@ async function step12(sender_psid, msgText, updates) {
     "text": "¿Ha sufrido daños su vivienda? Describalos"
   }
   updates = fillUpdate(sender_psid, "cause", msgText, updates);
+  return updates;
 }
 
 async function step13(sender_psid, msgText, updates) {
@@ -836,6 +839,7 @@ async function step13(sender_psid, msgText, updates) {
     "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
   }
   updates = fillUpdate(sender_psid, "homeDamages", msgText, updates);
+  return updates;
 }
 
 async function step14(sender_psid, msgText, updates) {
@@ -850,6 +854,7 @@ async function step14(sender_psid, msgText, updates) {
       "text": "Indiquenos la cantidad utilizando un número."
     }
   }
+  return updates;
 }
 
 async function step15(sender_psid, msgText, updates) {
@@ -864,6 +869,7 @@ async function step15(sender_psid, msgText, updates) {
       "text": "Indiquenos la cantidad utilizando un número."
     }
   }
+  return updates;
 }
 
 async function step16(sender_psid, msgText, updates) {
@@ -871,6 +877,7 @@ async function step16(sender_psid, msgText, updates) {
     "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
   }
   updates = fillUpdate(sender_psid, "address", msgText, updates);
+  return updates;
 }
 
 //Look for the correct reply as no action could be took
