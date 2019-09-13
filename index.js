@@ -402,7 +402,7 @@ async function handleMessage(sender_psid, received_message) {
     if (step == -1) {
       //in that case creates another entry
       updates = create(sender_psid, 1);
-      updates[0].response= grettingsReply;
+      updates[0].response = grettingsReply;
 
       // Check if the message contains text
     } else if (received_message.text) {
@@ -544,7 +544,7 @@ async function handleMessage(sender_psid, received_message) {
       updates = correctDemand(sender_psid, step, updates);
     }
 
-    await messagingActions(sender_psid, "typing_off").then(async function () { 
+    await messagingActions(sender_psid, "typing_off").then(async function () {
 
       // Sends the response message
       //In case aux=1 send auxiliar response
@@ -601,13 +601,13 @@ async function step1(sender_psid, msgText, updates) {
     console.log("a verrrrrrrrrrrrrrrrrr");
 
     console.log(updates[0].response);
-    console.log(grettingsReply );
-    
+    console.log(grettingsReply);
+
     console.log(updates[0].response == "");
 
     if (!updates[0].response == "") {
       console.log("LLega aqui");
-      
+
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
         "text": 'Si no le aparecen los botones quiere decir que no nos escribe desde la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
@@ -874,11 +874,21 @@ async function step15(sender_psid, msgText, updates) {
 
 async function step16(sender_psid, msgText, updates) {
   updates[0].response = {
-    "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+    "text": "¿Quiere hacer alguna observación"
   }
   updates = fillUpdate(sender_psid, "address", msgText, updates);
   return updates;
 }
+
+async function step17(sender_psid, msgText, updates) {
+  updates[0].response = {
+    "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
+  }
+  updates = fillUpdate(sender_psid, "observation", msgText, updates);
+  return updates;
+}
+
+
 
 //Look for the correct reply as no action could be took
 function correctDemand(sender_psid, step, updates) {
