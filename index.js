@@ -599,6 +599,7 @@ async function step1(sender_psid, msgText, updates) {
     console.log("a verrrrrrrrrrrrrrrrrr");
     
     console.log(updates[0].response);
+    console.log(updates[0].response == grettingsReply);
     
     if (updates[0].response == grettingsReply) {
       updates[0].responseAuxIndicator = 1;
