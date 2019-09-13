@@ -1352,11 +1352,11 @@ function sendUpdateToArcGis(update) {
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
       "facebookId": update.sender_id,
-      "MongoId": update._id, 
+      //"MongoId": update._id, 
       "fromApp": update.fromApp, 
       "cause": update.cause, 
       "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed, 
+      //"humansHarmed": update.humansHarmed, 
       //"humansDeath": update.humansDeath,
       //"date": update.date, 
       //"X": update.X, 
