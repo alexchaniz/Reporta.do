@@ -756,7 +756,7 @@ async function step7(sender_psid, attachment_url, type, updates) {
   }
 
   if(!updates[0].fromApp){
-    updates[0].response = byeReply;
+    updates[0].response = imageReply;
   } else {
   updates[0].response = locationReply;
   }
@@ -883,13 +883,13 @@ async function step15(sender_psid, msgText, updates) {
 }
 
 async function step16(sender_psid, msgText, updates) {
-  updates[0].response = observationReply;
+  updates[0].response = imageReply;
   updates = fillUpdate(sender_psid, "address", msgText, updates);
   return updates;
 }
 
 async function step18(sender_psid, msgText, updates) {
-  updates[0].response = imageReply;
+  updates[0].response = byeReply;
   updates = fillUpdate(sender_psid, "observation", msgText, updates);
   return updates;
 }
@@ -965,7 +965,7 @@ function correctDemand(sender_psid, step, updates) {
       };
       break;
       case 16:
-      updates[0].response = observationReply;
+      updates[0].response = imageReply;
       break;
     case 18:
       updates[0].response = byeReply;
