@@ -946,29 +946,31 @@ function correctDemand(sender_psid, step, updates) {
       break;
     case 12:
       updates[0].response = {
-        "text": "¿Ha sufrido daños su vivienda? Describalos"
+        "text": "¿Cual es la causa de los daños producidos"
       };
       break;
     case 13:
       updates[0].response = {
-        "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
+        "text": "¿Ha sufrido daños su vivienda? Describalos"
       };
       break;
     case 14:
-      updates[0].response = {
-        "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
+      updates[0].response =  {
+        "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
       };
       break;
     case 15:
       updates[0].response = {
-        "text": "Escribanos la dirección del daños que quiera reportar"
+        "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
       };
       break;
       case 16:
-      updates[0].response = imageReply;
+      updates[0].response =       {
+        "text": "Escribanos la dirección del daños que quiera reportar"
+      };
       break;
     case 18:
-      updates[0].response = byeReply;
+      updates[0].response = observationReply;
       break;
     default:
       updates[0].responseAuxIndicator = 1;
