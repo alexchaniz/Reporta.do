@@ -29,7 +29,7 @@ var updateSchema = {
   response: { type: {} },
   responseAux: { type: {} },
   responseAuxIndicator: { type: Number },
-  usesButtons: { type: Boolean },
+  fromApp: { type: Boolean },
   cause: { type: String },
   homeDamages: { type: String },
   humansHarmed: { type: Number },
@@ -523,7 +523,7 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((updates[0].tomarControl) || (step == 7)) {
+        if ((updates[0].tomarControl) || (step == 7) || (step== 18)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
@@ -602,7 +602,7 @@ async function step1(sender_psid, msgText, updates) {
     updates[0].response = {
       "text": "¿Cual es la causa de los daños producidos"
     }
-    updates = fillUpdate(sender_psid, "usesButtons", false, updates)
+    updates = fillUpdate(sender_psid, "fromApp", false, updates)
 
   } else {
     console.log("a verrrrrrrrrrrrrrrrrr");
@@ -704,7 +704,7 @@ async function step5(sender_psid, msgText, updates) {
   } else {
     if (isNaN(msgText)) {
       updates[0].response = {
-        "text": "Señale el numero de muertes utilizando numeros"
+        "text": "Señale el numero de muertes utilizando los números del teclado"
       };
     } else {
       updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates)
@@ -727,7 +727,7 @@ async function step6(sender_psid, msgText, updates) {
     updates[0].response = imageReply;
   } else if (isNaN(msgText)) {
     updates[0].response = {
-      "text": "Señale el numero de muertes utilizando numeros"
+      "text": "Señale el numero de muertes utilizando los números del teclado"
     };
   } else {
     updates = fillUpdate(sender_psid, "humansDeath", msgText, updates)
@@ -755,7 +755,11 @@ async function step7(sender_psid, attachment_url, type, updates) {
     updates = fillUpdate(sender_psid, "video", attachment_url, updates);
   }
 
+  if(!updates[0].fromApp){
+    updates[0].response = byeReply;
+  } else {
   updates[0].response = locationReply;
+  }
   return updates;
 }
 
@@ -809,7 +813,7 @@ async function step11(sender_psid, msgText, updates) {
   if (msgText == "No") {
     updates[0].response = byeReply;
 
-    updates = fillUpdate(sender_psid, "step", 17, updates);
+    updates = fillUpdate(sender_psid, "step", 19, updates);
   } else if (msgText == "Reportar") {
 
     console.log("Step 111 siiiiiiii");
@@ -885,7 +889,7 @@ async function step16(sender_psid, msgText, updates) {
 }
 
 async function step17(sender_psid, msgText, updates) {
-  updates[0].response = byeReply;
+  updates[0].response = imageReply;
   updates = fillUpdate(sender_psid, "observation", msgText, updates);
   return updates;
 }
@@ -901,7 +905,7 @@ function correctDemand(sender_psid, step, updates) {
       updates = create(sender_psid, 1);
       updates[0].response = grettingsReply;
       break;
-    case 7:
+    case 7: case 18:
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
         "text": 'Una foto es de mucha ayuda para ubicar los daños.'
@@ -1125,8 +1129,8 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].observation += value[2];
       sendUpdateToArcGis(updates[0]);
       break;
-    case "usesButtons":
-      updates[0].usesButtons = value;
+    case "fromApp":
+      updates[0].fromApp = value;
       updates[0].step = 12;
       break;
     default:
@@ -1187,7 +1191,7 @@ async function getStep(sender_psid) {
     } else if (updates[0].tomarControl) {
       console.log("Control tomado");
       step = -2;
-    } else if ((updates[0].step > 17) || (d.getTime() - updates[0].date > 900000)) {
+    } else if ((updates[0].step > 18) || (d.getTime() - updates[0].date > 900000)) {
       console.log("Updates recibió el paso" + updates[0].step);
       console.log();
 
