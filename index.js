@@ -756,7 +756,7 @@ async function step7(sender_psid, attachment_url, type, updates) {
   }
 
   if(!updates[0].fromApp){
-    updates[0].response = imageReply;
+    updates[0].response = observationReply;
   } else {
   updates[0].response = locationReply;
   }
