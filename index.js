@@ -243,7 +243,7 @@ var deathPeopleReply = {
 }
 
 var imageReply = {
-  "text": 'Envienos una foto'
+  "text": 'Envienos una foto de los daños'
 }
 
 var locationReply = {
@@ -504,8 +504,8 @@ async function handleMessage(sender_psid, received_message) {
           case 16:
             updates = await step16(sender_psid, msgText, updates);
             break;
-            case 17:
-            updates = await step17(sender_psid, msgText, updates);
+            case 18:
+            updates = await step18(sender_psid, msgText, updates);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
@@ -523,7 +523,7 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((updates[0].tomarControl) || (step == 7) || (step== 18)) {
+        if ((updates[0].tomarControl) || (step == 7) || (step== 17)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
@@ -888,7 +888,7 @@ async function step16(sender_psid, msgText, updates) {
   return updates;
 }
 
-async function step17(sender_psid, msgText, updates) {
+async function step18(sender_psid, msgText, updates) {
   updates[0].response = imageReply;
   updates = fillUpdate(sender_psid, "observation", msgText, updates);
   return updates;
@@ -905,7 +905,7 @@ function correctDemand(sender_psid, step, updates) {
       updates = create(sender_psid, 1);
       updates[0].response = grettingsReply;
       break;
-    case 7: case 18:
+    case 7: case 17:
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
         "text": 'Una foto es de mucha ayuda para ubicar los daños.'
@@ -967,7 +967,7 @@ function correctDemand(sender_psid, step, updates) {
       case 16:
       updates[0].response = observationReply;
       break;
-    case 17:
+    case 18:
       updates[0].response = byeReply;
       break;
     default:
