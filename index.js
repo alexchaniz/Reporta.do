@@ -295,7 +295,7 @@ var anotherUpdateReply = {
   ]
 }
 
-var byeReply= {
+var byeReply = {
   "text": 'Muchas gracias por colaborar con el servicio de monitoreo. Su información nos es muy util para ayudarle.\n Con el siguiente link podrá avisar a sus amigos de que nos ha ayudado con su información: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
 };
 
@@ -504,7 +504,7 @@ async function handleMessage(sender_psid, received_message) {
           case 17:
             updates = await step8Aux(sender_psid, msgText, updates);
             break;
-            case 18:
+          case 18:
             updates = await step18(sender_psid, msgText, updates);
             break;
           default:
@@ -523,7 +523,7 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((updates[0].tomarControl) || (step == 7) || (step== 16)) {
+        if ((updates[0].tomarControl) || (step == 7) || (step == 16)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
@@ -594,7 +594,7 @@ async function step1(sender_psid, msgText, updates) {
     };
     updates = fillUpdate(sender_psid, "step", 1, updates)
 
-  } else if ((msgText.toLowerCase().includes("no"))&&(msgText.includes("app"))) {
+  } else if ((msgText.toLowerCase().includes("no")) && (msgText.includes("app"))) {
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": "De acuerdo, iniciaremos un reporte sin botones"
@@ -755,12 +755,12 @@ async function step7(sender_psid, attachment_url, type, updates) {
     updates = fillUpdate(sender_psid, "video", attachment_url, updates);
   }
 
-  if(!updates[0].fromApp){
+  if (!updates[0].fromApp) {
     updates[0].response = {
       "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
     };
   } else {
-  updates[0].response = locationReply;
+    updates[0].response = locationReply;
   }
   return updates;
 }
@@ -793,12 +793,20 @@ async function step8Aux(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
 
   var location = getLocationFromAddress(msgText);
+  if (location == -1) {
+    updates[0].response = {
+      "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre esta escrito correctamente o diganos la dirección de otro lugar próximo"
+    }
+    return updates;
+  } else{
 
+    location.push(msgText);
   //Saves any text recibed
-  updates = fillUpdate(sender_psid, "address", msgText, updates);
+  updates = fillUpdate(sender_psid, "address", location, updates);
   updates[0].response = observationReply;
 
   return updates;
+  }
 }
 
 async function step10(sender_psid, msgText, updates) {
@@ -960,7 +968,7 @@ function correctDemand(sender_psid, step, updates) {
       };
       break;
     case 14:
-      updates[0].response =  {
+      updates[0].response = {
         "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
       };
       break;
@@ -969,8 +977,8 @@ function correctDemand(sender_psid, step, updates) {
         "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
       };
       break;
-      case 17:
-      updates[0].response =       {
+    case 17:
+      updates[0].response = {
         "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
       };
       break;
@@ -1016,7 +1024,7 @@ async function handlePostback(sender_psid, received_postback) {
     if (payload === "stepback") {
 
       //if conversation is already in last step
-      if ((step == 11)||(step==12)) {
+      if ((step == 11) || (step == 12)) {
         updates[0].response = grettingsReply;
         updates = fillUpdate(sender_psid, "step", 1, updates)
       } else {
@@ -1114,7 +1122,9 @@ function fillUpdate(sender_psid, field, value, updates) {
       updates[0].Y = value[1];
       break;
     case "address":
-      updates[0].address = value;
+      updates[0].address = value[2];
+      updates[0].X = value[0];      
+      updates[0].Y = value[1];
       break;
     case "observation":
       updates[0].observation += value + "--";
@@ -1363,18 +1373,18 @@ function sendUpdateToArcGis(update) {
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
       //"facebookId": update.sender_id,
-      "MongoId": update._id, 
-      "fromApp": update.fromApp, 
-      "cause": update.cause, 
+      "MongoId": update._id,
+      "fromApp": update.fromApp,
+      "cause": update.cause,
       "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed, 
+      "humansHarmed": update.humansHarmed,
       "humansDeath": update.humansDeath,
-      "date": update.date, 
-      "X": update.X, 
-      "Y": update.Y, 
+      "date": update.date,
+      "X": update.X,
+      "Y": update.Y,
       "address": update.address,
-      "observation": update.observation, 
-      "imgUrl1": repImg, 
+      "observation": update.observation,
+      "imgUrl1": repImg,
       "formatedDate": update.formatedDate
     }
   }];
@@ -1444,13 +1454,13 @@ async function messagingActions(sender_psid, action) {
   });
 }
 
-function getLocationFromAddress(address){
+function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
- var addressAux = address + " República Dominicana";
+  var addressAux = address + " República Dominicana";
 
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+addressAux;
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
   console.log(url);
 
@@ -1462,29 +1472,27 @@ function getLocationFromAddress(address){
     console.log(error);
   }
 
-  Http.onreadystatechange = function() {
+  Http.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
-        var result = JSON.parse(this.responseText);
+      var result = JSON.parse(this.responseText);
 
-        if(result.status=="ZERO_RESULTS") return -1
+      if (result.status == "ZERO_RESULTS") return -1
 
-        var coordinates = result.results[0].geometry.location;
+      var coordinates = result.results[0].geometry.location;
 
-       console.log( (17.3926782 <= coordinates.lat) + " " + (coordinates.lat <= 20.79844) + " " + (-74.3962979<=coordinates.lng) + " " + (coordinates.lng<=-68.2227217));
-        
-        console.log("Coordenadas" + coordinates.lat + coordinates.lng);
+      console.log("Coordenadas" + coordinates.lat + coordinates.lng);
 
-        if((17.3926782< coordinates.lat)&&(coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng)&&(coordinates.lng<-68.2227217)){
-          console.log("la dirección ha sido encontrada en dominicana");
-          
-          return [coordinates.lat, coordinates.lng]
+      //Comprueba si las coordenadas pertenecen al area del pais
+      if ((17.3926782 < coordinates.lat) && (coordinates.lat < 20.79844) && (-74.3962979 < coordinates.lng) && (coordinates.lng < -68.2227217)) {
+        console.log("la dirección ha sido encontrada en dominicana");
+        return [ coordinates.lng,coordinates.lat]
 
-        } else{
-          console.log("No esta en rd");
-          
-          return -1
-        }
-        
-        }
-    }; 
+      } else {
+        console.log("No esta en rd");
+
+        return -1
+      }
+
+    }
+  };
 }
