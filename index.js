@@ -1498,8 +1498,6 @@ async function getLocationFromAddress(address) {
           reject(-1)
         }
 
-      } else {
-        reject(-1);
       }
     };
   })
