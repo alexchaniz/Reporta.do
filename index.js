@@ -49,17 +49,6 @@ var update_schema = new Schema(updateSchema);
 var Update = mongoose.model("Update", update_schema);
 
 
-//
-//setting option and responses
-//
-/*
-var response;
-var aux = 0;
-var responseAux = {
-  "text": 'Utilice los botones para responder'
-}
-*/
-
 var grettingsReply = {
   "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
   "quick_replies": [
@@ -1374,7 +1363,7 @@ function sendUpdateToArcGis(update) {
   var object = [{
     "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
-      //"facebookId": update.sender_id,
+      "senderId": update.sender_id,
       "MongoId": update._id,
       "fromApp": update.fromApp,
       "cause": update.cause,
@@ -1404,7 +1393,9 @@ function sendUpdateToArcGis(update) {
 
   Http.open("POST", url);
   try {
-    Http.send();
+    Http.send(function(data){
+      console.log(data);
+    });
   } catch (error) {
     console.log("Error in the sending to arcgis");
     console.log(error);
@@ -1460,7 +1451,7 @@ async function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
-  var addressAux = address + ", Repblica Dominicana";
+  var addressAux = address + ", Republica Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
@@ -1468,13 +1459,23 @@ async function getLocationFromAddress(address) {
 
   Http.open("POST", url);
   try {
-    Http.send();
+    Http.send(function (err, data) {
+    if(err){
+      console.log(err);
+      throw err;
+    }else{
+      console.log(data);
+    }
+    });
+    console.log("llega1");
+    
   } catch (error) {
     console.log("Error in the sending to arcgis");
     console.log(error);
     return -1;
   }
-
+ console.log("llega 2");
+ 
   return new Promise((resolve, reject) => {
 
     Http.onreadystatechange = function (err) {
