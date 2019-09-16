@@ -1448,9 +1448,9 @@ function getLocationFromAddress(address){
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
-  address = address + " República Dominicana";
+  var addressAux = address + " República Dominicana";
 
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+address;
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+addressAux;
 
   console.log(url);
 
@@ -1470,7 +1470,7 @@ function getLocationFromAddress(address){
 
         var coordinates = result.results[0].geometry.location;
 
-        console.log( (17.3926782< coordinates.lat) + " " + (coordinates.lat <20.79844) + " " + (-74.3962979<coordinates.lng) + " " + (coordinates.long<-68.2227217));
+       // console.log( (17.3926782< coordinates.lat) + " " + (coordinates.lat <20.79844) + " " + (-74.3962979<coordinates.lng) + " " + (coordinates.long<-68.2227217));
         
         console.log("Coordenadas" + coordinates.lat + coordinates.lng);
 
