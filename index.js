@@ -1461,14 +1461,7 @@ async function getLocationFromAddress(address) {
 
   Http.open("POST", url);
   try {
-    Http.send(function (err, data) {
-    if(err){
-      console.log(err);
-      throw err;
-    }else{
-      console.log(data);
-    }
-    });
+    Http.send();
     console.log("llega1");
     
   } catch (error) {
