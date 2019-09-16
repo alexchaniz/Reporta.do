@@ -803,7 +803,7 @@ async function step8Aux(sender_psid, msgText, updates) {
 
   } catch (error) {
     console.log("err getting adress");
-    
+
     updates[0].response = {
       "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente o díganos la dirección de otro lugar próximo"
     }
@@ -1460,7 +1460,7 @@ async function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
-  var addressAux = address + " República Dominicana";
+  var addressAux = address + ", Repblica Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
@@ -1497,7 +1497,7 @@ async function getLocationFromAddress(address) {
 
           reject(-1)
         }
-      } else if (err){
+      } else if (err) {
         reject(-1)
       }
     };
