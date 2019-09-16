@@ -1481,7 +1481,9 @@ async function getLocationFromAddress(address) {
         var result = JSON.parse(this.responseText);
         console.log("llega 4");
 
-        if (result.status == "ZERO_RESULTS") reject(-1)
+        if (result.status == "ZERO_RESULTS"){
+          reject(-1)
+        }
 
         var coordinates = result.results[0].geometry.location;
 
@@ -1491,7 +1493,7 @@ async function getLocationFromAddress(address) {
         if ((17.3926782 < coordinates.lat) && (coordinates.lat < 20.79844) && (-74.3962979 < coordinates.lng) && (coordinates.lng < -68.2227217)) {
           console.log("la dirección ha sido encontrada en dominicana");
           resolve([coordinates.lng, coordinates.lat])
-
+          return;
         } else {
           console.log("No esta en rd");
 
