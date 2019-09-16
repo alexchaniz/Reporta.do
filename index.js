@@ -1470,11 +1470,11 @@ function getLocationFromAddress(address){
 
         var coordinates = result.results[0].geometry.location;
 
-       console.log( (17.3926782< coordinates.lat) + " " + (coordinates.lat <20.79844) + " " + (-74.3962979<coordinates.lng) + " " + ((-1*coordinates.long)>68.2227217));
+       console.log( (17.3926782 <= coordinates.lat) + " " + (coordinates.lat <= 20.79844) + " " + (-74.3962979<=coordinates.lng) + " " + (coordinates.lng<=-68.2227217));
         
         console.log("Coordenadas" + coordinates.lat + coordinates.lng);
 
-        if((17.3926782< coordinates.lat)&&(coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng)&&(coordinates.long<-68.2227217)){
+        if((17.3926782< coordinates.lat)&&(coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng)&&(coordinates.lng<-68.2227217)){
           return [coordinates.lat, coordinates.lng]
 
         } else{
