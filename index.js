@@ -1463,10 +1463,14 @@ function getLocationFromAddress(address){
   Http.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
         var result = JSON.parse(this.responseText);
+
+        if(result.status=="ZERO_RESULTS") return -1
+
         var coordinates = result.results[0].geometry.location;
 
+        console.log("Coordenadas" + coordinates.lat + coordinates.lng);
+
         if((17.3926782< coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng<-68.2227217)){
-          console.log("Coordenadas" + coordinates.lat + coordinates.lng);
           return [coordinates.lat, coordinates.lng]
 
         } else{
