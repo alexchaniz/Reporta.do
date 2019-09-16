@@ -1448,9 +1448,9 @@ function getLocationFromAddress(address){
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
- // var addressAux = address + " República Dominicana";
+ var addressAux = address + " República Dominicana";
 
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+address;
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+addressAux;
 
   console.log(url);
 
@@ -1475,6 +1475,8 @@ function getLocationFromAddress(address){
         console.log("Coordenadas" + coordinates.lat + coordinates.lng);
 
         if((17.3926782< coordinates.lat)&&(coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng)&&(coordinates.lng<-68.2227217)){
+          console.log("la dirección ha sido encontrada en dominicana");
+          
           return [coordinates.lat, coordinates.lng]
 
         } else{
