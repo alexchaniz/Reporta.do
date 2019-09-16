@@ -1460,9 +1460,9 @@ async function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
-  // var addressAux = address + " República Dominicana";
+  var addressAux = address + " República Dominicana";
 
-  var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + address;
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
   console.log(url);
 
