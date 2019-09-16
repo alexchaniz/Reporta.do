@@ -594,7 +594,7 @@ async function step1(sender_psid, msgText, updates) {
     };
     updates = fillUpdate(sender_psid, "step", 1, updates)
 
-  } else if (msgText == "No tengo la app") {
+  } else if ((msgText.toLowerCase().includes("no"))&&(msgText.includes("app"))) {
     updates[0].responseAuxIndicator = 1;
     updates[0].responseAux = {
       "text": "De acuerdo, iniciaremos un reporte sin botones"
