@@ -793,9 +793,13 @@ async function step8Aux(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
 
   var location = await getLocationFromAddress(msgText);
+  console.log("hvchbsluiv");
+  console.log(location);
+  
+  
   if (location == -1) {
     updates[0].response = {
-      "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre esta escrito correctamente o diganos la dirección de otro lugar próximo"
+      "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente o díganos la dirección de otro lugar próximo"
     }
     return updates;
   } else{
