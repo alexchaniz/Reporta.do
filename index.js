@@ -1451,7 +1451,9 @@ async function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
-  var addressAux = address + ", Republica Dominicana";
+  //elimina tildes y diacriticos
+  //https://es.stackoverflow.com/questions/62031/eliminar-signos-diacr%C3%ADticos-en-javascript-eliminar-tildes-acentos-ortogr%C3%A1ficos
+  //var addressAux = address.normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1").normalize() + ", Republica Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
