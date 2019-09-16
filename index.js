@@ -794,7 +794,7 @@ async function step8Aux(sender_psid, msgText, updates) {
     console.log("err getting adress");
 
     updates[0].response = {
-      "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente o díganos la dirección de otro lugar próximo"
+      "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente, evitando el caracter ñ, o díganos la dirección de otro lugar próximo"
     }
     return updates;
   }
@@ -1453,7 +1453,7 @@ async function getLocationFromAddress(address) {
 
   //elimina tildes y diacriticos
   //https://es.stackoverflow.com/questions/62031/eliminar-signos-diacr%C3%ADticos-en-javascript-eliminar-tildes-acentos-ortogr%C3%A1ficos
-  //var addressAux = address.normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1").normalize() + ", Republica Dominicana";
+  var addressAux = address.normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi,"$1").normalize() + ", Republica Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
