@@ -1503,12 +1503,8 @@ async function getLocationFromAddress(address) {
         console.log("llega 5");
 
         reject(-1)
-      } else{
-        console.log("llega 6");
-        console.log(data);
-        
-        reject(-1)
       }
     };
+    reject(-1)
   })
 }
