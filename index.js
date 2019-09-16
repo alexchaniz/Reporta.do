@@ -1492,16 +1492,16 @@ async function getLocationFromAddress(address) {
       //Comprueba si las coordenadas pertenecen al area del pais
       if ((17.3926782 < coordinates.lat) && (coordinates.lat < 20.79844) && (-74.3962979 < coordinates.lng) && (coordinates.lng < -68.2227217)) {
         console.log("la dirección ha sido encontrada en dominicana");
-        resolve([ coordinates.lng,coordinates.lat])
+        resolve([coordinates.lng,coordinates.lat])
 
       } else {
         console.log("No esta en rd");
 
-        resolve(-1)
+        reject(-1)
       }
 
     }else{
-      resolve(-1);
+      reject(-1);
     }
   };
 })
