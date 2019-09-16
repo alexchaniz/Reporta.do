@@ -802,6 +802,8 @@ async function step8Aux(sender_psid, msgText, updates) {
     return updates;
 
   } catch (error) {
+    console.log("err getting adress");
+    
     updates[0].response = {
       "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente o díganos la dirección de otro lugar próximo"
     }
