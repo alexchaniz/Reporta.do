@@ -501,8 +501,8 @@ async function handleMessage(sender_psid, received_message) {
           case 15:
             updates = await step15(sender_psid, msgText, updates);
             break;
-          case 16:
-            updates = await step16(sender_psid, msgText, updates);
+          case 17:
+            updates = await step8Aux(sender_psid, msgText, updates);
             break;
             case 18:
             updates = await step18(sender_psid, msgText, updates);
@@ -523,7 +523,7 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((updates[0].tomarControl) || (step == 7) || (step== 17)) {
+        if ((updates[0].tomarControl) || (step == 7) || (step== 16)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
@@ -756,7 +756,9 @@ async function step7(sender_psid, attachment_url, type, updates) {
   }
 
   if(!updates[0].fromApp){
-    updates[0].response = observationReply;
+    updates[0].response = {
+      "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
+    };
   } else {
   updates[0].response = locationReply;
   }
@@ -884,6 +886,7 @@ async function step15(sender_psid, msgText, updates) {
 
 async function step16(sender_psid, msgText, updates) {
   updates[0].response = imageReply;
+
   updates = fillUpdate(sender_psid, "address", msgText, updates);
   return updates;
 }
@@ -905,7 +908,7 @@ function correctDemand(sender_psid, step, updates) {
       updates = create(sender_psid, 1);
       updates[0].response = grettingsReply;
       break;
-    case 7: case 17:
+    case 7: case 16:
       updates[0].responseAuxIndicator = 1;
       updates[0].responseAux = {
         "text": 'Una foto es de mucha ayuda para ubicar los daños.'
@@ -964,7 +967,7 @@ function correctDemand(sender_psid, step, updates) {
         "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
       };
       break;
-      case 16:
+      case 17:
       updates[0].response =       {
         "text": "Escribanos la dirección del daños que quiera reportar"
       };
@@ -1437,4 +1440,27 @@ async function messagingActions(sender_psid, action) {
       }
     })
   });
+}
+
+function getLocationFromAddress(addres){
+  var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+address;
+
+  console.log(url);
+
+  Http.open("POST", url);
+  try {
+    Http.send();
+  } catch (error) {
+    console.log("Error in the sending to arcgis");
+    console.log(error);
+  }
+
+  Http.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myArr = JSON.parse(this.responseText);
+        console.log(typeof myArr );
+        console.log(myArr.results[0].geometry.location);
+        
+        }
+    }; 
 }
