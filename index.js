@@ -791,25 +791,21 @@ async function step8(sender_psid, received_message, updates) {
 
 async function step8Aux(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
+  try {
+    var location = await getLocationFromAddress(msgText);
+    console.log(location);
+    location.push(msgText);
+    //Saves any text recibed
+    updates = fillUpdate(sender_psid, "address", location, updates);
+    updates[0].response = observationReply;
 
-  var location = await getLocationFromAddress(msgText);
-  console.log("hvchbsluiv");
-  console.log(location);
-  
-  
-  if (location == -1) {
+    return updates;
+
+  } catch (error) {
     updates[0].response = {
       "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente o díganos la dirección de otro lugar próximo"
     }
     return updates;
-  } else{
-
-    location.push(msgText);
-  //Saves any text recibed
-  updates = fillUpdate(sender_psid, "address", location, updates);
-  updates[0].response = observationReply;
-
-  return updates;
   }
 }
 
@@ -1127,7 +1123,7 @@ function fillUpdate(sender_psid, field, value, updates) {
       break;
     case "address":
       updates[0].address = value[2];
-      updates[0].X = value[0];      
+      updates[0].X = value[0];
       updates[0].Y = value[1];
       break;
     case "observation":
@@ -1462,7 +1458,7 @@ async function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
- // var addressAux = address + " República Dominicana";
+  // var addressAux = address + " República Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + address;
 
@@ -1479,30 +1475,30 @@ async function getLocationFromAddress(address) {
 
   return new Promise((resolve, reject) => {
 
-  Http.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      var result = JSON.parse(this.responseText);
+    Http.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        var result = JSON.parse(this.responseText);
 
-      if (result.status == "ZERO_RESULTS") reject(-1)
+        if (result.status == "ZERO_RESULTS") reject(-1)
 
-      var coordinates = result.results[0].geometry.location;
+        var coordinates = result.results[0].geometry.location;
 
-      console.log("Coordenadas" + coordinates.lat + coordinates.lng);
+        console.log("Coordenadas" + coordinates.lat + coordinates.lng);
 
-      //Comprueba si las coordenadas pertenecen al area del pais
-      if ((17.3926782 < coordinates.lat) && (coordinates.lat < 20.79844) && (-74.3962979 < coordinates.lng) && (coordinates.lng < -68.2227217)) {
-        console.log("la dirección ha sido encontrada en dominicana");
-        resolve([ coordinates.lng,coordinates.lat])
+        //Comprueba si las coordenadas pertenecen al area del pais
+        if ((17.3926782 < coordinates.lat) && (coordinates.lat < 20.79844) && (-74.3962979 < coordinates.lng) && (coordinates.lng < -68.2227217)) {
+          console.log("la dirección ha sido encontrada en dominicana");
+          resolve([coordinates.lng, coordinates.lat])
+
+        } else {
+          console.log("No esta en rd");
+
+          reject(-1)
+        }
 
       } else {
-        console.log("No esta en rd");
-
-        reject(-1)
+        reject(-1);
       }
-
-    }else{
-      reject(-1);
-    }
-  };
-})
+    };
+  })
 }
