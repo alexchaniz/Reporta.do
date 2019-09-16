@@ -1483,7 +1483,7 @@ async function getLocationFromAddress(address) {
     if (this.readyState == 4 && this.status == 200) {
       var result = JSON.parse(this.responseText);
 
-      if (result.status == "ZERO_RESULTS") resolve(-1)
+      if (result.status == "ZERO_RESULTS") reject(-1)
 
       var coordinates = result.results[0].geometry.location;
 
@@ -1497,11 +1497,11 @@ async function getLocationFromAddress(address) {
       } else {
         console.log("No esta en rd");
 
-        resolve(-1)
+        reject(-1)
       }
 
     }else{
-      resolve(-1);
+      reject(-1);
     }
   };
 })
