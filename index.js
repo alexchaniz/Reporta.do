@@ -476,7 +476,7 @@ async function handleMessage(sender_psid, received_message) {
             updates = nextStep(updates);
             updates[0].responseAuxIndicator = 1;
             updates[0].responseAux = {
-              "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
+              "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección(calle y ciudad)'
             }
             updates[0].response = locationReply;
             break;
@@ -971,7 +971,7 @@ function correctDemand(sender_psid, step, updates) {
       break;
       case 17:
       updates[0].response =       {
-        "text": "Escribanos la dirección del daños que quiera reportar"
+        "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
       };
       break;
     case 18:
@@ -1470,7 +1470,7 @@ function getLocationFromAddress(address){
 
         console.log("Coordenadas" + coordinates.lat + coordinates.lng);
 
-        if((17.3926782< coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng<-68.2227217)){
+        if((17.3926782< coordinates.lat)&&(coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng)&&(coordinates.long<-68.2227217)){
           return [coordinates.lat, coordinates.lng]
 
         } else{
