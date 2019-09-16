@@ -1462,20 +1462,24 @@ async function getLocationFromAddress(address) {
   Http.open("POST", url);
   try {
     Http.send();
-    console.log("llega1");
     
   } catch (error) {
     console.log("Error in the sending to arcgis");
     console.log(error);
     return -1;
   }
- console.log("llega 2");
+
+  console.log("llega 2");
+
  
   return new Promise((resolve, reject) => {
 
     Http.onreadystatechange = function (err) {
+      console.log("llega 3");
+      
       if (this.readyState == 4 && this.status == 200) {
         var result = JSON.parse(this.responseText);
+        console.log("llega 4");
 
         if (result.status == "ZERO_RESULTS") reject(-1)
 
@@ -1494,6 +1498,8 @@ async function getLocationFromAddress(address) {
           reject(-1)
         }
       } else if (err) {
+        console.log("llega 5");
+
         reject(-1)
       }
     };
