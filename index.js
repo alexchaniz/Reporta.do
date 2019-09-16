@@ -600,7 +600,7 @@ async function step1(sender_psid, msgText, updates) {
       "text": "De acuerdo, iniciaremos un reporte sin botones"
     }
     updates[0].response = {
-      "text": "¿Cual es la causa de los daños producidos"
+      "text": "¿Cual es la causa de los daños producidos?"
     }
     updates = fillUpdate(sender_psid, "fromApp", false, updates)
 
@@ -792,6 +792,8 @@ async function step8(sender_psid, received_message, updates) {
 async function step8Aux(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
 
+  var location = getLocationFromAddress(msgText);
+
   //Saves any text recibed
   updates = fillUpdate(sender_psid, "address", msgText, updates);
   updates[0].response = observationReply;
@@ -872,7 +874,7 @@ async function step14(sender_psid, msgText, updates) {
 async function step15(sender_psid, msgText, updates) {
   if (!isNaN(msgText)) {
     updates[0].response = {
-      "text": "Escribanos la dirección del daños que quiera reportar"
+      "text": "Envienos una imagen de los daños provocados"
     }
     updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates);
   }
@@ -1442,7 +1444,8 @@ async function messagingActions(sender_psid, action) {
   });
 }
 
-function getLocationFromAddress(addres){
+function getLocationFromAddress(address){
+
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key="+apiKey+"&address="+address;
 
   console.log(url);
@@ -1457,9 +1460,18 @@ function getLocationFromAddress(addres){
 
   Http.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-        var myArr = JSON.parse(this.responseText);
-        console.log(typeof myArr );
-        console.log(myArr.results[0].geometry.location);
+        var result = JSON.parse(this.responseText);
+        var coordinates = result.results[0].geometry.location;
+
+        if((17.3926782< coordinates.lat <20.79844)&&(-74.3962979<coordinates.lng<-68.2227217)){
+          console.log("Coordenadas" + coordinates.lat + coordinates.lng);
+          return [coordinates.lat, coordinates.lng]
+
+        } else{
+          console.log("No esta en rd");
+          
+          return -1
+        }
         
         }
     }; 
