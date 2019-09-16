@@ -1477,7 +1477,7 @@ async function getLocationFromAddress(address) {
 
   return new Promise((resolve, reject) => {
 
-    Http.onreadystatechange = function () {
+    Http.onreadystatechange = function (err) {
       if (this.readyState == 4 && this.status == 200) {
         var result = JSON.parse(this.responseText);
 
@@ -1497,7 +1497,8 @@ async function getLocationFromAddress(address) {
 
           reject(-1)
         }
-
+      } else if (err){
+        reject(-1)
       }
     };
   })
