@@ -792,7 +792,7 @@ async function step8(sender_psid, received_message, updates) {
 async function step8Aux(sender_psid, msgText, updates) {
   console.log("Steeeeeeep 99999999999999");
 
-  var location = getLocationFromAddress(msgText);
+  var location = await getLocationFromAddress(msgText);
   if (location == -1) {
     updates[0].response = {
       "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre esta escrito correctamente o diganos la dirección de otro lugar próximo"
@@ -1454,7 +1454,7 @@ async function messagingActions(sender_psid, action) {
   });
 }
 
-function getLocationFromAddress(address) {
+async function getLocationFromAddress(address) {
 
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
@@ -1475,7 +1475,7 @@ function getLocationFromAddress(address) {
 
   return new Promise((resolve, reject) => {
 
-  Http.onreadystatechange.then(function(resolve, reject){
+  Http.onreadystatechange = function () {
     if (this.readyState == 4 && this.status == 200) {
       var result = JSON.parse(this.responseText);
 
@@ -1499,6 +1499,6 @@ function getLocationFromAddress(address) {
     }else{
       resolve(-1);
     }
-  });
+  };
 })
 }
