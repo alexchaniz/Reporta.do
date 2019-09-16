@@ -1470,6 +1470,7 @@ function getLocationFromAddress(address) {
   } catch (error) {
     console.log("Error in the sending to arcgis");
     console.log(error);
+    return -1;
   }
 
   Http.onreadystatechange = function () {
@@ -1493,6 +1494,8 @@ function getLocationFromAddress(address) {
         return -1
       }
 
+    }else{
+      return -1;
     }
   };
 }
