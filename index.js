@@ -1393,9 +1393,7 @@ function sendUpdateToArcGis(update) {
 
   Http.open("POST", url);
   try {
-    Http.send(function (data) {
-      console.log(data);
-    });
+    Http.send();
   } catch (error) {
     console.log("Error in the sending to arcgis");
     console.log(error);
