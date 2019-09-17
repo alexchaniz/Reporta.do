@@ -479,15 +479,18 @@ async function handleMessage(sender_psid, received_message) {
           case 15:
             report = await step15(sender_psid, msgText, report);
             break;
-          case 17:
-            report = await step8Aux(sender_psid, msgText, report);
+          case 16:
+            report = await step16(sender_psid, msgText, report);
             break;
           case 18:
-            report = await step18(sender_psid, msgText, report);
+            report = await step8Aux(sender_psid, msgText, report);
             break;
-            case 19:
-                report = await step19(sender_psid, msgText, report);
-                break;
+          case 19:
+            report = await step19(sender_psid, msgText, report);
+            break;
+          case 20:
+            report = await step20(sender_psid, msgText, report);
+            break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
             report = await correctDemand(sender_psid, step, report);
@@ -704,7 +707,7 @@ async function step6(sender_psid, msgText, report) {
   } else {
     if (isNaN(msgText)) {
       report[0].response = {
-        "text": "Señale el numero de muertes utilizando los números del teclado"
+        "text": "Señale el numero de heridos utilizando los números del teclado"
       };
     } else {
       report = fillReport(sender_psid, "humansHarmed", msgText, report)
@@ -822,7 +825,7 @@ async function step11(sender_psid, msgText, report) {
 }
 
 async function step12(sender_psid, msgText, report) {
-  console.log("Steeeeeeep 11 111 11 11 11");
+  console.log("Steeeeeeep 12 12 12 12 12 12");
 
   if (msgText == "No") {
     report[0].response = byeReply;
@@ -837,7 +840,7 @@ async function step12(sender_psid, msgText, report) {
     }
 
     report = create(sender_psid, 3);
-    report[0].response = causeReply;
+    report[0].response = homeOrComunityReply;
 
   } else if (msgText = "Información") {
     report = getCauseInfo(sender_psid, report);
@@ -896,14 +899,14 @@ async function step16(sender_psid, msgText, report) {
   return report;
 }
 
-async function step17(sender_psid, msgText, report) {
-  report[0].response = imageReply;
+async function step19(sender_psid, msgText, report) {
+  report[0].response = observationReply;
 
   report = fillReport(sender_psid, "address", msgText, report);
   return report;
 }
 
-async function step19(sender_psid, msgText, report) {
+async function step20(sender_psid, msgText, report) {
   report[0].response = byeReply;
   report = fillReport(sender_psid, "observation", msgText, report);
   return report;
@@ -989,6 +992,9 @@ function correctDemand(sender_psid, step, report) {
       break;
     case 19:
       report[0].response = observationReply;
+      break;
+    case 20:
+      report[0].response = byeReply;
       break;
     default:
       report[0].responseAuxIndicator = 1;
