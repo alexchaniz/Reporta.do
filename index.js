@@ -1499,7 +1499,8 @@ async function getLocationFromAddress(address) {
         console.log("llega 4");
 
         if (result.status == "ZERO_RESULTS") {
-          reject(-1)
+          reject(-1);
+          return;
         }
 
         var coordinates = result.results[0].geometry.location;
