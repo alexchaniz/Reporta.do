@@ -769,7 +769,7 @@ async function step8(sender_psid, attachment_url, type, report) {
 }
 
 async function step9(sender_psid, received_message, report) {
-  console.log("Steeeeeeep 88888888");
+  console.log("Steeeeeeep 999999999");
 
   let coordinates = received_message.attachments[0].payload.coordinates;
   var location = [coordinates.long, coordinates.lat];
@@ -777,23 +777,19 @@ async function step9(sender_psid, received_message, report) {
 
   console.log(coordinates);
 
-  report[0].step = 9;
-  report = fillReport(sender_psid, "location", location, report);
+  report[0].step = 10;
   if (!report[0].tomarControl) {
     report[0].response = observationReply;
   } else {
     report[0].response = {}
   }
-  /*} else if (step == 10) {
-    let coordinates = received_message.attachments[0].payload.coordinates;
-    var location = [coordinates.X, coordinates.Y];
-    fillReport(sender_psid, "observations", location);*/
+  report = fillReport(sender_psid, "location", location, report);
 
   return report;
 }
 
 async function step9Aux(sender_psid, msgText, report) {
-  console.log("Steeeeeeep 99999999999999");
+  console.log("Steeeeeeep 99999999999999auxxxxxxxxx");
   try {
     var location = await getLocationFromAddress(msgText);
     console.log(location);
@@ -815,7 +811,7 @@ async function step9Aux(sender_psid, msgText, report) {
 }
 
 async function step11(sender_psid, msgText, report) {
-  console.log("Steeeeeeep 1000000000000000");
+  console.log("Steeeeeeep 111 111 1 11 11 11");
 
   //Saves any text recibed
   report = fillReport(sender_psid, "observation", msgText, report);
