@@ -483,7 +483,7 @@ async function handleMessage(sender_psid, received_message) {
             report = await step16(sender_psid, msgText, report);
             break;
           case 18:
-            report = await step8Aux(sender_psid, msgText, report);
+            report = await step9Aux(sender_psid, msgText, report);
             break;
           case 19:
             report = await step19(sender_psid, msgText, report);
