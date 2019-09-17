@@ -1500,7 +1500,7 @@ async function getLocationFromAddress(address) {
 
           reject(-1)
         }
-      } else if (err) {
+      } else if (err||(this.status ==400)) {
         console.log("llega 5");
 
         reject(-1)
