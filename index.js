@@ -106,12 +106,12 @@ var homeOrComunityReply = {
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "Si",
+      "title": "Hogar",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "No",
+      "title": "Comunidad",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
@@ -508,7 +508,7 @@ async function handleMessage(sender_psid, received_message) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
-          report = await step7(sender_psid, attachment_url, received_message.attachments[0].type, report);
+          report = await step8(sender_psid, attachment_url, received_message.attachments[0].type, report);
 
         } else {
           console.log("wrong step");
@@ -635,11 +635,11 @@ async function step2(sender_psid, msgText, report) {
 async function step3(sender_psid, msgText, report) {
   console.log("Steeeeeeep 33333333333333333333333333");
 
-  if (msgText == "comunidad") {
+  if (msgText == "Comunidad") {
     report[0].response = causeReply;
     report = fillReport(sender_psid, "hormeOrComunitty", msgText, report);
 
-  } else if (msgText == "hogar") {
+  } else if (msgText == "Hogar") {
     report[0].response = causeReply;
     report = fillReport(sender_psid, "hormeOrComunitty", msgText, report);
   } else {
