@@ -1393,7 +1393,7 @@ function sendUpdateToArcGis(update) {
 
   Http.open("POST", url);
   try {
-    Http.send(function(data){
+    Http.send(function (data) {
       console.log(data);
     });
   } catch (error) {
@@ -1452,8 +1452,9 @@ async function getLocationFromAddress(address) {
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
   //elimina tildes y diacriticos
-  //https://es.stackoverflow.com/questions/62031/eliminar-signos-diacr%C3%ADticos-en-javascript-eliminar-tildes-acentos-ortogr%C3%A1ficos
-  var addressAux = addressnormalize('NFD').replace(/([aeio])\u0301|(u)[\u0301\u0308]/gi,"$1$2").normalize() + ", Republica Dominicana";
+var addressAux1= await eliminarDiacriticosEs(address)
+
+  var addressAux = addressAux1 + ", Republica Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
@@ -1462,7 +1463,7 @@ async function getLocationFromAddress(address) {
   Http.open("POST", url);
   try {
     Http.send();
-    
+
   } catch (error) {
     console.log("Error in the sending to arcgis");
     console.log(error);
@@ -1471,18 +1472,18 @@ async function getLocationFromAddress(address) {
 
   console.log("llega 2");
 
- 
+
   return new Promise((resolve, reject) => {
 
     Http.onreadystatechange = function (err, data) {
       console.log("llega 3");
       console.log(this.status + "    " + this.readyState);
-      
+
       if (this.readyState == 4 && this.status == 200) {
         var result = JSON.parse(this.responseText);
         console.log("llega 4");
 
-        if (result.status == "ZERO_RESULTS"){
+        if (result.status == "ZERO_RESULTS") {
           reject(-1)
         }
 
@@ -1500,11 +1501,21 @@ async function getLocationFromAddress(address) {
 
           reject(-1)
         }
-      } else if (err||(this.status ==400&&this.readyState==4)) {
+      } else if (err || (this.status == 400 && this.readyState == 4)) {
         console.log("llega 5");
 
         reject(-1)
       }
     };
+  })
+}
+
+// Elimina los diacríticos de un texto excepto si es una "ñ" (ES6)
+//  //https://es.stackoverflow.com/questions/62031/eliminar-signos-diacr%C3%ADticos-en-javascript-eliminar-tildes-acentos-ortogr%C3%A1ficos
+
+async function eliminarDiacriticosEs(texto) {
+  return new Promise((resolve, reject) => {
+    texto.normalize('NFD').replace(/([^n\u0300-\u036f]|n(?!\u0303(?![\u0300-\u036f])))[\u0300-\u036f]+/gi, "$1").normalize();
+    resolve(texto);
   })
 }
