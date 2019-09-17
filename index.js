@@ -30,6 +30,7 @@ var ReportSchema = {
   responseAux: { type: {} },
   responseAuxIndicator: { type: Number },
   fromApp: { type: Boolean },
+  hormeOrComunitty: { type: String },
   cause: { type: String },
   homeDamages: { type: String },
   humansHarmed: { type: Number },
@@ -100,8 +101,8 @@ var safePlaceReply = {
   ]
 }
 
-var famOrComReply = {
-  "text": "¿Va a reportar daños de un hogar o daños generales en su comunidad?",
+var homeOrComunityReply = {
+  "text": "¿Quiere hacer un reporte de daños en su hogar o de su comunidad?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -205,7 +206,7 @@ var harmedPeopleReply = {
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
-   ]
+  ]
 }
 
 var deathPeopleReply = {
@@ -399,7 +400,7 @@ async function handleMessage(sender_psid, received_message) {
       /*   
       checks if message is one of the preconfigured special messages
       */
-      if (msgText == "borrartodo") {
+      if (msgText == "borrartodoArcoiris566") {
         report[0].response = {
           "text": "Base de datos mongodb reiniciada correctamente"
         }
@@ -414,7 +415,7 @@ async function handleMessage(sender_psid, received_message) {
         }
 
       } else if (msgText == "Asistencia 321") {
-        var closeAsistanceAux = [11, false, "--Acabó la toma de control"]
+        var closeAsistanceAux = [12, false, "--Acabó la toma de control"]
         report = fillReport(sender_psid, "closeAsistance", closeAsistanceAux, report);
         report[0].responseAuxIndicator = 1;
         report[0].responseAux = {
@@ -449,7 +450,10 @@ async function handleMessage(sender_psid, received_message) {
           case 6:
             report = await step6(sender_psid, msgText, report);
             break;
-          case 8:
+          case 7:
+            report = await step7(sender_psid, msgText, report);
+            break;
+          case 9:
             report = nextStep(report);
             report[0].responseAuxIndicator = 1;
             report[0].responseAux = {
@@ -457,11 +461,8 @@ async function handleMessage(sender_psid, received_message) {
             }
             report[0].response = locationReply;
             break;
-          case 9:
-            report = await step8Aux(sender_psid, msgText, report);
-            break;
           case 10:
-            report = await step10(sender_psid, msgText, report);
+            report = await step9Aux(sender_psid, msgText, report);
             break;
           case 11:
             report = await step11(sender_psid, msgText, report);
@@ -484,6 +485,9 @@ async function handleMessage(sender_psid, received_message) {
           case 18:
             report = await step18(sender_psid, msgText, report);
             break;
+            case 19:
+                report = await step19(sender_psid, msgText, report);
+                break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
             report = await correctDemand(sender_psid, step, report);
@@ -500,7 +504,7 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((report[0].tomarControl) || (step == 7) || (step == 16)) {
+        if ((report[0].tomarControl) || (step == 8) || (step == 17)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
@@ -513,14 +517,12 @@ async function handleMessage(sender_psid, received_message) {
       } else if (received_message.attachments[0].type == "location") {
         console.log("Received message is a location");
 
-        if ((report[0].tomarControl) || (step == 8) || (step == 9)) {
+        if ((report[0].tomarControl) || (step == 9) || (step == 10)) {
 
-          report = await step8(sender_psid, received_message, report)
+          report = await step9(sender_psid, received_message, report)
         } else {
           report = correctDemand(sender_psid, step, report);
         }
-        /*} else if (step == 10) {
-          fillReport(sender_psid, "observations", msgText);*/
       } else {
         report = correctDemand(sender_psid, step, report);
       }
@@ -618,7 +620,7 @@ async function step2(sender_psid, msgText, report) {
     report[0].responseAux = {
       "text": "Ok, continuemos"
     }
-    report[0].response = causeReply;
+    report[0].response = homeOrComunityReply;
   } else {
     report[0].responseAuxIndicator = 1;
     report[0].responseAux = {
@@ -631,6 +633,27 @@ async function step2(sender_psid, msgText, report) {
 }
 
 async function step3(sender_psid, msgText, report) {
+  console.log("Steeeeeeep 33333333333333333333333333");
+
+  if (msgText == "comunidad") {
+    report[0].response = causeReply;
+    report = fillReport(sender_psid, "hormeOrComunitty", msgText, report);
+
+  } else if (msgText == "hogar") {
+    report[0].response = causeReply;
+    report = fillReport(sender_psid, "hormeOrComunitty", msgText, report);
+  } else {
+    report[0].responseAuxIndicator = 1;
+    report[0].responseAux = {
+      "text": 'Utilice los botones para responder'
+    };
+    report[0].response = homeOrComunityReply;
+  }
+
+  return report;
+}
+
+async function step4(sender_psid, msgText, report) {
   console.log("Steeeeeeep 33333333333333333333333333");
 
   if (cause.includes(msgText)) {
@@ -650,7 +673,7 @@ async function step3(sender_psid, msgText, report) {
   return report;
 }
 
-async function step4(sender_psid, msgText, report) {
+async function step5(sender_psid, msgText, report) {
   console.log("Steeeeeeep 44444444444444444");
 
   if (homeDamages.includes(msgText)) {
@@ -667,7 +690,7 @@ async function step4(sender_psid, msgText, report) {
   return report;
 }
 
-async function step5(sender_psid, msgText, report) {
+async function step6(sender_psid, msgText, report) {
   console.log("Steeeeeeep 5555555555555");
 
   if (msgText == "No") {
@@ -696,7 +719,7 @@ async function step5(sender_psid, msgText, report) {
   return report;
 }
 
-async function step6(sender_psid, msgText, report) {
+async function step7(sender_psid, msgText, report) {
   console.log("Steeeeeeep 666666666666");
 
   if (msgText == "No hubo muertos") {
@@ -714,7 +737,7 @@ async function step6(sender_psid, msgText, report) {
   return report;
 }
 
-async function step7(sender_psid, attachment_url, type, report) {
+async function step8(sender_psid, attachment_url, type, report) {
   console.log("Steeeeeeep 777777777777777");
 
   if (type == "image") {
@@ -742,7 +765,7 @@ async function step7(sender_psid, attachment_url, type, report) {
   return report;
 }
 
-async function step8(sender_psid, received_message, report) {
+async function step9(sender_psid, received_message, report) {
   console.log("Steeeeeeep 88888888");
 
   let coordinates = received_message.attachments[0].payload.coordinates;
@@ -766,7 +789,7 @@ async function step8(sender_psid, received_message, report) {
   return report;
 }
 
-async function step8Aux(sender_psid, msgText, report) {
+async function step9Aux(sender_psid, msgText, report) {
   console.log("Steeeeeeep 99999999999999");
   try {
     var location = await getLocationFromAddress(msgText);
@@ -788,7 +811,7 @@ async function step8Aux(sender_psid, msgText, report) {
   }
 }
 
-async function step10(sender_psid, msgText, report) {
+async function step11(sender_psid, msgText, report) {
   console.log("Steeeeeeep 1000000000000000");
 
   //Saves any text recibed
@@ -798,7 +821,7 @@ async function step10(sender_psid, msgText, report) {
   return report;
 }
 
-async function step11(sender_psid, msgText, report) {
+async function step12(sender_psid, msgText, report) {
   console.log("Steeeeeeep 11 111 11 11 11");
 
   if (msgText == "No") {
@@ -827,7 +850,7 @@ async function step11(sender_psid, msgText, report) {
   return report;
 }
 
-async function step12(sender_psid, msgText, report) {
+async function step13(sender_psid, msgText, report) {
   report[0].response = {
     "text": "¿Ha sufrido daños su vivienda? Describalos"
   }
@@ -835,7 +858,7 @@ async function step12(sender_psid, msgText, report) {
   return report;
 }
 
-async function step13(sender_psid, msgText, report) {
+async function step14(sender_psid, msgText, report) {
   report[0].response = {
     "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
   }
@@ -843,7 +866,7 @@ async function step13(sender_psid, msgText, report) {
   return report;
 }
 
-async function step14(sender_psid, msgText, report) {
+async function step15(sender_psid, msgText, report) {
   if (!isNaN(msgText)) {
     report[0].response = {
       "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
@@ -858,7 +881,7 @@ async function step14(sender_psid, msgText, report) {
   return report;
 }
 
-async function step15(sender_psid, msgText, report) {
+async function step16(sender_psid, msgText, report) {
   if (!isNaN(msgText)) {
     report[0].response = {
       "text": "Envienos una imagen de los daños provocados"
@@ -873,14 +896,14 @@ async function step15(sender_psid, msgText, report) {
   return report;
 }
 
-async function step16(sender_psid, msgText, report) {
+async function step17(sender_psid, msgText, report) {
   report[0].response = imageReply;
 
   report = fillReport(sender_psid, "address", msgText, report);
   return report;
 }
 
-async function step18(sender_psid, msgText, report) {
+async function step19(sender_psid, msgText, report) {
   report[0].response = byeReply;
   report = fillReport(sender_psid, "observation", msgText, report);
   return report;
@@ -897,15 +920,15 @@ function correctDemand(sender_psid, step, report) {
       report = create(sender_psid, 1);
       report[0].response = grettingsReply;
       break;
-    case 7: case 16:
+    case 8: case 17:
       report[0].responseAuxIndicator = 1;
       report[0].responseAux = {
         "text": 'Una foto es de mucha ayuda para ubicar los daños.'
       }
       report[0].response = imageReply;
       break;
-    case 8:
     case 9:
+    case 10:
       report[0].responseAuxIndicator = 1;
       report[0].responseAux = {
         "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
@@ -919,49 +942,52 @@ function correctDemand(sender_psid, step, report) {
       report[0].response = safePlaceReply;
       break;
     case 3:
-      report[0].response = causeReply;
+      report[0].response = homeOrComunityReply;
       break;
     case 4:
-      report[0].response = homeDamagesReply;
+      report[0].response = causeReply;
       break;
     case 5:
-      report[0].response = humanDamagesReply;
+      report[0].response = homeDamagesReply;
       break;
     case 6:
+      report[0].response = humanDamagesReply;
+      break;
+    case 7:
       report[0].response = deathPeopleReply;
       break;
-    case 10:
+    case 11:
       report[0].response = observationReply;
       break;
-    case 11:
+    case 12:
       report[0].response = anotherReportReply;
       break;
-    case 12:
+    case 13:
       report[0].response = {
         "text": "¿Cual es la causa de los daños producidos"
       };
       break;
-    case 13:
+    case 14:
       report[0].response = {
         "text": "¿Ha sufrido daños su vivienda? Describalos"
       };
       break;
-    case 14:
+    case 15:
       report[0].response = {
         "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
       };
       break;
-    case 15:
+    case 16:
       report[0].response = {
         "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
       };
       break;
-    case 17:
+    case 18:
       report[0].response = {
         "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
       };
       break;
-    case 18:
+    case 19:
       report[0].response = observationReply;
       break;
     default:
@@ -1003,12 +1029,12 @@ async function handlePostback(sender_psid, received_postback) {
     if (payload === "stepback") {
 
       //if conversation is already in last step
-      if ((step == 11) || (step == 12)) {
+      if ((step == 12) || (step == 13)) {
         report[0].response = grettingsReply;
         report = fillReport(sender_psid, "step", 1, report)
       } else {
-        report = fillReport(sender_psid, "step", step - 1, report)
         report = correctDemand(sender_psid, step - 1, report);
+        report = fillReport(sender_psid, "step", step - 1, report)
       }
     } else if (payload == "restart") {
       report = fillReport(sender_psid, "step", 1, report)
@@ -1127,7 +1153,10 @@ function fillReport(sender_psid, field, value, report) {
       break;
     case "fromApp":
       report[0].fromApp = value;
-      report[0].step = 12;
+      report[0].step = 13;
+      break;
+    case "hormeOrComunitty":
+      report[0].hormeOrComunitty = value;
       break;
     default:
       report[0].step = report[0].step - 1;
@@ -1187,7 +1216,7 @@ async function getStep(sender_psid) {
     } else if (report[0].tomarControl) {
       console.log("Control tomado");
       step = -2;
-    } else if ((report[0].step > 18) || (d.getTime() - report[0].date > 900000)) {
+    } else if ((report[0].step > 19) || (d.getTime() - report[0].date > 900000)) {
       console.log("Reports recibió el paso" + report[0].step);
       console.log();
 
@@ -1438,7 +1467,7 @@ async function getLocationFromAddress(address) {
   var apiKey = "AIzaSyB9Soo0S1gk2QTcexPqwoIhQKZOfNAxRvE";
 
   //elimina tildes y diacriticos
-var addressAux1= await eliminarDiacriticosEs(address)
+  var addressAux1 = await eliminarDiacriticosEs(address)
 
   var addressAux = addressAux1 + ", Republica Dominicana";
 
