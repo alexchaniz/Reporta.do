@@ -1476,6 +1476,7 @@ async function getLocationFromAddress(address) {
 
     Http.onreadystatechange = function (err, data) {
       console.log("llega 3");
+      console.log(this.status + "    " + this.readyState);
       
       if (this.readyState == 4 && this.status == 200) {
         var result = JSON.parse(this.responseText);
