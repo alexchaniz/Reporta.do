@@ -507,10 +507,13 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((report[0].tomarControl) || (step == 8) || (step == 17)) {
+        if ((step=-2) || (step == 8) || (step == 17)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
+          if (step==-2) {
+            report[0].step=8;
+          }
           report = await step8(sender_psid, attachment_url, received_message.attachments[0].type, report);
 
         } else {
@@ -1209,6 +1212,9 @@ async function getStep(sender_psid) {
     } else if (report[0].tomarControl) {
       console.log("Control tomado");
       step = -2;
+      if (report[0].step==9||report[0].step == 10) {
+        step = report[0].step;
+      }
     } else if ((report[0].step > 19) || (d.getTime() - report[0].date > 900000)) {
       console.log("Reports recibió el paso" + report[0].step);
       console.log();
