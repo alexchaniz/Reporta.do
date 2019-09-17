@@ -1134,7 +1134,7 @@ function fillReport(sender_psid, field, value, report) {
       return;
   }
 
-  Report.findByIdAndReport(report[0]._id, report[0], function (err, upt) {
+  Report.findByIdAndUpdate(report[0]._id, report[0], function (err, upt) {
     console.log("field : " + field + "-------saved")
     Report.find(function (err, doc) {
       if (err) {
@@ -1150,7 +1150,7 @@ function fillReport(sender_psid, field, value, report) {
 //Set the nex step. Sums 1
 function nextStep(report) {
 
-  Report.findByIdAndReport(report[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+  Report.findByIdAndUpdate(report[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
     Report.find(function (err, docx) {
       console.log(docx);
