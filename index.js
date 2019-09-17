@@ -900,14 +900,8 @@ async function step16(sender_psid, msgText, report) {
 }
 
 async function step19(sender_psid, msgText, report) {
-  report[0].response = observationReply;
-
-  report = fillReport(sender_psid, "address", msgText, report);
-  return report;
-}
-
-async function step20(sender_psid, msgText, report) {
   report[0].response = byeReply;
+
   report = fillReport(sender_psid, "observation", msgText, report);
   return report;
 }
@@ -992,9 +986,6 @@ function correctDemand(sender_psid, step, report) {
       break;
     case 19:
       report[0].response = observationReply;
-      break;
-    case 20:
-      report[0].response = byeReply;
       break;
     default:
       report[0].responseAuxIndicator = 1;
