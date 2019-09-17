@@ -23,7 +23,7 @@ mongoose.set('useFindAndModify', false);
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true });
 
-var updateSchema = {
+var ReportSchema = {
   sender_id: { type: Number },
   step: { type: Number },
   response: { type: {} },
@@ -45,8 +45,8 @@ var updateSchema = {
   formatedDate: { type: String }
 };
 
-var update_schema = new Schema(updateSchema);
-var Update = mongoose.model("Update", update_schema);
+var Report_schema = new Schema(ReportSchema);
+var Report = mongoose.model("Report", Report_schema);
 
 
 var grettingsReply = {
@@ -85,6 +85,23 @@ var grettingsInfoReply = {
 
 var safePlaceReply = {
   "text": "¿Está en un lugar seguro?",
+  "quick_replies": [
+    {
+      "content_type": "text",
+      "title": "Si",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "No",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }
+  ]
+}
+
+var famOrComReply = {
+  "text": "¿Va a reportar daños de un hogar o daños generales en su comunidad?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -188,21 +205,9 @@ var harmedPeopleReply = {
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
-    /* {
-      "content_type": "text",
-      "title": "5 a 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Más de 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }*/
-  ]
+   ]
 }
 
-var deathPeople = ["No hubo muertos", "1 a 5", "5 a 10", "Más de 10"]
 var deathPeopleReply = {
   "text": "Si hubo muertos, ¿Podría escribirnos cuantos?",
   "quick_replies": [
@@ -212,22 +217,6 @@ var deathPeopleReply = {
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
-    /*, {
-      "content_type": "text",
-      "title": "1 a 5",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "5 a 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Más de 10",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }*/
   ]
 }
 
@@ -244,7 +233,6 @@ var locationReply = {
         "title": "Envienos su ubicación",
         "subtitle": "Para ello utilice el botón que aparece en la imagen y pulse 'Enviar'.",
         "image_url": "https://quirky-lalande-b290cd.netlify.com/location1.jpg"
-        //  "buttons": [{}]
       }]
     }
   }
@@ -262,7 +250,7 @@ var observationReply = {
   ]
 }
 
-var anotherUpdateReply = {
+var anotherReportReply = {
   "text": "¿Quiere información sobre como actuar o reportar otro daño?",
   "quick_replies": [
     {
@@ -368,7 +356,7 @@ async function handleMessage(sender_psid, received_message) {
   //Checks if is echomessage. If it is it wont be analyced
   if (!received_message.is_echo) {
 
-    var updates = [];
+    var report = [];
     var step;
 
     //Set message state to recived and actives the typing icon
@@ -380,22 +368,22 @@ async function handleMessage(sender_psid, received_message) {
     console.log("Handling message: ");
 
     //Get the step the conversation is
-    var stepAux = await getStep(sender_psid, updates);
+    var stepAux = await getStep(sender_psid, report);
     step = stepAux[0];
-    updates = stepAux[1];
+    report = stepAux[1];
     console.log("Getsteeeeeeeep" + step);
 
 
     try {
-      updates[0].responseAuxIndicator = 0;
+      report[0].responseAuxIndicator = 0;
     } catch{ }
 
     // Expired conversation, new conversation or completed survey
-    //Creayes a new conversation, a new update
+    //Creayes a new conversation, a new Report
     if (step == -1) {
       //in that case creates another entry
-      updates = create(sender_psid, 1);
-      updates[0].response = grettingsReply;
+      report = create(sender_psid, 1);
+      report[0].response = grettingsReply;
 
       // Check if the message contains text
     } else if (received_message.text) {
@@ -412,7 +400,7 @@ async function handleMessage(sender_psid, received_message) {
       checks if message is one of the preconfigured special messages
       */
       if (msgText == "borrartodo") {
-        updates[0].response = {
+        report[0].response = {
           "text": "Base de datos mongodb reiniciada correctamente"
         }
         reset();
@@ -420,85 +408,85 @@ async function handleMessage(sender_psid, received_message) {
       } else if (msgText == "Asistencia 123") {
         console.log("controlando porqueeee");
 
-        updates = fillUpdate(sender_psid, "tomarControl", true, updates);
-        updates[0].response = {
+        report = fillReport(sender_psid, "tomarControl", true, report);
+        report[0].response = {
           "text": "Uno de nuestros operarios ha tomado el control de la conversación."
         }
 
       } else if (msgText == "Asistencia 321") {
         var closeAsistanceAux = [11, false, "--Acabó la toma de control"]
-        updates = fillUpdate(sender_psid, "closeAsistance", closeAsistanceAux, updates);
-        updates[0].responseAuxIndicator = 1;
-        updates[0].responseAux = {
+        report = fillReport(sender_psid, "closeAsistance", closeAsistanceAux, report);
+        report[0].responseAuxIndicator = 1;
+        report[0].responseAux = {
           "text": "El operario dejó de tener el control"
         }
-        updates[0].response = anotherUpdateReply
+        report[0].response = anotherReportReply
 
       } else if (step) {
 
-        //Activate the function asociated to the step
+        //Activate the function asociated to the step and report the variable
         switch (step) {
           //if the control was took from the operator
           case -2:
             messagingActions(sender_psid, "typing_off")
-            updates = fillUpdate(sender_psid, "observation", msgText, updates)
+            report = fillReport(sender_psid, "observation", msgText, report)
             break;
           case 1:
-            updates = await step1(sender_psid, msgText, updates);
+            report = await step1(sender_psid, msgText, report);
             break;
           case 2:
-            updates = await step2(sender_psid, msgText, updates);
+            report = await step2(sender_psid, msgText, report);
             break;
           case 3:
-            updates = await step3(sender_psid, msgText, updates);
+            report = await step3(sender_psid, msgText, report);
             break;
           case 4:
-            updates = await step4(sender_psid, msgText, updates);
+            report = await step4(sender_psid, msgText, report);
             break;
           case 5:
-            updates = await step5(sender_psid, msgText, updates);
+            report = await step5(sender_psid, msgText, report);
             break;
           case 6:
-            updates = await step6(sender_psid, msgText, updates);
+            report = await step6(sender_psid, msgText, report);
             break;
           case 8:
-            updates = nextStep(updates);
-            updates[0].responseAuxIndicator = 1;
-            updates[0].responseAux = {
+            report = nextStep(report);
+            report[0].responseAuxIndicator = 1;
+            report[0].responseAux = {
               "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección(calle y ciudad)'
             }
-            updates[0].response = locationReply;
+            report[0].response = locationReply;
             break;
           case 9:
-            updates = await step8Aux(sender_psid, msgText, updates);
+            report = await step8Aux(sender_psid, msgText, report);
             break;
           case 10:
-            updates = await step10(sender_psid, msgText, updates);
+            report = await step10(sender_psid, msgText, report);
             break;
           case 11:
-            updates = await step11(sender_psid, msgText, updates);
+            report = await step11(sender_psid, msgText, report);
             break;
           case 12:
-            updates = await step12(sender_psid, msgText, updates);
+            report = await step12(sender_psid, msgText, report);
             break;
           case 13:
-            updates = await step13(sender_psid, msgText, updates);
+            report = await step13(sender_psid, msgText, report);
             break;
           case 14:
-            updates = await step14(sender_psid, msgText, updates);
+            report = await step14(sender_psid, msgText, report);
             break;
           case 15:
-            updates = await step15(sender_psid, msgText, updates);
+            report = await step15(sender_psid, msgText, report);
             break;
           case 17:
-            updates = await step8Aux(sender_psid, msgText, updates);
+            report = await step8Aux(sender_psid, msgText, report);
             break;
           case 18:
-            updates = await step18(sender_psid, msgText, updates);
+            report = await step18(sender_psid, msgText, report);
             break;
           default:
             //Asks for the cooect question to return as no action coud be tooken
-            updates = await correctDemand(sender_psid, step, updates);
+            report = await correctDemand(sender_psid, step, report);
             break;
         }
       }
@@ -512,41 +500,41 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
 
-        if ((updates[0].tomarControl) || (step == 7) || (step == 16)) {
+        if ((report[0].tomarControl) || (step == 7) || (step == 16)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
-          updates = await step7(sender_psid, attachment_url, received_message.attachments[0].type, updates);
+          report = await step7(sender_psid, attachment_url, received_message.attachments[0].type, report);
 
         } else {
           console.log("wrong step");
-          updates = correctDemand(sender_psid, step, updates);
+          report = correctDemand(sender_psid, step, report);
         }
       } else if (received_message.attachments[0].type == "location") {
         console.log("Received message is a location");
 
-        if ((updates[0].tomarControl) || (step == 8) || (step == 9)) {
+        if ((report[0].tomarControl) || (step == 8) || (step == 9)) {
 
-          updates = await step8(sender_psid, received_message, updates)
+          report = await step8(sender_psid, received_message, report)
         } else {
-          updates = correctDemand(sender_psid, step, updates);
+          report = correctDemand(sender_psid, step, report);
         }
         /*} else if (step == 10) {
-          fillUpdate(sender_psid, "observations", msgText);*/
+          fillReport(sender_psid, "observations", msgText);*/
       } else {
-        updates = correctDemand(sender_psid, step, updates);
+        report = correctDemand(sender_psid, step, report);
       }
     } else {
-      updates = correctDemand(sender_psid, step, updates);
+      report = correctDemand(sender_psid, step, report);
     }
 
     await messagingActions(sender_psid, "typing_off").then(async function () {
 
       // Sends the response message
       //In case aux=1 send auxiliar response
-      if (updates[0].responseAuxIndicator == 1) {
-        await callSendAPI(sender_psid, updates[0].responseAux).then(async function (err, data) {
-          await callSendAPI(sender_psid, updates[0].response);
+      if (report[0].responseAuxIndicator == 1) {
+        await callSendAPI(sender_psid, report[0].responseAux).then(async function (err, data) {
+          await callSendAPI(sender_psid, report[0].response);
           console.log("Se envia mensaje previo de alcaración");
         })
       } else {
@@ -554,179 +542,179 @@ async function handleMessage(sender_psid, received_message) {
 
         console.log("response");
 
-        await callSendAPI(sender_psid, updates[0].response);
+        await callSendAPI(sender_psid, report[0].response);
       }
     });
   }
 }
 
 //Steps of the conversantion as ordered
-async function step1(sender_psid, msgText, updates) {
+async function step1(sender_psid, msgText, report) {
   console.log("Steeeeeeep 1111111111111111");
 
   //Check if we recibe the text from the Quick Replys
   if (msgText == "Información") {
-    updates[0].responseAuxIndicator = 1
-    updates[0].responseAux = {
+    report[0].responseAuxIndicator = 1
+    report[0].responseAux = {
       "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
-    updates[0].response = grettingsInfoReply;
-    updates = fillUpdate(sender_psid, "step", 1, updates);
+    report[0].response = grettingsInfoReply;
+    report = fillReport(sender_psid, "step", 1, report);
 
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
-    updates = nextStep(updates);
-    updates[0].response = safePlaceReply;
+    report = nextStep(report);
+    report[0].response = safePlaceReply;
 
   } else if (msgText == "No") {
-    updates[0].response = {
+    report[0].response = {
       "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
     };
-    updates = fillUpdate(sender_psid, "step", 1, updates)
+    report = fillReport(sender_psid, "step", 1, report)
 
   } else if ((msgText.toLowerCase().includes("no")) && (msgText.includes("app"))) {
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
+    report[0].responseAuxIndicator = 1;
+    report[0].responseAux = {
       "text": "De acuerdo, iniciaremos un reporte sin botones"
     }
-    updates[0].response = {
+    report[0].response = {
       "text": "¿Cual es la causa de los daños producidos?"
     }
-    updates = fillUpdate(sender_psid, "fromApp", false, updates)
+    report = fillReport(sender_psid, "fromApp", false, report)
 
   } else {
     console.log("a verrrrrrrrrrrrrrrrrr");
 
-    console.log(updates[0].response);
+    console.log(report[0].response);
     console.log(grettingsReply);
 
-    console.log(updates[0].response == "");
+    console.log(report[0].response == "");
 
-    if (!updates[0].response == "") {
+    if (!report[0].response == "") {
       console.log("LLega aqui");
 
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
+      report[0].responseAuxIndicator = 1;
+      report[0].responseAux = {
         "text": 'Si no le aparecen los botones quiere decir que no nos escribe desde la aplicación de messenger. Sería mejor que nos escribiera desde la app. En caso de que este usando el celular y no le sea posible escribanos "No tengo la app"'
       };
     }
-    updates[0].response = grettingsReply;
-    updates = fillUpdate(sender_psid, "step", 1, updates)
+    report[0].response = grettingsReply;
+    report = fillReport(sender_psid, "step", 1, report)
   }
 
-  return updates;
+  return report;
 }
 
-async function step2(sender_psid, msgText, updates) {
+async function step2(sender_psid, msgText, report) {
   console.log("Steeeeeeep 22222222222222222222222");
 
   if (msgText == "No") {
-    updates[0].response = {
+    report[0].response = {
       "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
     }
   } else if (msgText == "Si") {
-    updates = nextStep(updates);
+    report = nextStep(report);
 
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
+    report[0].responseAuxIndicator = 1;
+    report[0].responseAux = {
       "text": "Ok, continuemos"
     }
-    updates[0].response = causeReply;
+    report[0].response = causeReply;
   } else {
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
+    report[0].responseAuxIndicator = 1;
+    report[0].responseAux = {
       "text": 'Utilice los botones para responder'
     };
-    updates[0].response = safePlaceReply;
+    report[0].response = safePlaceReply;
   }
 
-  return updates;
+  return report;
 }
 
-async function step3(sender_psid, msgText, updates) {
+async function step3(sender_psid, msgText, report) {
   console.log("Steeeeeeep 33333333333333333333333333");
 
   if (cause.includes(msgText)) {
     if (msgText == "Otro") {
-      updates[0].response = {
+      report[0].response = {
         "text": 'Escriba la causa del problema'
       }
     } else {
-      updates = fillUpdate(sender_psid, "cause", msgText, updates);
-      updates[0].response = homeDamagesReply;
+      report = fillReport(sender_psid, "cause", msgText, report);
+      report[0].response = homeDamagesReply;
     }
   } else {
-    updates = fillUpdate(sender_psid, "cause", msgText, updates);
-    updates[0].response = homeDamagesReply;
+    report = fillReport(sender_psid, "cause", msgText, report);
+    report[0].response = homeDamagesReply;
   }
 
-  return updates;
+  return report;
 }
 
-async function step4(sender_psid, msgText, updates) {
+async function step4(sender_psid, msgText, report) {
   console.log("Steeeeeeep 44444444444444444");
 
   if (homeDamages.includes(msgText)) {
-    updates = fillUpdate(sender_psid, "homeDamages", msgText, updates);
-    updates[0].response = humanDamagesReply;
+    report = fillReport(sender_psid, "homeDamages", msgText, report);
+    report[0].response = humanDamagesReply;
   } else {
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
+    report[0].responseAuxIndicator = 1;
+    report[0].responseAux = {
       "text": 'Utilice los botones para responder'
     };
-    updates[0].response = homeDamagesReply;
+    report[0].response = homeDamagesReply;
   }
 
-  return updates;
+  return report;
 }
 
-async function step5(sender_psid, msgText, updates) {
+async function step5(sender_psid, msgText, report) {
   console.log("Steeeeeeep 5555555555555");
 
   if (msgText == "No") {
-    updates = fillUpdate(sender_psid, "noHumansHarmed", msgText, updates)
-    updates[0].response = imageReply;
+    report = fillReport(sender_psid, "noHumansHarmed", msgText, report)
+    report[0].response = imageReply;
   } else if (msgText == "Si") {
-    updates[0].response = harmedPeopleReply;
+    report[0].response = harmedPeopleReply;
   } else if (msgText == "No hubo heridos") {
-    updates = fillUpdate(sender_psid, "humansHarmed", 0, updates)
-    updates[0].response = deathPeopleReply;
+    report = fillReport(sender_psid, "humansHarmed", 0, report)
+    report[0].response = deathPeopleReply;
   } else {
     if (isNaN(msgText)) {
-      updates[0].response = {
+      report[0].response = {
         "text": "Señale el numero de muertes utilizando los números del teclado"
       };
     } else {
-      updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates)
-      updates[0].response = deathPeopleReply;
+      report = fillReport(sender_psid, "humansHarmed", msgText, report)
+      report[0].response = deathPeopleReply;
     }
   }
   /*else if (harmedPeople.includes(msgText)) {
-    fillUpdate(sender_psid, "humansHarmed", msgText);
+    fillReport(sender_psid, "humansHarmed", msgText);
     response = deathPeopleReply;
   }*/
 
-  return updates;
+  return report;
 }
 
-async function step6(sender_psid, msgText, updates) {
+async function step6(sender_psid, msgText, report) {
   console.log("Steeeeeeep 666666666666");
 
   if (msgText == "No hubo muertos") {
-    updates = fillUpdate(sender_psid, "humansDeath", 0, updates)
-    updates[0].response = imageReply;
+    report = fillReport(sender_psid, "humansDeath", 0, report)
+    report[0].response = imageReply;
   } else if (isNaN(msgText)) {
-    updates[0].response = {
+    report[0].response = {
       "text": "Señale el numero de muertes utilizando los números del teclado"
     };
   } else {
-    updates = fillUpdate(sender_psid, "humansDeath", msgText, updates)
-    updates[0].response = imageReply;
+    report = fillReport(sender_psid, "humansDeath", msgText, report)
+    report[0].response = imageReply;
   }
 
-  return updates;
+  return report;
 }
 
-async function step7(sender_psid, attachment_url, type, updates) {
+async function step7(sender_psid, attachment_url, type, report) {
   console.log("Steeeeeeep 777777777777777");
 
   if (type == "image") {
@@ -737,24 +725,24 @@ async function step7(sender_psid, attachment_url, type, updates) {
         throw new Error(err);
       } else {
         var image = [data, attachment_url];
-        updates = fillUpdate(sender_psid, "img", image, updates);
+        report = fillReport(sender_psid, "img", image, report);
       }
     });
   } else {
-    updates = fillUpdate(sender_psid, "video", attachment_url, updates);
+    report = fillReport(sender_psid, "video", attachment_url, report);
   }
 
-  if (!updates[0].fromApp) {
-    updates[0].response = {
+  if (!report[0].fromApp) {
+    report[0].response = {
       "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
     };
   } else {
-    updates[0].response = locationReply;
+    report[0].response = locationReply;
   }
-  return updates;
+  return report;
 }
 
-async function step8(sender_psid, received_message, updates) {
+async function step8(sender_psid, received_message, report) {
   console.log("Steeeeeeep 88888888");
 
   let coordinates = received_message.attachments[0].payload.coordinates;
@@ -763,238 +751,238 @@ async function step8(sender_psid, received_message, updates) {
 
   console.log(coordinates);
 
-  updates[0].step = 9;
-  updates = fillUpdate(sender_psid, "location", location, updates);
-  if (!updates[0].tomarControl) {
-    updates[0].response = observationReply;
+  report[0].step = 9;
+  report = fillReport(sender_psid, "location", location, report);
+  if (!report[0].tomarControl) {
+    report[0].response = observationReply;
   } else {
-    updates[0].response = {}
+    report[0].response = {}
   }
   /*} else if (step == 10) {
     let coordinates = received_message.attachments[0].payload.coordinates;
     var location = [coordinates.X, coordinates.Y];
-    fillUpdate(sender_psid, "observations", location);*/
+    fillReport(sender_psid, "observations", location);*/
 
-  return updates;
+  return report;
 }
 
-async function step8Aux(sender_psid, msgText, updates) {
+async function step8Aux(sender_psid, msgText, report) {
   console.log("Steeeeeeep 99999999999999");
   try {
     var location = await getLocationFromAddress(msgText);
     console.log(location);
     location.push(msgText);
     //Saves any text recibed
-    updates = fillUpdate(sender_psid, "address", location, updates);
-    updates[0].response = observationReply;
+    report = fillReport(sender_psid, "address", location, report);
+    report[0].response = observationReply;
 
-    return updates;
+    return report;
 
   } catch (error) {
     console.log("err getting adress");
 
-    updates[0].response = {
+    report[0].response = {
       "text": "No hemos encontrado la dirección que nos ha especifiado. Por favor, compruebe que el nombre está escrito correctamente, evitando el caracter ñ, o díganos la dirección de otro lugar próximo"
     }
-    return updates;
+    return report;
   }
 }
 
-async function step10(sender_psid, msgText, updates) {
+async function step10(sender_psid, msgText, report) {
   console.log("Steeeeeeep 1000000000000000");
 
   //Saves any text recibed
-  updates = fillUpdate(sender_psid, "observation", msgText, updates);
-  updates[0].response = anotherUpdateReply;
+  report = fillReport(sender_psid, "observation", msgText, report);
+  report[0].response = anotherReportReply;
 
-  return updates;
+  return report;
 }
 
-async function step11(sender_psid, msgText, updates) {
+async function step11(sender_psid, msgText, report) {
   console.log("Steeeeeeep 11 111 11 11 11");
 
   if (msgText == "No") {
-    updates[0].response = byeReply;
+    report[0].response = byeReply;
 
-    updates = fillUpdate(sender_psid, "step", 19, updates);
+    report = fillReport(sender_psid, "step", 19, report);
   } else if (msgText == "Reportar") {
 
     console.log("Step 111 siiiiiiii");
-    updates[0].responseAuxIndicator = 1;
-    updates[0].responseAux = {
+    report[0].responseAuxIndicator = 1;
+    report[0].responseAux = {
       "text": 'Usted ha decidido reportar un nuevo daño'
     }
 
-    updates = create(sender_psid, 3);
-    updates[0].response = causeReply;
+    report = create(sender_psid, 3);
+    report[0].response = causeReply;
 
   } else if (msgText = "Información") {
-    updates = getCauseInfo(sender_psid, updates);
-    updates[0].response = anotherUpdateReply;
+    report = getCauseInfo(sender_psid, report);
+    report[0].response = anotherReportReply;
   } else {
-    updates[0].responseAuxIndicator = 0,
-      updates[0].response = anotherUpdateReply;
+    report[0].responseAuxIndicator = 0,
+      report[0].response = anotherReportReply;
   }
 
-  return updates;
+  return report;
 }
 
-async function step12(sender_psid, msgText, updates) {
-  updates[0].response = {
+async function step12(sender_psid, msgText, report) {
+  report[0].response = {
     "text": "¿Ha sufrido daños su vivienda? Describalos"
   }
-  updates = fillUpdate(sender_psid, "cause", msgText, updates);
-  return updates;
+  report = fillReport(sender_psid, "cause", msgText, report);
+  return report;
 }
 
-async function step13(sender_psid, msgText, updates) {
-  updates[0].response = {
+async function step13(sender_psid, msgText, report) {
+  report[0].response = {
     "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
   }
-  updates = fillUpdate(sender_psid, "homeDamages", msgText, updates);
-  return updates;
+  report = fillReport(sender_psid, "homeDamages", msgText, report);
+  return report;
 }
 
-async function step14(sender_psid, msgText, updates) {
+async function step14(sender_psid, msgText, report) {
   if (!isNaN(msgText)) {
-    updates[0].response = {
+    report[0].response = {
       "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
     }
-    updates = fillUpdate(sender_psid, "humansDeath", msgText, updates);
+    report = fillReport(sender_psid, "humansDeath", msgText, report);
   }
   else {
-    updates[0].response = {
+    report[0].response = {
       "text": "Indiquenos la cantidad utilizando un número."
     }
   }
-  return updates;
+  return report;
 }
 
-async function step15(sender_psid, msgText, updates) {
+async function step15(sender_psid, msgText, report) {
   if (!isNaN(msgText)) {
-    updates[0].response = {
+    report[0].response = {
       "text": "Envienos una imagen de los daños provocados"
     }
-    updates = fillUpdate(sender_psid, "humansHarmed", msgText, updates);
+    report = fillReport(sender_psid, "humansHarmed", msgText, report);
   }
   else {
-    updates[0].response = {
+    report[0].response = {
       "text": "Indiquenos la cantidad utilizando un número."
     }
   }
-  return updates;
+  return report;
 }
 
-async function step16(sender_psid, msgText, updates) {
-  updates[0].response = imageReply;
+async function step16(sender_psid, msgText, report) {
+  report[0].response = imageReply;
 
-  updates = fillUpdate(sender_psid, "address", msgText, updates);
-  return updates;
+  report = fillReport(sender_psid, "address", msgText, report);
+  return report;
 }
 
-async function step18(sender_psid, msgText, updates) {
-  updates[0].response = byeReply;
-  updates = fillUpdate(sender_psid, "observation", msgText, updates);
-  return updates;
+async function step18(sender_psid, msgText, report) {
+  report[0].response = byeReply;
+  report = fillReport(sender_psid, "observation", msgText, report);
+  return report;
 }
 
 
 
 //Look for the correct reply as no action could be took
-function correctDemand(sender_psid, step, updates) {
+function correctDemand(sender_psid, step, report) {
   console.log("correct demand");
 
   switch (step) {
     case -1:
-      updates = create(sender_psid, 1);
-      updates[0].response = grettingsReply;
+      report = create(sender_psid, 1);
+      report[0].response = grettingsReply;
       break;
     case 7: case 16:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
+      report[0].responseAuxIndicator = 1;
+      report[0].responseAux = {
         "text": 'Una foto es de mucha ayuda para ubicar los daños.'
       }
-      updates[0].response = imageReply;
+      report[0].response = imageReply;
       break;
     case 8:
     case 9:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
+      report[0].responseAuxIndicator = 1;
+      report[0].responseAux = {
         "text": 'Es importante que nos envie su ubicación para ayudarle. Deberá aceptar esto en el movil. En otro caso puede escribir su dirección'
       }
-      updates[0].response = locationReply;
+      report[0].response = locationReply;
       break;
     case 1:
-      updates[0].response = grettingsReply;
+      report[0].response = grettingsReply;
       break;
     case 2:
-      updates[0].response = safePlaceReply;
+      report[0].response = safePlaceReply;
       break;
     case 3:
-      updates[0].response = causeReply;
+      report[0].response = causeReply;
       break;
     case 4:
-      updates[0].response = homeDamagesReply;
+      report[0].response = homeDamagesReply;
       break;
     case 5:
-      updates[0].response = humanDamagesReply;
+      report[0].response = humanDamagesReply;
       break;
     case 6:
-      updates[0].response = deathPeopleReply;
+      report[0].response = deathPeopleReply;
       break;
     case 10:
-      updates[0].response = observationReply;
+      report[0].response = observationReply;
       break;
     case 11:
-      updates[0].response = anotherUpdateReply;
+      report[0].response = anotherReportReply;
       break;
     case 12:
-      updates[0].response = {
+      report[0].response = {
         "text": "¿Cual es la causa de los daños producidos"
       };
       break;
     case 13:
-      updates[0].response = {
+      report[0].response = {
         "text": "¿Ha sufrido daños su vivienda? Describalos"
       };
       break;
     case 14:
-      updates[0].response = {
+      report[0].response = {
         "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
       };
       break;
     case 15:
-      updates[0].response = {
+      report[0].response = {
         "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
       };
       break;
     case 17:
-      updates[0].response = {
+      report[0].response = {
         "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
       };
       break;
     case 18:
-      updates[0].response = observationReply;
+      report[0].response = observationReply;
       break;
     default:
-      updates[0].responseAuxIndicator = 1;
-      updates[0].responseAux = {
+      report[0].responseAuxIndicator = 1;
+      report[0].responseAux = {
         "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
       }
-      updates[0].response = grettingsReply;
-      updates = fillUpdate(sender_psid, "step", 1, updates);
+      report[0].response = grettingsReply;
+      report = fillReport(sender_psid, "step", 1, report);
       break;
   }
 
-  return updates;
+  return report;
 }
 
 // Handles messaging_postbacks events
 async function handlePostback(sender_psid, received_postback) {
 
-  var updates = [];
+  var report = [];
   try {
-    updates[0].responseAuxIndicator = 0;
+    report[0].responseAuxIndicator = 0;
   } catch{ }
   // Get the payload for the postback
   let payload = received_postback.payload;
@@ -1003,53 +991,53 @@ async function handlePostback(sender_psid, received_postback) {
 
   // Set the response based on the postback payload
   if (payload === "Greeting") {
-    updates = create(sender_psid, 1);
-    updates[0].response = grettingsReply;
+    report = create(sender_psid, 1);
+    report[0].response = grettingsReply;
 
   } else {
-    var stepAux = await getStep(sender_psid, updates);
+    var stepAux = await getStep(sender_psid, report);
     var step = stepAux[0];
-    updates = stepAux[1];
+    report = stepAux[1];
 
     //checks if interaction with static menu was received
     if (payload === "stepback") {
 
       //if conversation is already in last step
       if ((step == 11) || (step == 12)) {
-        updates[0].response = grettingsReply;
-        updates = fillUpdate(sender_psid, "step", 1, updates)
+        report[0].response = grettingsReply;
+        report = fillReport(sender_psid, "step", 1, report)
       } else {
-        updates = fillUpdate(sender_psid, "step", step - 1, updates)
-        updates = correctDemand(sender_psid, step - 1, updates);
+        report = fillReport(sender_psid, "step", step - 1, report)
+        report = correctDemand(sender_psid, step - 1, report);
       }
     } else if (payload == "restart") {
-      updates = fillUpdate(sender_psid, "step", 1, updates)
-      updates[0].response = grettingsReply;
+      report = fillReport(sender_psid, "step", 1, report)
+      report[0].response = grettingsReply;
     } else {
-      updates = correctDemand(sender_psid, step, updates);
+      report = correctDemand(sender_psid, step, report);
     }
   }
   await messagingActions(sender_psid, "typing_off").then(async function () {
 
     // Send the message to acknowledge the postback
-    await callSendAPI(sender_psid, updates[0].response);
+    await callSendAPI(sender_psid, report[0].response);
   });
 }
 
 //resets mongo db collection
 function reset() {
-  Update.deleteMany({}, function (err, doc) {
+  Report.deleteMany({}, function (err, doc) {
     console.log("removeeeeeeeeeeeeeeeeeeeeeed");
   });
 }
 
-//create new update onject in db
+//create new Report onject in db
 function create(sender_psid, stepNew) {
 
-  var updates = [];
+  var report = [];
   var d = new Date();
 
-  updates[0] = new Update({
+  report[0] = new Report({
     sender_id: sender_psid,
     step: stepNew,
     response: "",
@@ -1068,87 +1056,87 @@ function create(sender_psid, stepNew) {
     formatedDate: d.toLocaleString() + " " + d.toTimeString()
   });
 
-  updates[0].save(function () {
+  report[0].save(function () {
     console.log("creado");
-    Update.find(function (err, doc) {
+    Report.find(function (err, doc) {
       console.log("guardadoooooooooooooooo")
     });
   });
 
-  return updates;
+  return report;
 }
 
 //Fills the indicates fill with the indicated values
-function fillUpdate(sender_psid, field, value, updates) {
+function fillReport(sender_psid, field, value, report) {
 
-  updates[0].step += 1;
+  report[0].step += 1;
 
   switch (field) {
     case "cause":
-      updates[0].cause = value;
+      report[0].cause = value;
       break;
     case "homeDamages":
-      updates[0].homeDamages = value;
+      report[0].homeDamages = value;
       break;
     case "humansHarmed":
-      updates[0].humansHarmed = parseInt(value);
+      report[0].humansHarmed = parseInt(value);
       break;
     case "humansDeath":
-      updates[0].humansDeath = parseInt(value);
+      report[0].humansDeath = parseInt(value);
       break;
     case "noHumansHarmed":
-      updates[0].humansHarmed = 0;
-      updates[0].humansDeath = 0;
-      updates[0].step += 1;
+      report[0].humansHarmed = 0;
+      report[0].humansDeath = 0;
+      report[0].step += 1;
       break;
     case "img":
-      updates[0].img.data = value[0];
-      updates[0].img.contentType = 'image/png';
-      updates[0].imgUrl = value[1];
+      report[0].img.data = value[0];
+      report[0].img.contentType = 'image/png';
+      report[0].imgUrl = value[1];
       break;
     case "video":
-      updates[0].imgUrl = value;
+      report[0].imgUrl = value;
     case "location":
-      updates[0].X = value[0];
-      updates[0].Y = value[1];
+      report[0].X = value[0];
+      report[0].Y = value[1];
       break;
     case "address":
-      updates[0].address = value[2];
-      updates[0].X = value[0];
-      updates[0].Y = value[1];
+      report[0].address = value[2];
+      report[0].X = value[0];
+      report[0].Y = value[1];
       break;
     case "observation":
-      updates[0].observation += value + "--";
-      if (!updates[0].tomarControl) {
-        sendUpdateToArcGis(updates[0]);
+      report[0].observation += value + "--";
+      if (!report[0].tomarControl) {
+        sendReportToArcGis(report[0]);
       } else {
-        updates[0].response = {};
+        report[0].response = {};
       }
       break;
     case "tomarControl":
-      updates[0].tomarControl = value;
+      report[0].tomarControl = value;
       break;
     case "step":
-      updates[0].step = value;
+      report[0].step = value;
       break;
     case "closeAsistance":
-      updates[0].step = value[0];
-      updates[0].tomarControl = value[1];
-      updates[0].observation += value[2];
-      sendUpdateToArcGis(updates[0]);
+      report[0].step = value[0];
+      report[0].tomarControl = value[1];
+      report[0].observation += value[2];
+      sendReportToArcGis(report[0]);
       break;
     case "fromApp":
-      updates[0].fromApp = value;
-      updates[0].step = 12;
+      report[0].fromApp = value;
+      report[0].step = 12;
       break;
     default:
-      updates[0].step = updates[0].step - 1;
+      report[0].step = report[0].step - 1;
       return;
   }
 
-  Update.findByIdAndUpdate(updates[0]._id, updates[0], function (err, upt) {
+  Report.findByIdAndReport(report[0]._id, report[0], function (err, upt) {
     console.log("field : " + field + "-------saved")
-    Update.find(function (err, doc) {
+    Report.find(function (err, doc) {
       if (err) {
         console.log(err);
       } else {
@@ -1156,28 +1144,28 @@ function fillUpdate(sender_psid, field, value, updates) {
       }
     });
   })
-  return updates;
+  return report;
 }
 
 //Set the nex step. Sums 1
-function nextStep(updates) {
+function nextStep(report) {
 
-  Update.findByIdAndUpdate(updates[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
+  Report.findByIdAndReport(report[0]._id, { '$inc': { 'step': 1 } }, function (err, upt) {
     console.log("nexesteeeeeeeped");
-    Update.find(function (err, docx) {
+    Report.find(function (err, docx) {
       console.log(docx);
     });
   });
 
-  updates[0].step += 1;
+  report[0].step += 1;
 
-  return updates;
+  return report;
 }
 
-//Get the last created update element in the db associated to the sender
-function getUpdate(sender_psid) {
+//Get the last created Report element in the db associated to the sender
+function getReport(sender_psid) {
   return new Promise((resolve, reject) => {
-    Update.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
+    Report.find({ sender_id: sender_psid }).sort({ date: -1 }).limit(1).then(
       data => resolve(data),
       error => reject(error)
     );
@@ -1190,29 +1178,29 @@ async function getStep(sender_psid) {
   var step;
 
   try {
-    var updates = await getUpdate(sender_psid);
-    console.log("tiempo pasado " + (d.getTime() - updates[0].date));
+    var report = await getReport(sender_psid);
+    console.log("tiempo pasado " + (d.getTime() - report[0].date));
 
-    if (updates == []) {
-      console.log("updates is empty");
+    if (report == []) {
+      console.log("report is empty");
       step = -1;
-    } else if (updates[0].tomarControl) {
+    } else if (report[0].tomarControl) {
       console.log("Control tomado");
       step = -2;
-    } else if ((updates[0].step > 18) || (d.getTime() - updates[0].date > 900000)) {
-      console.log("Updates recibió el paso" + updates[0].step);
+    } else if ((report[0].step > 18) || (d.getTime() - report[0].date > 900000)) {
+      console.log("Reports recibió el paso" + report[0].step);
       console.log();
 
-      if (updates[0].step < 6) {
-        updates[0].remove();
+      if (report[0].step < 6) {
+        report[0].remove();
       }
       step = -1;
     } else {
-      step = updates[0].step;
+      step = report[0].step;
       console.log("steeeeeeeeeeep " + step);
     }
 
-    return [step, updates];
+    return [step, report];
   } catch (e) {
     return [-1, {}];
   }
@@ -1243,47 +1231,47 @@ function getImage(url, callback) {
 }
 
 //Get the info that corresponds to the cause of the damages that the user indicated
-function getCauseInfo(sender_psid, updates) {
+function getCauseInfo(sender_psid, report) {
 
   console.log("infooooo causeeeeee");
-  console.log(updates[0].cause);
+  console.log(report[0].cause);
 
-  updates[0].responseAuxIndicator = 1;
-  switch (updates[0].cause) {
+  report[0].responseAuxIndicator = 1;
+  switch (report[0].cause) {
     case cause[0]:
-      updates[0].responseAux = {
+      report[0].responseAux = {
         "text": "Información huracán"
       }
       break;
     case cause[1]:
-      updates[0].responseAux = {
+      report[0].responseAux = {
         "text": "Información lluvias torrenciales"
       }
       break;
     case cause[2]:
-      updates[0].responseAux = {
+      report[0].responseAux = {
         "text": "Información deslizamiento de tierras"
       }
       break;
     case cause[3]:
-      updates[0].responseAux = {
+      report[0].responseAux = {
         "text": "Información terremoto"
       }
       break;
     case cause[4]:
-      updates[0].responseAux = {
+      report[0].responseAux = {
         "text": "Información fuego o explosión"
       }
       break;
     default:
-      updates[0].responseAux = {
+      report[0].responseAux = {
         "text": "No marcó una de nuestras causas predeterminadas. No le podemos ayudar con información sobre la causa indicada"
       }
       break;
   }
-  //updates = nextStep(updates);
+  //report = nextStep(report);
 
-  return updates;
+  return report;
 }
 
 // Sends response messages via the Send API
@@ -1318,14 +1306,14 @@ async function callSendAPI(sender_psid, response) {
 }
 
 //Sends the collected data to arcgis
-function sendUpdateToArcGis(update) {
+function sendReportToArcGis(Report) {
   /*
     var xhr = new XMLHttpRequest();
     var blob;
   
     // Use JSFiddle logo as a sample image to avoid complicating
     // this example with cross-domain issues.
-    xhr.open("GET", update.imgUrl, true);
+    xhr.open("GET", Report.imgUrl, true);
   
     // Ask for the result as an ArrayBuffer.
     xhr.responseType = "arraybuffer";
@@ -1337,16 +1325,16 @@ function sendUpdateToArcGis(update) {
   
       console.log(arrayBufferView);
   
-      blob = new Blob([arrayBufferView], { type: update.img.contentType });
+      blob = new Blob([arrayBufferView], { type: Report.img.contentType });
     }
     console.log("blooooooooooooooooooooooooob");
   
     console.log(blob);
   
-    // var imgg = new Blob(update.img.data, {type : update.img,type})
+    // var imgg = new Blob(Report.img.data, {type : Report.img,type})
   */
 
-  var urlImgAux = update.imgUrl;
+  var urlImgAux = Report.imgUrl;
 
   console.log(urlImgAux);
 
@@ -1359,24 +1347,24 @@ function sendUpdateToArcGis(update) {
 
   }
 
-  //Constructs the object witht he data to update
+  //Constructs the object witht he data to Report
   var object = [{
-    "geometry": { "x": update.X, "y": update.Y, "spatialReference": { "wkid": 4326 } },
+    "geometry": { "x": Report.X, "y": Report.Y, "spatialReference": { "wkid": 4326 } },
     "attributes": {
-      "senderId": update.sender_id,
-      "MongoId": update._id,
-      "fromApp": update.fromApp,
-      "cause": update.cause,
-      "homeDamages": update.homeDamages,
-      "humansHarmed": update.humansHarmed,
-      "humansDeath": update.humansDeath,
-      "date": update.date,
-      "X": update.X,
-      "Y": update.Y,
-      "address": update.address,
-      "observation": update.observation,
+      "senderId": Report.sender_id,
+      "MongoId": Report._id,
+      "fromApp": Report.fromApp,
+      "cause": Report.cause,
+      "homeDamages": Report.homeDamages,
+      "humansHarmed": Report.humansHarmed,
+      "humansDeath": Report.humansDeath,
+      "date": Report.date,
+      "X": Report.X,
+      "Y": Report.Y,
+      "address": Report.address,
+      "observation": Report.observation,
       "imgUrl1": repImg,
-      "formatedDate": update.formatedDate
+      "formatedDate": Report.formatedDate
     }
   }];
 
@@ -1407,7 +1395,7 @@ function sendUpdateToArcGis(update) {
     //  console.log(objectId);
 
     //  var formData = new FormData();
-    //  formData.append("attachment", update.imgUrl);  
+    //  formData.append("attachment", Report.imgUrl);  
   }
 }
 
