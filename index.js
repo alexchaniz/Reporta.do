@@ -1453,7 +1453,7 @@ async function getLocationFromAddress(address) {
 
   //elimina tildes y diacriticos
   //https://es.stackoverflow.com/questions/62031/eliminar-signos-diacr%C3%ADticos-en-javascript-eliminar-tildes-acentos-ortogr%C3%A1ficos
-  var addressAux = address+ ", Republica Dominicana";
+  var addressAux = addressnormalize('NFD').replace(/([aeio])\u0301|(u)[\u0301\u0308]/gi,"$1$2").normalize() + ", Republica Dominicana";
 
   var url = "https://maps.googleapis.com/maps/api/geocode/json?key=" + apiKey + "&address=" + addressAux;
 
@@ -1500,7 +1500,7 @@ async function getLocationFromAddress(address) {
 
           reject(-1)
         }
-      } else if (err||(this.status ==400)) {
+      } else if (err||(this.status ==400&&this.readyState==4)) {
         console.log("llega 5");
 
         reject(-1)
