@@ -181,7 +181,7 @@ var causeReply = {
 }
 
 var humanDamagesReply = {
-  "text": "¿Ha sufrido daños o muerto algún miembro de su familia?",
+  "text": "¿Ha sufrido daños o muerto algún miembro de su familia o comunidad?",
   "quick_replies": [
     {
       "content_type": "text",
