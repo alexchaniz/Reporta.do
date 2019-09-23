@@ -837,6 +837,7 @@ async function step8( attachment_url, type, report) {
       report[0].response = {
         "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
       };
+      report[0].step+=1;
     } else {
       report[0].response = locationReply;
     }
