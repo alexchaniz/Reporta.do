@@ -516,23 +516,26 @@ async function handleMessage(sender_psid, received_message) {
         console.log(received_message.attachments[0]);
 
         //checks if the image have been received in the correct step
-        if ((step = -2) || (step == 8) || (step == 17)) {
+        if ((step == -2) || (step == 8) || (step == 17)) {
 
           // Get the URL of the message attachment
           let attachment_url = received_message.attachments[0].payload.url;
 
           //if the takecntrol field is true
           if (step == -2) {
-            //setsthe step to 8 for changing it to 9 when updating the report.
+            //set the step to 8 for changing it to 9 when updating the report.
             //As this activates the step8 function it will reply automatically with the location demand as itwill always
             //be necessary. It is recomended to the administrator to ask for an image to the user so this
             //cycle gets activated and this fields are updated
             report[0].step = 8;
+            console.log(report[0].step);
+
           }
 
           //calls step8 funtion
           report = await step8(attachment_url, received_message.attachments[0].type, report);
-
+          console.log(report[0].step);
+          
         } else {
           //If the image was not sent in the correct step activates the correctdemand function so
           //replys with the correct question
@@ -829,18 +832,18 @@ async function step7( msgText, report) {
 async function step8( attachment_url, type, report) {
   console.log("Steeeeeeep 8888888888888");
 
+      //Build a reply depending on if the function has been called form the auxiliar conversation or the one with buttons
+      if (!report[0].fromApp) {
+        report[0].response = {
+          "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
+        };
+        report[0].step+=1;
+      } else {
+        report[0].response = locationReply;
+      }
+
   //If type is equal to Image it means the attachment is an image, not a video
   if (type == "image") {
-
-    //Build a reply depending on if the function has been called form the auxiliar conversation or the one with buttons
-    if (!report[0].fromApp) {
-      report[0].response = {
-        "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
-      };
-      report[0].step+=1;
-    } else {
-      report[0].response = locationReply;
-    }
 
     //save the image as buffer
     getImage(attachment_url, function (err, data) {
