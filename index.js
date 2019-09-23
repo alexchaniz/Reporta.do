@@ -534,7 +534,7 @@ async function handleMessage(sender_psid, received_message) {
 
           //calls step8 funtion
           report = await step8(attachment_url, received_message.attachments[0].type, report);
-          console.log(report[0].step);
+          console.log("after step 8 " +report[0].step);
           
         } else {
           //If the image was not sent in the correct step activates the correctdemand function so
@@ -837,7 +837,6 @@ async function step8( attachment_url, type, report) {
         report[0].response = {
           "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
         };
-        report[0].step+=1;
       } else {
         report[0].response = locationReply;
       }
