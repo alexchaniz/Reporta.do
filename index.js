@@ -142,7 +142,7 @@ var homeDamagesReply = {
   ]
 }
 
-var cause = ["Huracán", "Lluvias intensas", "Deslizamiento", "Terremoto", "Explosión o incendio", "Otro"]
+var cause = ["Lluvias intensas", "Deslizamientos", "Incendio o explosión", "Huracán", "Terremoto", "Violencia", "Accidentede tráfico", "Tsunami", "Otro"]
 var causeReply = {
   "text": "Me podría decir la causa de los daños",
   "quick_replies": [
@@ -181,7 +181,7 @@ var causeReply = {
 }
 
 var humanDamagesReply = {
-  "text": "¿Ha sufrido daños o muerto algún miembro de su familia o comunidad?",
+  "text": "¿Ha habido muertos oheridos?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -437,28 +437,28 @@ async function handleMessage(sender_psid, received_message) {
           case -2:
             //in case take control is true
             messagingActions(sender_psid, "typing_off")
-            report = fillReport( "observation", msgText, report)
+            report = fillReport("observation", msgText, report)
             break;
           case 1:
-            report = await step1( msgText, report);
+            report = await step1(msgText, report);
             break;
           case 2:
-            report = await step2( msgText, report);
+            report = await step2(msgText, report);
             break;
           case 3:
-            report = await step3( msgText, report);
+            report = await step3(msgText, report);
             break;
           case 4:
-            report = await step4( msgText, report);
+            report = await step4(msgText, report);
             break;
           case 5:
-            report = await step5( msgText, report);
+            report = await step5(msgText, report);
             break;
           case 6:
-            report = await step6( msgText, report);
+            report = await step6(msgText, report);
             break;
           case 7:
-            report = await step7( msgText, report);
+            report = await step7(msgText, report);
             break;
           case 9:
             //in case the user responses to the location petition with text instead of a location object
@@ -471,34 +471,34 @@ async function handleMessage(sender_psid, received_message) {
             break;
           case 10:
             //in case user responses again with a text to the location demand
-            report = await step9Aux( msgText, report);
+            report = await step9Aux(msgText, report);
             break;
           case 11:
-            report = await step11( msgText, report);
+            report = await step11(msgText, report);
             break;
           case 12:
-            report = await step12( msgText, report);
+            report = await step12(msgText, report);
             break;
           case 13:
-            report = await step13( msgText, report);
+            report = await step13(msgText, report);
             break;
           case 14:
-            report = await step14( msgText, report);
+            report = await step14(msgText, report);
             break;
           case 15:
-            report = await step15( msgText, report);
+            report = await step15(msgText, report);
             break;
           case 16:
-            report = await step16( msgText, report);
+            report = await step16(msgText, report);
             break;
           case 18:
-            report = await step9Aux( msgText, report);
+            report = await step9Aux(msgText, report);
             break;
           case 19:
-            report = await step19( msgText, report);
+            report = await step19(msgText, report);
             break;
           case 20:
-            report = await step20( msgText, report);
+            report = await step20(msgText, report);
             break;
           default:
             //Asks for the cooect question to return as no action could be took
@@ -534,13 +534,13 @@ async function handleMessage(sender_psid, received_message) {
 
           //calls step8 funtion
           report = await step8(attachment_url, received_message.attachments[0].type, report);
-          console.log("after step 8 " +report[0].step);
-          
+          console.log("after step 8 " + report[0].step);
+
         } else {
           //If the image was not sent in the correct step activates the correctdemand function so
           //replys with the correct question
           console.log("wrong step");
-          report = correctDemand( step, report);
+          report = correctDemand(step, report);
         }
       } else if (received_message.attachments[0].type == "location") {
         //If the recived message is a location package
@@ -550,7 +550,7 @@ async function handleMessage(sender_psid, received_message) {
         if ((step == -2) || (step == 9) || (step == 10)) {
 
           //calls the step 9 function
-          report = await step9( received_message, report)
+          report = await step9(received_message, report)
         } else {
 
           //If the loction was not sent in the correct step activates the correctdemand function so
@@ -601,7 +601,7 @@ async function step1(msgText, report) {
       "text": 'Somos el asistente de daños de República Dominicana. Nuestro trabajo consiste en recoger información sobre los daños sufridos por desastre naturales para poder actuar mejor respecto a estos. Estamos a su disposición en caso de que ocurra algo /n Puede compartir nuestro trabajo en sus Redes Sociales: https://www.facebook.com/sharer/sharer.php?u=https%3A//www.facebook.com/Monitoreo-RRSS-Bot-110194503665276/'
     }
     report[0].response = grettingsInfoReply;
-    report = fillReport( "step", 1, report);
+    report = fillReport("step", 1, report);
 
     //if it is "Si"o "Reportar daños avanzamos un paso"
   } else if ((msgText == "¡Si!") || (msgText == "Reportar daños")) {
@@ -613,7 +613,7 @@ async function step1(msgText, report) {
     report[0].response = {
       "text": "Nos alegramos de que no haya sufrido ningún problema, muchas gracias"
     };
-    report = fillReport( "step", 1, report)
+    report = fillReport("step", 1, report)
 
     //If the message contains "no" and "app" we activates the auxiliar conversation for users without writting from the mobile browser
   } else if ((msgText.toLowerCase().includes("no")) && (msgText.includes("app"))) {
@@ -626,7 +626,7 @@ async function step1(msgText, report) {
     }
 
     //Change the field fromApp of the report to false and upgrade one step
-    report = fillReport( "fromApp", false, report)
+    report = fillReport("fromApp", false, report)
 
     //if the user dont use the buttons and don´t say No app, we understand that maybe the user can´t see the buttons and 
     //inform him/her about the option of having an auxiliar conversation with nobuttons
@@ -712,7 +712,7 @@ async function step3(msgText, report) {
 }
 
 //Evaluates the message, build a reply and change the step for the cause reply from the user. updates the cause
-async function step4( msgText, report) {
+async function step4(msgText, report) {
   console.log("Steeeeeeep 4444444444");
 
   //Checks if any button has been used.
@@ -739,7 +739,7 @@ async function step4( msgText, report) {
 
 //Evaluates the message, build a reply, change the step and updates the homedamages 
 //fields with the response to this question from the user
-async function step5( msgText, report) {
+async function step5(msgText, report) {
   console.log("Steeeeeeep 55555555555");
 
   //Checks if the buttons has been used
@@ -762,7 +762,7 @@ async function step5( msgText, report) {
 
 //Evaluates the message, build a reply, change the step and updates the humasHarmed 
 //fields with the response to this question from the user
-async function step6( msgText, report) {
+async function step6(msgText, report) {
   console.log("Steeeeeeep 666666666666");
 
   //If the response is no fills the humansHarmed and humanDetahs fields with a 0
@@ -802,7 +802,7 @@ async function step6( msgText, report) {
 
 //Evaluates the message, build a reply, change the step and updates the humasDeath
 //fields with the response to this question from the user
-async function step7( msgText, report) {
+async function step7(msgText, report) {
   console.log("Steeeeeeep 7777777777777");
 
   //if the user replys to this las question with the No hubo muertos button, the pertinent field is filled 
@@ -820,7 +820,7 @@ async function step7( msgText, report) {
     //if it is a number updates this field with the value
   } else {
     report[0].response = imageReply;
-    report = fillReport( "humansDeath", msgText, report)
+    report = fillReport("humansDeath", msgText, report)
   }
 
   //returns the updated report
@@ -829,17 +829,17 @@ async function step7( msgText, report) {
 
 //Evaluates the message, build a reply, change the step and updates the image
 //fields with the response to this question from the user
-async function step8( attachment_url, type, report) {
+async function step8(attachment_url, type, report) {
   console.log("Steeeeeeep 8888888888888");
 
-      //Build a reply depending on if the function has been called form the auxiliar conversation or the one with buttons
-      if (!report[0].fromApp) {
-        report[0].response = {
-          "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
-        };
-      } else {
-        report[0].response = locationReply;
-      }
+  //Build a reply depending on if the function has been called form the auxiliar conversation or the one with buttons
+  if (!report[0].fromApp) {
+    report[0].response = {
+      "text": 'Escribanos la dirección del suceso, especificando la calle y ciudad'
+    };
+  } else {
+    report[0].response = locationReply;
+  }
 
   //If type is equal to Image it means the attachment is an image, not a video
   if (type == "image") {
@@ -865,7 +865,7 @@ async function step8( attachment_url, type, report) {
 
 //Evaluates the message, build a reply, change the step and updates the location
 //fields with the response to this question from the user
-async function step9( received_message, report) {
+async function step9(received_message, report) {
   console.log("Steeeeeeep 999999999");
 
   //Get the coordinates from the package recived
@@ -894,7 +894,7 @@ async function step9( received_message, report) {
 //Evaluates the message, build a reply, change the step and updates the location
 //fields with the response to this question from the user. Called when the location has to be
 //Signaled with an adress by the user
-async function step9Aux( msgText, report) {
+async function step9Aux(msgText, report) {
   console.log("Steeeeeeep 99999999999999auxxxxxxxxx");
 
   //Trys to get the coordnates from the address indicated
@@ -904,7 +904,7 @@ async function step9Aux( msgText, report) {
     location.push(msgText);
 
     //Saves coordinates and the address received
-    report = fillReport( "address", location, report);
+    report = fillReport("address", location, report);
     report[0].response = observationReply;
 
     //returns the updated report
@@ -925,12 +925,12 @@ async function step9Aux( msgText, report) {
 
 //Evaluates the message, build a reply, change the step and updates the observation
 //fields with the response to this question from the user
-async function step11( msgText, report) {
+async function step11(msgText, report) {
   console.log("Steeeeeeep 111 111 1 11 11 11");
 
   report[0].response = anotherReportReply;
   //Saves any text recibed as an observation, and send the report to the arcgis layer
-  report = fillReport( "observation", msgText, report);
+  report = fillReport("observation", msgText, report);
 
   //returns the updated report
   return report;
@@ -977,7 +977,7 @@ async function step12(msgText, report) {
 
 //first step of the auxiliar conversation where it fills the cause that has been asked previously
 //and asks for the home damages
-async function step13( msgText, report) {
+async function step13(msgText, report) {
   report[0].response = {
     "text": "¿Ha sufrido daños su vivienda? Describalos"
   }
@@ -987,7 +987,7 @@ async function step13( msgText, report) {
 
 //it fills the homeDamages that has been asked previously
 //and asks for the human damages
-async function step14( msgText, report) {
+async function step14(msgText, report) {
   report[0].response = {
     "text": "¿Ha habido muertos? Indiquenos la cantidad utilizando un número."
   }
@@ -997,7 +997,7 @@ async function step14( msgText, report) {
 
 //it fills the humas death that has been asked previously
 //and asks for the humas death
-async function step15( msgText, report) {
+async function step15(msgText, report) {
   //checks if its a number. In case its not it asks for a number
   if (!isNaN(msgText)) {
     report[0].response = {
@@ -1006,24 +1006,38 @@ async function step15( msgText, report) {
     report = fillReport("humansDeath", msgText, report);
   }
   else {
-    report[0].response = {
-      "text": "Indiquenos la cantidad utilizando un número."
+    if (msgText.toLowerCase() == "no") {
+      report = fillReport("humansDeath", msgText, report);
+      report[0].response = {
+        "text": "¿Ha habido heridos? Indiquenos la cantidad utilizando un número."
+      }
+    } else {
+      report[0].response = {
+        "text": "Indiquenos la cantidad utilizando un número."
+      }
     }
   }
   return report;
 }
 
 //the same than the previous step. Asks for an image
-async function step16( msgText, report) {
+async function step16(msgText, report) {
   if (!isNaN(msgText)) {
     report[0].response = {
       "text": "Envienos una imagen de los daños provocados"
     }
-    report = fillReport( "humansHarmed", msgText, report);
+    report = fillReport("humansHarmed", msgText, report);
   }
   else {
-    report[0].response = {
-      "text": "Indiquenos la cantidad utilizando un número."
+    if (msgText.toLowerCase() == "no") {
+      report = fillReport("humansHarmed", msgText, report);
+      report[0].response = {
+        "text": "Envienos una imagen de los daños provocados"
+      }
+    } else {
+      report[0].response = {
+        "text": "Indiquenos la cantidad utilizando un número."
+      }
     }
   }
   return report;
@@ -1031,10 +1045,10 @@ async function step16( msgText, report) {
 
 //it fills the observation that has been asked previously
 //and says bye
-async function step19( msgText, report) {
+async function step19(msgText, report) {
   report[0].response = byeReply;
 
-  report = fillReport( "observation", msgText, report);
+  report = fillReport("observation", msgText, report);
   return report;
 }
 
@@ -1125,7 +1139,7 @@ function correctDemand(sender_psid, step, report) {
         "text": "Disculpe, hubo un problema. La encuesta volverá a comenzar."
       }
       report[0].response = grettingsReply;
-      report = fillReport( "step", 1, report);
+      report = fillReport("step", 1, report);
       break;
   }
 
