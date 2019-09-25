@@ -198,7 +198,7 @@ var causeReply = {
 }
 
 var humanDamagesReply = {
-  "text": "¿Ha habido muertos oheridos?",
+  "text": "¿Ha habido muertos o heridos?",
   "quick_replies": [
     {
       "content_type": "text",
