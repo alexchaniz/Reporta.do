@@ -269,7 +269,7 @@ var observationReply = {
 }
 
 var anotherReportReply = {
-  "text": "¿Quiere información sobre como actuar o reportar otro daño?",
+  "text": "¿Quiere reportar otro daño?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -279,11 +279,6 @@ var anotherReportReply = {
     }, {
       "content_type": "text",
       "title": "Reportar",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
-      "title": "Información",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }
