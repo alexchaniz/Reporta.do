@@ -148,17 +148,22 @@ var causeReply = {
   "quick_replies": [
     {
       "content_type": "text",
-      "title": "Huracán",
-      "payload": "<POSTBACK_PAYLOAD>",
-      "image_url": ""
-    }, {
-      "content_type": "text",
       "title": "Lluvias intensas",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Deslizamiento",
+      "title": "Deslizamientos",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Incendio o explosión",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    }, {
+      "content_type": "text",
+      "title": "Huracán",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
     }, {
@@ -168,10 +173,22 @@ var causeReply = {
       "image_url": ""
     }, {
       "content_type": "text",
-      "title": "Explosión o incendio",
+      "title": "Violencia",
       "payload": "<POSTBACK_PAYLOAD>",
       "image_url": ""
-    }, {
+    },
+    {
+      "content_type": "text",
+      "title": "Accidentes de tráfico",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    },
+    {
+      "content_type": "text",
+      "title": "Tsunami",
+      "payload": "<POSTBACK_PAYLOAD>",
+      "image_url": ""
+    },{
       "content_type": "text",
       "title": "Otro",
       "payload": "<POSTBACK_PAYLOAD>",
