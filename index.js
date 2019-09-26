@@ -552,7 +552,7 @@ async function handleMessage(sender_psid, received_message) {
           //If the image was not sent in the correct step activates the correctdemand function so
           //replys with the correct question
           console.log("wrong step");
-          report = correctDemand(step, report);
+          report = correctDemand(sender_psid, step, report);
         }
       } else if (received_message.attachments[0].type == "location") {
         //If the recived message is a location package
