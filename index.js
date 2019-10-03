@@ -52,7 +52,7 @@ var Report = mongoose.model("Report", Report_schema);
 
 //Sets replys
 var grettingsReply = {
-  "text": "Hola, es el asistente de daños de república dominicana. ¿Como te ayudamos?",
+  "text": "Hola, es el asistente de daños de República Dominicana. ¿Como le ayudamos?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -103,7 +103,7 @@ var safePlaceReply = {
 }
 
 var homeOrComunityReply = {
-  "text": "¿Quiere hacer un reporte de daños en su hogar o de su comunidad?",
+  "text": "Haga un reporte de daños en su hogar o comunidad?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -121,7 +121,7 @@ var homeOrComunityReply = {
 
 var homeDamages = ["Daños graves", "Daños leves", "No"]
 var homeDamagesReply = {
-  "text": "¿Ha sufrido daños su vivienda?",
+  "text": "¿Que daños ha sufrido su vivienda?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -144,7 +144,7 @@ var homeDamagesReply = {
 
 var cause = ["Lluvias intensas", "Deslizamientos", "Incendio o explosión", "Huracán", "Terremoto", "Violencia", "Accidentede tráfico", "Tsunami", "Otro"]
 var causeReply = {
-  "text": "Me podría decir la causa de los daños",
+  "text": "Diganos la causa de los daños",
   "quick_replies": [
     {
       "content_type": "text",
@@ -198,7 +198,7 @@ var causeReply = {
 }
 
 var humanDamagesReply = {
-  "text": "¿Ha habido muertos o heridos?",
+  "text": "¿Hay fallecidos o heridos?",
   "quick_replies": [
     {
       "content_type": "text",
@@ -215,7 +215,7 @@ var humanDamagesReply = {
 }
 
 var harmedPeopleReply = {
-  "text": "¿Cuantas personas han resultado heridas? Escribanoslo usando números",
+  "text": "Si hubo heridos, diganos cuantos usando números",
   "quick_replies": [
     {
       "content_type": "text",
@@ -227,7 +227,7 @@ var harmedPeopleReply = {
 }
 
 var deathPeopleReply = {
-  "text": "Si hubo muertos, ¿Podría escribirnos cuantos?",
+  "text": "Si hubo fallecidos, diganos cuantos usando números",
   "quick_replies": [
     {
       "content_type": "text",
@@ -675,7 +675,7 @@ async function step2(msgText, report) {
   //if response to the safe place question is "No"
   if (msgText == "No") {
     report[0].response = {
-      "text": 'Debería ir a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n No dude en escribirnos cuando este seguro'
+      "text": 'Vaya a un lugar seguro. En caso de que sea necesario utilice el numero de emergencias 911.\n Escribanos cuando este en un lugar seguro'
     }
 
     //if response is Si we upgrade the step adn the reply
