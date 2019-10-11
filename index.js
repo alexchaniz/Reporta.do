@@ -1737,7 +1737,7 @@ async function eliminarDiacriticos(texto) {
 
 
 //Get the delayed responses
-function getDelayedReports(report) {
+async Sfunction getDelayedReports(report) {
 
     while (delayComprobationStep <=3) {
     
