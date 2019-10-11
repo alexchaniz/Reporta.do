@@ -371,16 +371,15 @@ async function handleMessage(sender_psid, received_message) {
         console.log("Handling message: ");
 
         console.log("Delay step : " + delayComprobationStep);
-    
-        delayComprobationStep=0;
-    
+        
         if (delayComprobationStep>3){
 
             console.log("Delay checking...");
             
-            delayComprobationStep=0;
             getDelayedReports();
         }
+
+        delayComprobationStep=0;
 
         //Sets report and step variables, that will be used
         var report = [];
