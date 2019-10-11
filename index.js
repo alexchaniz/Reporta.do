@@ -297,13 +297,6 @@ app.post('/webhook', (req, res) => {
 
     let body = req.body;
 
-    delayComprobationStep=0;
-
-    if (delayComprobationStep>3){
-        delayComprobationStep=0;
-        getDelayedReports()
-    }
-
     // Checks this is an event from a page subscription
     if (body.object === 'page') {
 
@@ -376,6 +369,15 @@ async function handleMessage(sender_psid, received_message) {
     if (!received_message.is_echo) {
 
         console.log("Handling message: ");
+
+        console.log(delayComprobationStep);
+    
+        delayComprobationStep=0;
+    
+        if (delayComprobationStep>3){
+            delayComprobationStep=0;
+            getDelayedReports();
+        }
 
         //Sets report and step variables, that will be used
         var report = [];
