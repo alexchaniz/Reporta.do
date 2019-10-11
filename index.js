@@ -1358,7 +1358,7 @@ function fillReport(field, value, report) {
             return;
     }
     //Updates the date
-    var date = new date();
+    var date = new Date();
     report[0].date = date.getTime();
 
     //updates the object with the same object_id in the mongo database
@@ -1746,7 +1746,7 @@ async function getDelayedReports() {
     
     while (delayComprobationStep <=3) {
     
-    var actualDate = new date();
+    var actualDate = new Date();
     var delayedResponseTime = actualDate - 120000;
     var delayedReportTime = actualDate - 720000;
 
