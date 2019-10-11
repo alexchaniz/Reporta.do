@@ -300,6 +300,7 @@ app.post('/webhook', (req, res) => {
     delayComprobationStep=0;
 
     if (delayComprobationStep>3){
+        delayComprobationStep=0;
         getDelayedReports()
     }
 
@@ -1737,7 +1738,7 @@ async function eliminarDiacriticos(texto) {
 
 
 //Get the delayed responses
-async function getDelayedReports(report) {
+async function getDelayedReports() {
 
     console.log("Checking delayed responses");
     
