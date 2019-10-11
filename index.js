@@ -12,7 +12,7 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 const Http = new XMLHttpRequest();
 var https = require('https');
 
-var delayComprobationStep=0;
+var delayComprobationStep=4;
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
@@ -370,11 +370,14 @@ async function handleMessage(sender_psid, received_message) {
 
         console.log("Handling message: ");
 
-        console.log(delayComprobationStep);
+        console.log("Delay step : " + delayComprobationStep);
     
         delayComprobationStep=0;
     
         if (delayComprobationStep>3){
+
+            console.log("Delay checking...");
+            
             delayComprobationStep=0;
             getDelayedReports();
         }
