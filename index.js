@@ -1739,23 +1739,25 @@ async function eliminarDiacriticos(texto) {
 //Get the delayed responses
 async function getDelayedReports(report) {
 
+    console.log("Checking delayed responses");
+    
     while (delayComprobationStep <=3) {
     
     var actualDate = new date();
     var delayedResponseTime = actualDate - 120000;
     var delayedReportTime = actualDate - 720000;
 
-    var delayedResponses = Report.find({ date: { $gte: delayedResponseTime } }).sort({ date: -1 });
+    var delayedResponses = Report.find({ date: { $lte: delayedResponseTime } }).sort({ date: -1 });
 
     for (let i = 0; i < delayedResponses.length; i++) {
 
-        if (delaedResponses[i].date < delayedReportTime) {
-            delaedResponses[i].delete();
+        if (delayedResponses[i].date < delayedReportTime) {
+            delayedResponses[i].delete();
 
         } else {
-            response = correctDemand(delayedResponses[i].sender_psid, delaedResponses[i].step, delaedResponses[i])
+            response = correctDemand(delayedResponses[i].sender_psid, delayedResponses[i].step, delayedResponses[i])
             responseAux = {
-                'text': 'Si no contexta el reporte exoirara y debeerá comenzarlode nuevo'
+                'text': 'Si no contesta el reporte acabará y deberá comenzarlo de nuevo'
             }
             await callSendAPI(delayedResponses[i].sender_psid, report[0].responseAux).then(async function (err, data) {
                 callSendAPI(delayedResponses[i].sender_psid, response)
@@ -1765,5 +1767,7 @@ async function getDelayedReports(report) {
     }
     delayComprobationStep+=1;
     await sleep(120000);
+    console.log("Sleep awake");
+    
 }
 }
