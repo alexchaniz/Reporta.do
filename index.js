@@ -1749,20 +1749,26 @@ async function getDelayedReports() {
     while (delayComprobationStep <=3) {
     
     var actualDate = new Date();
-    var delayedResponseTime = actualDate - 120000;
+    var delayedResponseTime = actualDate - 10000;
     var delayedReportTime = actualDate - 720000;
 
     var delayedResponses = Report.find({ date: { $lte: delayedResponseTime } }).sort({ date: -1 });
 
     for (let i = 0; i < delayedResponses.length; i++) {
 
+        console.log(delayedResponses[i].sender_id + delayedResponses[i].date);
+        
         if (delayedResponses[i].date < delayedReportTime) {
+            console.log("Expired report");
+            
             delayedResponses[i].delete();
 
         } else {
+            console.log("Delayed responses");
+            
             response = correctDemand(delayedResponses[i].sender_psid, delayedResponses[i].step, delayedResponses[i])
             responseAux = {
-                'text': 'Si no contesta el reporte acabará y deberá comenzarlo de nuevo'
+                'text': 'Si no contesta, el reporte acabará y deberá comenzarlo de nuevo'
             }
             await callSendAPI(delayedResponses[i].sender_psid, report[0].responseAux).then(async function (err, data) {
                 callSendAPI(delayedResponses[i].sender_psid, response)
